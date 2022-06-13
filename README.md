@@ -1,1 +1,1 @@
-# InfotmationExperiment_1
+# 情報学群実験第1

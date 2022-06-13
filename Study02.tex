@@ -1,0 +1,111 @@
+\documentclass[a4j,11pt]{jsarticle}
+%jbbok:書籍・jsarticle:論文，短い文書・jreport:レポート・letter:手紙・twocolumn:2段組
+\usepackage{amsmath,amsfonts,amssymb,mathtools,ascmac,bm,float,comment,url,fancybox,calc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=20truemm]{geometry}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{tikz,listings,jlisting}
+\renewcommand{\lstlistingname}{src.}
+\lstset{
+        %プログラム言語(複数の言語に対応，C,C++も可)
+    language = Java,
+        %背景色と透過度
+    %backgroundcolor={\color[gray]{.90}},
+        %枠外に行った時の自動改行
+    breaklines = true,
+        %自動改行後のインデント量(デフォルトでは20[pt])
+    breakindent = 10pt,
+        %標準の書体
+    basicstyle = \ttfamily\small,
+        %コメントの書体
+    commentstyle = {\itshape \color[cmyk]{1,0.4,1,0}},
+        %関数名等の色の設定
+    classoffset = 0,
+        %キーワード(int, ifなど)の書体
+    keywordstyle = {\bfseries \color[cmyk]{0,1,0,0}},
+        %表示する文字の書体
+    stringstyle = {\ttfamily \color[rgb]{0,0,1}},
+        %枠 tは上に線を記載, Tは上に二重線を記載
+        %他オプション：leftline，topline，bottomline，lines，single，shadowbox
+    frame = lines,
+        %frameまでの間隔(行番号とプログラムの間)
+    framesep = 5pt,
+        %行番号の位置
+    %numbers = left,
+        %行番号の間隔
+    stepnumber = 1,
+        %行番号の書体
+    numberstyle = \small,
+        %タブの大きさ
+    tabsize = 4,
+        %キャプションの場所(tbならば上下両方に記載)
+    captionpos = t
+}
+    \usetikzlibrary{arrows}
+    \usetikzlibrary{intersections,calc,arrows.meta,backgrounds,shapes.geometric,shapes.misc,positioning,fit}
+
+    \setlength{\columnsep}{5mm}
+    \columnseprule=0.1mm
+    \renewcommand{\thefootnote}{\arabic{footnote})}
+
+\newcounter{point}
+\setcounter{point}{0}
+\newcommand{\Point}[1][]{\refstepcounter{point}{#1}工夫点{\thepoint}}
+                   
+\title{\vspace{0cm}Study課題 02}
+\author{1250373 溝口洸熙\thanks{高知工科大学 情報学群 学士2年}} 
+\date{\today}
+
+\begin{document}
+%\twocolumn[
+\maketitle
+%]
+\begin{abstract}
+    このレポートは，Study課題の各問題の工夫点をまとめたものである．コードの転記には\verb|listings|,\verb|jlisting|を用いており，描画には\ Ti\emph{k}\normalfont Z\ を用いている．このレポートは，ソースコードの行番号を消している．
+\end{abstract}
+\section*{\Point}
+\noindent\underline{汎用性の高いシステムの構築}\par
+今回は，自動販売機に登録できる商品の個数が$5$個と決まっていたが，実際の自動販売機は，自動販売機の機種によって登録できる商品の個数が変わる．
+プログラム上で，定数を用いて最大の商品登録個数を決めると，別の機種への適用が難しくなる．ここで，変数を用いてその変数をコードに適用することで，簡単に最大登録個数を変更できる仕組みを作成した．（src.\ref{最大登録個数}）
+\begin{lstlisting}[caption=最大登録個数の柔軟化, label=最大登録個数, language=Java]
+int index_length= 5;// 最大登録個数 
+// --一部抜粋--
+for (int i = 0; i < index_length; i++) {
+ if (data_drink[i] == null) {
+   System.out.println(i + 1 + "番 -----未登録-----");
+\end{lstlisting}
+\ \ また，最大登録個数を変数を用いて保存することで，購入する際の「登録されていない」という出力判定をより簡単にした．今回の場合$6$以上の数を入力した場合，登録されていないと出力される．
+
+\newpage
+\section*{\Point[\label{金銭授受システム}]}
+\noindent\underline{実際の自販機に寄せた金銭授受システム}\par
+実際の自動販売機は，$1$円玉，$5$円玉は処理されない．自販機は硬貨の取り扱いのコストが，かかることがあるので，$1$円単位の取引はしないことがほとんどである．そこで，$1$円以上$10$円未満のお金は自動的に出力する仕組みを実装した．（src.\ref{金銭授受コード}）
+\begin{lstlisting}[caption=$1$円単位のお金を出力するシステム, label=金銭授受コード, language=Java]
+int insert_money = new java.util.Scanner(System.in).nextInt();
+if (insert_money % 10 != 0) {
+    System.out.println(insert_money % 10 + "円が出力");
+    insert_money = insert_money - insert_money % 10;
+}
+\end{lstlisting}
+\section*{\Point{}}
+\noindent\underline{商品登録時の金額修正}\par
+工夫点\ref{金銭授受システム}で述べた理由より，商品価格は$10$円単位で行う必要がある．もし仮に何らかのミスで$1$円単位の価格設定になった場合，そのミスを指摘しプログラムを終了する仕組みを実装した．（sec.\ref{金額の是正}）
+\begin{lstlisting}[caption=設定金額の検証, label=金額の是正, language=Java]
+public Drink(String name, int price) {// コンストラクタ
+  this.name = name;
+  if (price % 10 != 0) {
+    System.out.println(this.name + "の金額を，10円単位で設定してください．");
+    System.exit(0);
+  } else {
+    this.price = price;
+  }
+  this.name = name;
+}
+\end{lstlisting}
+仮に，ソーダを$138$円で登録した場合の処理を記す．
+\begin{itembox}[l]{実行結果}
+\verb|$ java Study02 |\ovalbox{Enter}
+\\
+\verb|ソーダの金額を，10円単位で設定してください|
+\end{itembox}
+\end{document}
