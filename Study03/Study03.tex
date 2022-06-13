@@ -1,0 +1,176 @@
+\documentclass[a4j,11pt]{jsarticle}
+%jbbok:書籍・jsarticle:論文，短い文書・jreport:レポート・letter:手紙・twocolumn:2段組
+\usepackage{amsmath,amsfonts,amssymb,mathtools,ascmac,bm,float,comment,url,fancybox,calc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=20truemm]{geometry}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{tikz,listings,jlisting}
+\renewcommand{\lstlistingname}{src.}
+\lstset{
+        %プログラム言語(複数の言語に対応，C,C++も可)
+    language = Java,
+        %背景色と透過度
+    %backgroundcolor={\color[gray]{.90}},
+        %枠外に行った時の自動改行
+    breaklines = true,
+        %自動改行後のインデント量(デフォルトでは20[pt])
+    breakindent = 10pt,
+        %標準の書体
+    basicstyle = \ttfamily\small,
+        %コメントの書体
+    commentstyle = {\itshape \color[cmyk]{1,0.4,1,0}},
+        %関数名等の色の設定
+    classoffset = 0,
+        %キーワード(int, ifなど)の書体
+    keywordstyle = {\bfseries \color[cmyk]{0,1,0,0}},
+        %表示する文字の書体
+    stringstyle = {\ttfamily \color[rgb]{0,0,1}},
+        %枠 tは上に線を記載, Tは上に二重線を記載
+        %他オプション：leftline，topline，bottomline，lines，single，shadowbox
+    frame = lines,
+        %frameまでの間隔(行番号とプログラムの間)
+    framesep = 5pt,
+        %行番号の位置
+    %numbers = left,
+        %行番号の間隔
+    stepnumber = 1,
+        %行番号の書体
+    numberstyle = \small,
+        %タブの大きさ
+    tabsize = 4,
+        %キャプションの場所(tbならば上下両方に記載)
+    captionpos = t
+}
+    \usetikzlibrary{arrows}
+    \usetikzlibrary{intersections,calc,arrows.meta,backgrounds,shapes.geometric,shapes.misc,positioning,fit}
+
+    \setlength{\columnsep}{5mm}
+    \columnseprule=0.1mm
+    \renewcommand{\thefootnote}{\arabic{footnote})}
+
+\newcounter{point}
+\setcounter{point}{0}
+\newcommand{\Point}[1][]{\refstepcounter{point}{#1}工夫点{\thepoint}}
+                   
+\title{\vspace{0cm}Study課題 03}
+\author{1250373 溝口洸熙\thanks{高知工科大学 情報学群 学士2年}} 
+\date{\today}
+
+\begin{document}
+%\twocolumn[
+\maketitle
+%]
+\begin{abstract}
+    このレポートは，Study課題の各問題の工夫点をまとめたものである．コードの転記には\verb|listings|,\verb|jlisting|を用いており，描画には\ Ti\emph{k}\normalfont Z\ を用いている．このレポートは，ソースコードの行番号を消している．「工夫点$n$」はカウンタを用いている．
+\end{abstract}
+\section*{処理と概要と，代表的なメソッド Study03\_3}
+\scriptsize 一部，メソッド名は省略している．また実線で囲われているメソッドは，オーバーライドしている．\par
+\tikz{\draw[->,dashed](0,0)--(1,0)}の矢印の先は，条件によってプログラムを終了する処理が存在する．\normalsize
+
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}
+        %\node[rounded corners,fill=cyan!10,rectangle,minimum size=1cm](0){\verb|args[0]|};
+        \tikzset{Human/.style={fill=cyan!10,rounded corners,rectangle,  text centered, minimum height=1cm,text width=4.1cm}};
+        \tikzset{Parotto/.style={fill=yellow!10,rounded corners,rectangle,  text centered, minimum height=1cm,text width=4.1cm}};
+        \tikzset{Main/.style={fill=magenta!10,rounded corners,rectangle,  text centered, minimum height=1cm,text width=4.1cm}};
+        \tikzset{Animal/.style={fill=green!10,rounded corners,rectangle,text centered,minimum height=1cm,text width=4.1cm}};
+        
+        \node[Main](turn){$5$ターン目か否か};
+        \node[Main,below=0.5cm of turn,text width=3cm](hyperMode){\verb|hyperMode();|};
+        \node[Main,below=0.5cm of hyperMode](p1Defend){\small\verb|p1.defend(h1.attack());|};
+        \node[Main,below=0.5cm of p1Defend](judgeP1Hp){\verb|p1|のHPを判断};
+        \node[Main,below=0.5cm of judgeP1Hp](h1Defend){\small\verb|h1.defend(p1.attack());|};
+        \node[Main,below=0.5cm of h1Defend](judgeH1Hp){\verb|h1|のHPを判断};
+        \node[Main,below=0.5 of judgeH1Hp,text width=3cm](turn2){\verb|始めに戻る|};
+        
+
+        \node[Parotto,right=1 of turn](constP){コンストラクタ};
+        \node[Parotto,draw,below=0.5 of constP](defendP){\small\verb|void defend(int damage);|};
+        \node[Parotto,draw,below=0.5 of defendP](printP){\verb|void printStatus();|};
+
+        \node[Human,below=0.5 of printP](constH){コンストラクタ};
+        \node[Human,draw,below=0.5 of constH](atackH){\verb|int atack();|};
+        \node[Human,draw,below=0.5 of atackH](printH){\verb|void printStatus();|};
+        
+        \node[Animal,right=0.8 of constP](animalFeeld){フィールド変数の定義};
+        \node[Animal,below=0.5 of animalFeeld](constA){コンストラクタ};
+        \node[Animal,below=0.5 of constA](atackA){\verb|int atack();|};
+        \node[Animal,below=0.5 of atackA](defendA){\small\verb|void defend(int damage);|};
+        \node[Animal,below=0.5 of defendA](printA){\verb|void printStatus();|};
+        \node[Animal,draw,dashed,below=0.5 of printA](getsetA){\verb|Getter,Setter|};
+
+        \node[inner sep=0,fit={(turn)(hyperMode)(p1Defend)(judgeP1Hp)(h1Defend)(judgeH1Hp)}](warp_Study03_3){};
+        \node[inner sep=0,above=0.3 of warp_Study03_3](caption_Study03_3){\verb|Study03_3 Class|};
+        \node[draw,rounded corners,fit={(warp_Study03_3)(caption_Study03_3)}](drawWarpStudy03){};
+        
+        \node[inner sep=0,fit={(constP)(defendP)(printP)}](warp_Parotto){};
+        \node[inner sep=0,above=0.3 of warp_Parotto](caption_Parotto){\verb|Parotto3 Class|};
+        \node[draw,dotted,rounded corners,fit={(warp_Parotto)(caption_Parotto)}](drawWarpParotto){};
+
+        \node[inner sep=0,fit={(constH)(atackH)(printH)}](warp_Human){};
+        \node[inner sep=0,below=0.3 of warp_Human](caption_Human){\verb|Human3 Class|};
+        \node[draw,dotted,rounded corners,fit={(warp_Human)(caption_Human)}](drawWarpHuman){};
+
+        \node[inner sep=0,fit={(animalFeeld)(constA)(defendA)(atackA)(printA)(getsetA)(drawWarpParotto)(drawWarpHuman)}](warp_animal){};
+        \node[inner sep=0,above=0.3 of animalFeeld](caption_animal){\verb|Animal Class|};
+        \node[draw,very thin,rounded corners,fit={(warp_animal)(caption_animal)}]{};
+
+        \draw[->,thick](turn)--(hyperMode);
+        \draw[->,thick,bend left=70](turn)edge(p1Defend);
+        \draw[->,thick](hyperMode)--(p1Defend);
+        \draw[->,thick](p1Defend)--(judgeP1Hp);
+        \draw[->,dashed](judgeP1Hp)--(h1Defend);
+        \draw[->,thick](h1Defend)--(judgeH1Hp);
+        \draw[->,dashed](judgeH1Hp)--(turn2);
+    \end{tikzpicture}
+\end{figure}
+
+\newpage
+\section*{代表的な工夫}
+\subsection*{\Point：デフォルトHPの管理}
+デフォルトのHPを変数\verb|def_hp|で管理することで，HP表示の際にHPの初期値を表示できる．この工夫で相対的なHPの処理も対応可能になる．
+\subsection*{\Point：道具使用時のPower増加分の管理}
+Humanクラスの処理で道具使用率に応じでPowerの値が変わるが，この変わる値の要素を変数\verb|item_point|で管理することで，拡張性を持たせた．具体的にはすごい武器にする際の処理として，攻撃力を$n$倍へ変更することができる．
+\subsection*{\Point：適切なインデント}
+全てのファイルに，適切なインデントを施している．演算子前後のスペース，メソッド間の改行，\verb|{ }|の前後のスペースなど．
+インデントをするか否かでコードの解釈にかかる時間が減る．
+\subsection*{\Point：アノテーション}
+Javaには「アノテーション」という仕組みがある．アノテーションとは，コードでは表現しきれない情報を補足としてくけ加えることのできる機能である．\cite{アノテーション}\par
+具体的には，\verb|@Override|というアノテーションは，\underline{親クラスにないメソッドをエラーにする}という機能を持っている．\verb|@Override|アノテーションをすることで，\textcolor{blue}{Override忘れを防ぐ}ことができる．（src.\ref{annotation}）
+\begin{lstlisting}[caption=アノテーション, label=annotation, language=Java]
+public class Super {
+    public void method() {
+        System.out.println("HelloWorld");
+    }
+}
+public class Sub extends Super{
+    @Override// 以下のメソッドはOverrideしたい
+    public void method1() {// メソッド名が間違いであるのでOverrideできていない → その旨のエラーが出力される
+        System.out.println("Hello");
+    }
+}
+\end{lstlisting}
+\ \ アノテーションは，複数人での開発で本領を発揮する．いわば注釈のようなもので，コード上に残すことで，プログラムの意図しない動作を防ぐことができる．\par
+余談だが，高機能IDE（VS Codeなど）は，エディタ上で教えてくれる．（残念ながら愛用のVimはその機能が搭載されていない．）
+\section*{Study03\_1}
+\textbf{代表的な工夫}の工夫点1〜工夫点3がこの課題の工夫点である．
+\section*{Study03\_2}
+\textbf{代表的な工夫}の工夫点1〜工夫点4がこの課題の工夫点である．
+\section*{Study03\_3}
+\subsection*{\Point：サドンデス状態を分離}
+$5$ターン目以降は，"サドンデス状態"として，HPやPowerを変更しなければならい．その処理を\verb|main|メソッド内に書くと非常に見難いので\ovalbox{\verb|hyperMode();|}として，メソッド化した．\par
+また，問題ではHPを$1/2$にし切り捨て処理をしなければならないと書いてあったが，その場合HPが$1$のとき，サドンデスモードでHPが$0$となってしまう．これはゲームとしてはおかしいので，HPが$1$のときに限ってHPを維持する処理を追加した．
+\subsection*{\Point：サドンデスモードの攻撃力の変更を記録}
+攻撃力の変更は，本来なら\ovalbox{\verb|getPower();|}などの\verb|Getter|を用いて行われるが，攻撃力はキャラクター属性の重要な要素であり，前の攻撃力に戻したい状況も考えられるので，単純に\verb|this.power|を上書きするのではなく，\verb|high_power|という変数に一旦保存してから，\verb|this.power|を変更するメソッドを作成した．（src.\ref{setpower}）
+\begin{lstlisting}[caption=攻撃力を上書きするメソッド, label=setpower, language=Java]
+public void setHighPower(int i) {
+    this.high_power = i;
+    this.power *= this.high_power;
+}
+\end{lstlisting}
+
+\begin{thebibliography}{99}
+    \bibitem{アノテーション} ECのミライを考えるメディア \ 2022/05/23 最終確認 \\\url{https://ec-orange.jp/ec-media/?p=17791}
+\end{thebibliography}
+\end{document}
