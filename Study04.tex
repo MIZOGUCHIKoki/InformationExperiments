@@ -1,0 +1,147 @@
+\documentclass[a4j,11pt]{jsarticle}
+%jbbok:書籍・jsarticle:論文，短い文書・jreport:レポート・letter:手紙・twocolumn:2段組
+\usepackage{amsmath,amsfonts,amssymb,mathtools,ascmac,bm,float,comment,url,fancybox,calc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=20truemm]{geometry}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{tikz,listings,jlisting}
+\renewcommand{\lstlistingname}{src.}
+\lstset{
+        %プログラム言語(複数の言語に対応，C,C++も可)
+    language = Java,
+        %背景色と透過度
+    %backgroundcolor={\color[gray]{.90}},
+        %枠外に行った時の自動改行
+    breaklines = true,
+        %自動改行後のインデント量(デフォルトでは20[pt])
+    breakindent = 10pt,
+        %標準の書体
+    basicstyle = \ttfamily\small,
+        %コメントの書体
+    commentstyle = {\itshape \color[cmyk]{1,0.4,1,0}},
+        %関数名等の色の設定
+    classoffset = 0,
+        %キーワード(int, ifなど)の書体
+    keywordstyle = {\bfseries \color[cmyk]{0,1,0,0}},
+        %表示する文字の書体
+    stringstyle = {\ttfamily \color[rgb]{0,0,1}},
+        %枠 tは上に線を記載, Tは上に二重線を記載
+        %他オプション：leftline，topline，bottomline，lines，single，shadowbox
+    frame = lines,
+        %frameまでの間隔(行番号とプログラムの間)
+    framesep = 5pt,
+        %行番号の位置
+    %numbers = left,
+        %行番号の間隔
+    stepnumber = 1,
+        %行番号の書体
+    numberstyle = \small,
+        %タブの大きさ
+    tabsize = 4,
+        %キャプションの場所(tbならば上下両方に記載)
+    captionpos = t
+}
+    \usetikzlibrary{arrows}
+    \usetikzlibrary{intersections,calc,arrows.meta,backgrounds,shapes.geometric,shapes.misc,positioning,fit}
+
+    \setlength{\columnsep}{5mm}
+    \columnseprule=0.1mm
+    \renewcommand{\thefootnote}{\arabic{footnote})}
+
+
+\newcounter{point}
+\setcounter{point}{0}
+\newcommand{\Point}[1][]{\refstepcounter{point}{#1}工夫点{\thepoint}}
+                   
+\title{\vspace{0cm}Study課題 04}
+\author{1250373 溝口洸熙\thanks{高知工科大学 情報学群 学士2年}} 
+\date{\today}
+
+\begin{document}
+%\twocolumn[
+\maketitle
+%]
+\begin{abstract}
+    このレポートは，Study課題の各問題の工夫点をまとめたものである．コードの転記には\verb|listings|,\verb|jlisting|を用いており，描画には\ Ti\emph{k}\normalfont Z\ を用いている．このレポートは，ソースコードの行番号を消している．「工夫点$n$」はカウンタを用いている．
+\end{abstract}
+
+\section*{\Point：{多態性を用いた設計}}
+「多態性」を用いてコードを設計した．\verb|Ally|クラスを配列でインスタンス化し，\verb|Hero,Knight|\dots それぞれのインスタンスを代入する．（src.\ref{多態性}）こうすることで，ステータスの表示を楽にしている．さらに，配列のどこに\verb|Hero|クラスのインスタンスが存在するかを判定するために，\verb|instanceof|を用いて判定している．後々のプログラムに役に立つ．（src.\ref{ステータスの表示}）
+\begin{lstlisting}[caption=多態性を用いた設計, label=多態性, language=Java]
+Ally[] ch = new Ally[4];
+ch[0] = new Hero("勇者", 100, 25);
+ch[1] = new Knight("騎士", 150, 30);
+ch[2] = new Monk("僧侶", 80, 5);                                                                                                                  
+ch[3] = new Wizard("魔術師", 200, 30);
+\end{lstlisting}
+\begin{lstlisting}[caption=ステータスの表示, label=ステータスの表示, language=Java]
+for (int i = 0; i < ch.length; i++) {
+    ch[i].showStatus();
+    if (ch[i] instanceof Hero) {
+        hero_index = i;
+    }
+}
+\end{lstlisting}
+\newpage
+\section*{\Point{}：ゲーム性を考慮}
+つれていく仲間に「勇者」をつれていくことは，ゲームの意図として違和感があるので，\verb|Hero|クラスのメンバが選択された場合には，再選択を促す仕組みを導入した．（src.\ref{仲間の選択}）
+ここで，仲間を\verb|Ally|配列の\verb|party_index|という配列で記録しておくこで，選択した仲間が\verb|Hero|クラスか否かの照会が簡単になる．
+\begin{lstlisting}[caption=仲間の選択, label=仲間の選択, language=Java]
+while (true) {
+    System.out.println(">>連れていく仲間を選んでください（IDを入力）");
+    System.out.print("ID: ");
+    input = new java.util.Scanner(System.in).nextInt();
+    for (int i = 0; i < ch.length; i++) {
+        if (ch[i].getID() == input) {                                                                                                             
+            System.out.println();
+            party_index = i;
+            break;
+        }
+    }
+    if (!(ch[party_index] instanceof Hero)) {
+        System.out.println(">>" + ch[party_index].getName() + "が仲間になった！");
+        break;
+    } else {
+        System.out.println("Heroクラス以外のメンバを選択してください");
+    }
+
+}
+\end{lstlisting}
+\section*{\Point{：IDを静的メソッドで設定}}
+IDは，我々が管理しなくとも良い項目である．クラスがインスタンス化された順番でIDを割り当てれば良いので，静的変数を用いてIDを設定している．（src.\ref{ID}）
+\begin{lstlisting}[caption=静的変数を用いてIDの設定, label=ID, language=Java]
+private static int IDcount = -1;
+public Ally(String name, int hp, int atk) {// コンストラクタ                                                                                          
+    super(name, hp, atk);
+    IDcount++;
+    this.ID = IDcount;
+    this.def_atk = atk;
+}  
+\end{lstlisting}
+\newpage
+\section*{\Point：アノテーション}
+Javaには「アノテーション」という仕組みがある．アノテーションとは，コードでは表現しきれない情報を補足としてくけ加えることのできる機能である．
+具体的には，\verb|@Override|というアノテーションは，\underline{親クラスにないメソッドをエラーにする}という機能を持っている．\verb|@Override|アノテーションをすることで，\textcolor{blue}{Override忘れを防ぐ}ことができる．（src.\ref{annotation}）
+\begin{lstlisting}[caption=アノテーション, label=annotation, language=Java]
+public class Super {
+    public void method() {
+        System.out.println("HelloWorld");
+    }
+}
+public class Sub extends Super{
+    @Override// 以下のメソッドはOverrideしたい
+    public void method1() {// メソッド名が間違いであるのでOverrideできていない → その旨のエラーが出力される
+        System.out.println("Hello");
+    }
+}
+\end{lstlisting}
+\ \ アノテーションは，複数人での開発で本領を発揮する．いわば注釈のようなもので，コード上に残すことで，プログラムの意図しない動作を防ぐことができる．\par
+今回は，\verb|Ally.java|の\verb|printStatus();|で\verb|Character.java|の\verb|printStatus();|を上書きしているので，オーバーライド直前に\verb|@Override|をつけている．
+\section*{\Point{}：操作をまとめる}
+簡単な話であるが，\verb|Hero|以外の\verb|Ally|クラスは，「$\bigcirc\bigcirc$ はスキルを使った！」と表示する．その点をメソッド化して処理をまとめた．（src.\ref{label}）
+\begin{lstlisting}[caption=スキル使用時の使用宣言メソッド, label=label, language=Java]
+public void printUseSkill() {
+    System.out.println(super.getName() + "はスキルを使った！");
+}
+\end{lstlisting}
+\end{document}  
