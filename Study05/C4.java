@@ -3,7 +3,7 @@ import java.util.*;
 public class C4 {
   static public void main(String[] args) {
     Scanner scan = new Scanner(System.in);
-    Random rand = new Random(0); //乱数は実行毎に同じ結果を得るため, 乱数のseed を0 に設定する
+    Random rand = new Random(1); //乱数は実行毎に同じ結果を得るため, 乱数のseed を0 に設定する
     Board b = new Board();
 
     boolean gameEnd = false; // ゲームが終わったか(終わったらTrue)
