@@ -94,7 +94,7 @@ while (true) {
     x = rand.nextInt(5);
     y = rand.nextInt(5);
   } while (b.isLegal(x, y));
-  if(turn % 2 != 0){
+  if(turn % 2 == 0){
     System.out.println("先手は " + x + " " + y + " に置きました");
   }else{
     System.out.println("後手は " + x + " " + y + " に置きました");
