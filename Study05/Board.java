@@ -1,6 +1,6 @@
 public class Board {
  private int[][] square;
- private int turn = 0;
+ private int turn = 1;
 
   Board() {
     square = new int[5][5];
@@ -15,7 +15,7 @@ public class Board {
   public boolean isLegal(int x, int y) {
     if (square[y][x] == 0) {
       turn ++;
-      if(turn % 2 != 0) {// 先手処理
+      if(turn % 2 == 0) {// 先手処理
         square[y][x] = 1;
       } else {// 後手処理
         square[y][x] = 2;
@@ -42,7 +42,7 @@ public class Board {
       for (int ny=0; ny<5; ny++) {
         int numx = 0;
         for (int nx=0; nx<5; nx++) {
-          if (square[ny][nx] == 1) {
+          if (square[ny][nx] == turn % 2  + 1) {
             numx++;
             if (numx == 4) {
               return true;// Win
@@ -56,9 +56,11 @@ public class Board {
       for (int nx=0; nx<5; nx++) {
         int numy = 0;
         for (int ny=0; ny<5; ny++) {
-          if (square[ny][nx] == 1) {
+          if (square[ny][nx] == turn % 2 + 1) {
             numy++;
-            if (numy == 4) { return true; }
+            if (numy == 4) { 
+              return true;// Win
+            }
           } else { numy = 0; }
         }
       }
