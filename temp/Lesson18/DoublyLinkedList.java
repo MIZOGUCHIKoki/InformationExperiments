@@ -140,13 +140,22 @@ public class DoublyLinkedList {
   }
 
   public DoublyLinkedList split(int index) {
-    if (index < 1 || index > this.getLength()) {
-      return null;
-    }
     DoublyLinkedList DLL = new DoublyLinkedList();
-    // DLL.firstElement.setNextElement(this.getElement(index));
-    // DLL.lastElement.setPreviousElement(this.lastElement.getPreviousElement());
-    // DLL.lastElement.setPreviousElement();
+    if (index < 1 || index >= this.getLength()) {
+      return DLL;
+    }
+    DLL.firstElement.setNextElement(this.getElement(index + 1));
+    this.getElement(index + 1).setPreviousElement(DLL.firstElement);
+
+    DLL.lastElement.setPreviousElement(this.lastElement.getPreviousElement());
+    //this.lastElement.getPreviousElement().setPreviousElement(DLL.lastElement);
+    this.lastElement.getPreviousElement().setNextElement(DLL.lastElement);
+
+    this.getElement(index).setNextElement(this.lastElement);
+    this.lastElement.setPreviousElement(this.getElement(index));
+
+    DLL.length = this.getLength() - index;
+    this.length = index;
     return DLL;
   }
 }
