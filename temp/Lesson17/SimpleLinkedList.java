@@ -147,6 +147,7 @@ public class SimpleLinkedList {
 
   public boolean stringListSort() {
     SimpleLinkedList sortedList = new SimpleLinkedList();
+    Object min = 
     for (int i = 1; i <= this.getLength(); i++) {
       for (int j = 1; j <= this.getLength(); j++) {
         if (this.getElement(i).getData().toString().compareTo(this.getElement(j).getData().toString()) > 0) {
