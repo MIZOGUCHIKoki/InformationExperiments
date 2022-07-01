@@ -146,7 +146,7 @@ public class SimpleLinkedList {
   }
 
   public boolean stringListSort() {
-    SimpleLinkedList sortedList = new SimpleLinkedList();// ソート後のリスト
+    SimpleLinkedList sortedList = new SimpleLinkedList();
     int num = 1;
     int times = this.getLength();
 
