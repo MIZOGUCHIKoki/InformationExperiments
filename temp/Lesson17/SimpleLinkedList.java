@@ -110,7 +110,7 @@ public class SimpleLinkedList {
   }
 
   public boolean insertList(SimpleLinkedList list, int index) {
-    if (index > this.getLength()) {
+    if (index -1> this.getLength()) {
       System.out.println("Cannot insert List : index out of bounds");
       return false;
     }
@@ -164,7 +164,7 @@ public class SimpleLinkedList {
       this.remove(num);
       sortedList.append(smallest);
     }
-    this.insertList(sortedList, 1);
+    this.firstElement.setNextElement(sortedList.getElement(1));
     return true;
   }
 }
