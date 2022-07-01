@@ -146,13 +146,13 @@ public class SimpleLinkedList {
   }
 
   public boolean stringListSort() {
-    SimpleLinkedList sortedList = new SimpleLinkedList();
+    SimpleLinkedList sortedList = new SimpleLinkedList();// ソート後のリスト
     int num = 1;
     int times = this.getLength();
 
     for (int j = 0; j < times; j++) {
       Element smallest = this.getElement(1);
-      for (int i = 0; i <= this.getLength(); i++) {
+      for (int i = 1; i <= this.getLength(); i++) {
         Element element = this.getElement(i);
         String s = (String) smallest.getData();
         String s2 = (String) element.getData();
