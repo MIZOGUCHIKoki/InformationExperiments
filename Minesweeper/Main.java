@@ -11,6 +11,7 @@ import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.Font;
 
+
 public class Main extends Frame implements WindowListener, MineSweeperGUI {
 
     private MineSweeper ms;
@@ -20,7 +21,7 @@ public class Main extends Frame implements WindowListener, MineSweeperGUI {
 
     public Main() {
         super("MineSweeper");
-        ms = new MineSweeper(9, 9, 10); // 地雷が10個ある9×9の盤面
+        ms = new MineSweeper(9, 9, 10);  // 地雷が10個ある9×9の盤面
         init();
     }
 
@@ -97,6 +98,7 @@ public class Main extends Frame implements WindowListener, MineSweeperGUI {
     }
 }
 
+
 class MouseEventHandler implements MouseListener {
 
     MineSweeper ms;
@@ -117,16 +119,16 @@ class MouseEventHandler implements MouseListener {
                 // Left click
                 ms.openTile(x, y, msgui);
             }
-                break;
+            break;
             case MouseEvent.BUTTON2: {
                 // Wheel click
             }
-                break;
+            break;
             case MouseEvent.BUTTON3: {
                 // Right click
                 ms.setFlag(x, y, msgui);
             }
-                break;
+            break;
         }
     }
 
@@ -151,6 +153,7 @@ class MouseEventHandler implements MouseListener {
     }
 
 }
+
 
 class ResultDialog extends Dialog {
 
