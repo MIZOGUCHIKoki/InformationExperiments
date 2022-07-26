@@ -149,7 +149,6 @@ public class MineSweeper {
 						continue;
 					}
 				}
-
 			}
 		}
 		return mineCount;
