@@ -11,7 +11,6 @@ import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.Font;
 
-
 public class Main extends Frame implements WindowListener, MineSweeperGUI {
 
     private MineSweeper ms;
@@ -21,7 +20,7 @@ public class Main extends Frame implements WindowListener, MineSweeperGUI {
 
     public Main() {
         super("MineSweeper");
-        ms = new MineSweeper(9, 9, 10);  // 地雷が10個ある9×9の盤面
+        ms = new MineSweeper(9, 9, 10); // 地雷が10個ある9×9の盤面
         init();
     }
 
@@ -45,6 +44,31 @@ public class Main extends Frame implements WindowListener, MineSweeperGUI {
         }
         this.setSize(50 * ms.getWidth(), 50 * ms.getHeight());
         this.setVisible(true);
+    }
+
+    @Override
+    public void setColor(int x, int y) {
+        this.tileTable[y][x].setBackground(Color.red);// new Color(RGB)
+    }
+
+    @Override
+    public void setColorText(int x, int y, int num) {
+        switch (num) {
+            case 1:
+                this.tileTable[y][x].setForeground(Color.blue);
+                break;
+            case 2:
+                this.tileTable[y][x].setForeground(new Color(0, 125, 0));
+                break;
+            case 3:
+                this.tileTable[y][x].setForeground(Color.red);
+                break;
+            default:
+                this.tileTable[y][x].setForeground(Color.black);
+        }
+    }
+
+    public void setFlag(int x, int y) {
     }
 
     @Override
@@ -98,7 +122,6 @@ public class Main extends Frame implements WindowListener, MineSweeperGUI {
     }
 }
 
-
 class MouseEventHandler implements MouseListener {
 
     MineSweeper ms;
@@ -119,16 +142,16 @@ class MouseEventHandler implements MouseListener {
                 // Left click
                 ms.openTile(x, y, msgui);
             }
-            break;
+                break;
             case MouseEvent.BUTTON2: {
                 // Wheel click
             }
-            break;
+                break;
             case MouseEvent.BUTTON3: {
                 // Right click
                 ms.setFlag(x, y, msgui);
             }
-            break;
+                break;
         }
     }
 
@@ -153,7 +176,6 @@ class MouseEventHandler implements MouseListener {
     }
 
 }
-
 
 class ResultDialog extends Dialog {
 
