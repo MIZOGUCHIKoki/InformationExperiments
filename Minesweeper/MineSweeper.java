@@ -4,6 +4,8 @@ interface MineSweeperGUI {
 
 	public void setColorText(int x, int y, int num);
 
+	public void setNull(int x, int y);
+
 	public void setColor(int x, int y);
 
 	public void win();
@@ -116,22 +118,23 @@ public class MineSweeper {
 		}
 	}
 
-	public int returnMine(int x, int y, MineSweeperGUI gui) {
+	public int returnMine(int x, int y, MineSweeperGUI gui) {// x,yの周り8マス分の爆弾を調査
 		int mineCount = 0;
-		int j2, i2;
-		// 開かれたパネルに隣接する8マス内の爆弾を調査
-		for (i2 = x - 1; i2 < x + 2; i2++) {
-			if (i2 < 0 || i2 >= getHeight()) { // パネルの範囲外は除く
+		for (int i = x - 1; i < x + 2; i++) {
+			if (i < 0 || i >= getHeight()) { // パネルの範囲外は除く
 				continue;
 			}
-			for (j2 = y - 1; j2 < y + 2; j2++) {
-				if (j2 < 0 || j2 >= getWidth()) { // パネルの範囲外は除く
+			for (int j = y - 1; j < y + 2; j++) {
+				if (j < 0 || j >= getWidth()) { // パネルの範囲外は除く
 					continue;
 				}
-				if (this.table_copy[i2][j2] == -1) { // 爆弾の個数をカウント
+				if (this.table_copy[i][j] == -1) { // 爆弾の個数をカウント
 					mineCount++;
 				}
 			}
+		}
+		if (mineCount == 0) {// 0の場合，必ず周り8マスには爆弾がないので，周り8マスを開ける．
+
 		}
 		return mineCount;
 	}
