@@ -20,7 +20,8 @@ public class MineSweeper {
 	private final int numTile;
 	private final int numMine;
 	private final int[][] table;
-	private final int[][] table_copy; // 初期の盤面状態を保存する配列
+	private final int[][] originalTable;
+	private int tr;// ターン
 
 	public MineSweeper(int height, int width, int numMine) {
 		this.height = height;
@@ -28,8 +29,9 @@ public class MineSweeper {
 		this.numTile = height * width;
 		this.numMine = numMine;
 		this.table = new int[height][width];
-		this.table_copy = new int[height][width];
+		this.originalTable = new int[height][width];
 		initTable();
+		this.tr = 0;
 	}
 
 	public int getHeight() {
@@ -56,7 +58,7 @@ public class MineSweeper {
 					continue;
 				}
 				this.table[x][y] = 0; // 爆弾の場所以外は0で初期化
-				this.table_copy[x][y] = 0;
+				this.originalTable[x][y] = 0;
 			}
 		}
 	}
@@ -72,13 +74,17 @@ public class MineSweeper {
 				continue;
 			}
 			this.table[x][y] = -1; // 爆弾の場所を値-1としてセットする
-			this.table_copy[x][y] = -1;
+			this.originalTable[x][y] = -1;
 			count++;
 		}
 	}
 
 	public void openTile(int x, int y, MineSweeperGUI gui) {
 		/* ----- add implementation here ----- */
+		if (this.table[x][y] == 1 && tr == 0) {// 1手目で爆弾ならば再度爆弾をセット
+			this.setMine();
+		}
+		this.tr += 1;
 		if (this.table[x][y] == -1) { // パネルに爆弾があった場合
 			this.openAllTiles(gui);
 			gui.lose();
@@ -128,13 +134,23 @@ public class MineSweeper {
 				if (j < 0 || j >= getWidth()) { // パネルの範囲外は除く
 					continue;
 				}
-				if (this.table_copy[i][j] == -1) { // 爆弾の個数をカウント
+				if (this.originalTable[i][j] == -1) { // 爆弾の個数をカウント
 					mineCount++;
 				}
 			}
 		}
 		if (mineCount == 0) {// 0の場合，必ず周り8マスには爆弾がないので，周り8マスを開ける．
+			for (int i = x - 1; i < x + 2; i++) {
+				if (i < 0 || i >= getHeight()) {
+					continue;
+				}
+				for (int j = y - 1; j < y + 2; j++) {
+					if (j < 0 || j >= getWidth()) {
+						continue;
+					}
+				}
 
+			}
 		}
 		return mineCount;
 	}
@@ -146,7 +162,7 @@ public class MineSweeper {
 			gui.setTextToTile(x, y, "F");
 		} else if (this.table[x][y] == -2) {
 			// すでに旗が立っているときは元の盤面の値に戻す
-			this.table[x][y] = this.table_copy[x][y];
+			this.table[x][y] = this.originalTable[x][y];
 			gui.setTextToTile(x, y, "");
 		}
 	}
@@ -155,7 +171,7 @@ public class MineSweeper {
 		/* ----- add implementation here ----- */
 		for (int x = 0; x < getHeight(); x++) {
 			for (int y = 0; y < getWidth(); y++) {
-				if (this.table_copy[x][y] == -1) {
+				if (this.originalTable[x][y] == -1) {
 					gui.setTextToTile(x, y, "B"); // 爆弾がある場所にBを表示
 					gui.setColor(x, y);
 				} else {
