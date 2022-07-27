@@ -95,7 +95,7 @@ public class MineSweeper {
 		} else if (this.table[x][y] == -2) { // パネルに旗が立っている場合
 			return;
 		} else { // パネルに爆弾がなかった場合
-			int mineCount = this.returnMine(x, y, gui);// 爆弾を調査
+			int mineCount = this.returnMine(x, y, gui);// 周辺の爆弾の個数を調査
 			this.table[x][y] = 1; // 開かれたパネルの値を1に設定
 			String mc = String.valueOf(mineCount);
 			gui.setColorText(x, y, mineCount);// 色を設定
