@@ -87,11 +87,11 @@ public class MineSweeper {
 		if (this.table[x][y] == -1) { // パネルに爆弾があった場合
 			this.openAllTiles(gui);
 			gui.lose();
-			for (int i = 0; i < getHeight(); i++) {
-				for (int j = 0; j < getWidth(); j++) {
-					this.table[i][j] = -2;
-				}
-			}
+			// for (int i = 0; i < getHeight(); i++) {
+			// for (int j = 0; j < getWidth(); j++) {
+			// this.table[i][j] = -2;
+			// }
+			// }
 		} else if (this.table[x][y] == -2) { // パネルに旗が立っている場合
 			return;
 		} else { // パネルに爆弾がなかった場合
@@ -100,23 +100,23 @@ public class MineSweeper {
 			String mc = String.valueOf(mineCount);
 			gui.setColorText(x, y, mineCount);// 色を設定
 			gui.setTextToTile(x, y, mc); // 爆弾の個数を表示
-			int jud = 0;
+			Boolean jud = true;
 			for (int i = 0; i < getHeight(); i++) {// 爆弾以外のパネルが全て開いているか確認
 				for (int j = 0; j < getWidth(); j++) {
 					if (this.table[i][j] == 0) {
-						// 開いていないパネルがある場合judの値を0にする
-						jud = 0;
+						// 開いていないパネルがある場合judの値をtrueにする
+						jud = true;
 						break;
 					} else {
-						// 開いている場合1にする
-						jud = 1;
+						// 開いている場合falseにする
+						jud = false;
 					}
 				}
-				if (jud == 0) {
+				if (jud) {
 					break;
 				}
 			}
-			if (jud == 1) {
+			if (!jud) {
 				gui.win();
 			}
 		}
