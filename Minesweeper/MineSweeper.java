@@ -83,7 +83,7 @@ public class MineSweeper {
 			this.setMine();
 			this.openTile(x, y, gui);
 		}
-		this.tr += 1;
+		this.tr = 1;
 		if (this.table[x][y] == -1) { // パネルに爆弾があった場合
 			this.openAllTiles(gui);
 			gui.lose();
