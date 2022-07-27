@@ -23,42 +23,46 @@
         \tikzset{Decision/.style={diamond,  draw,  text centered, aspect=3,text width=5cm, minimum height=1.5cm}}
     \usetikzlibrary{arrows}
     \usetikzlibrary{intersections,calc,arrows.meta,backgrounds,shapes.geometric,shapes.misc,positioning,fit,graphs}
-\renewcommand{\lstlistingname}{src.}
-\lstset{
-        %プログラム言語(複数の言語に対応，C,C++も可)
-    language = Java,
-        %背景色と透過度
-    %backgroundcolor={\color[gray]{.90}},
-        %枠外に行った時の自動改行
-    breaklines = true,
-        %自動改行後のインデント量(デフォルトでは20[pt])
-    breakindent = 10pt,
-        %標準の書体
-    basicstyle = \ttfamily\small,
-        %コメントの書体
-    commentstyle = {\itshape \color[cmyk]{1,0.4,1,0}},
-        %関数名等の色の設定
-    classoffset = 0,
-        %キーワード(int, ifなど)の書体
-    keywordstyle = {\bfseries \color[cmyk]{0,1,0,0}},
-        %表示する文字の書体
-    stringstyle = {\ttfamily \color[rgb]{0,0,1}},
-        %枠 tは上に線を記載, Tは上に二重線を記載
-        %他オプション：leftline，topline，bottomline，lines，single，shadowbox
-    frame = lines,
-        %frameまでの間隔(行番号とプログラムの間)
-    framesep = 5pt,
-        %行番号の位置
-    numbers = left,
-        %行番号の間隔
-    stepnumber = 1,
-        %行番号の書体
-    numberstyle = \small,
-        %タブの大きさ
-    tabsize = 4,
-        %キャプションの場所(tbならば上下両方に記載)
-    captionpos = t
-}
+    \renewcommand{\lstlistingname}{src.}
+    \newcommand{\srcref}[1]{src. \ref{#1}}
+    \AtBeginDocument{
+        \renewcommand{\thelstlisting}{\thesection.\arabic{lstlisting}}
+    }
+    \lstset{
+            %プログラム言語(複数の言語に対応，C,C++も可)
+        language = Java,
+            %背景色と透過度
+        %backgroundcolor={\color[gray]{.90}},
+            %枠外に行った時の自動改行
+        breaklines = true,
+            %自動改行後のインデント量(デフォルトでは20[pt])
+        breakindent = 10pt,
+            %標準の書体
+        basicstyle = \ttfamily\small,
+            %コメントの書体
+        commentstyle = {\ttfamily \color[cmyk]{1,0.4,1,0}},
+            %関数名等の色の設定
+        classoffset = 0,
+            %キーワード(int, ifなど)の書体
+        keywordstyle = {\bfseries \color[cmyk]{0,1,0,0}},
+            %表示する文字の書体
+        stringstyle = {\ttfamily \color[rgb]{0,0,1}},
+            %枠 tは上に線を記載, Tは上に二重線を記載
+            %他オプション：leftline，topline，bottomline，lines，single，shadowbox
+        frame = lines,
+            %frameまでの間隔(行番号とプログラムの間)
+        framesep = 5pt,
+            %行番号の位置
+        numbers = left,
+            %行番号の間隔
+        stepnumber = 1,
+            %行番号の書体
+        numberstyle = \small,
+            %タブの大きさ
+        tabsize = 4,
+            %キャプションの場所(tbならば上下両方に記載)
+        captionpos = t
+    }
     \setlength{\columnsep}{5mm}
     \columnseprule=0.1mm
     \renewcommand{\thefootnote}{*\arabic{footnote}}
@@ -73,6 +77,7 @@
 \renewcommand{\thetable}{%
 \thesection.\arabic{table}}
 \@addtoreset{table}{section}
+\@addtoreset{lstlisting}{section}
 \makeatother
 
 
@@ -93,16 +98,14 @@
 \section*{はじめに}
 \addcontentsline{toc}{section}{はじめに}
 \subsection*{レポートについて}
-このレポートは，\LaTeXe を用いて作成している．また，図やグラフはTi\it{k}\normalfont zを用いて描画しており，ソースコードはlistingを用いている．
+このレポートは，\LaTeXe を用いて作成している．図やグラフはTi\it{k}\normalfont zを用いて描画しており，ソースコードはlistingを用いて表記している．
 \subsection*{符号化と変数}
-行列のステータスの符号と，新たに追加した変数を，\tabref{tbl:ini}に示す．
+行列のステータスの符号と，新たに追加した変数を，以下に示す．
 \begin{table}[h]
     \centering
-    \caption{}
-    \label{tbl:ini}
     \begin{minipage}[t]{0.3\linewidth}
         \centering
-        \subcaption{符号とステータス}
+        \subcaption*{符号とステータス}
         \label{tbl:符号とステータス}
         \begin{tabular}{cl}
             \hline
@@ -117,7 +120,7 @@
     \end{minipage}
     \begin{minipage}[t]{0.69\linewidth}
         \centering
-        \subcaption{新たに追加した変数}
+        \subcaption*{新たに追加した変数}
         \begin{tabular}{ll}
             \hline
             \multicolumn{1}{c}{変数名} & \multicolumn{1}{c}{役割}                               \\
@@ -142,7 +145,7 @@
     \textbf{仕様1.}\\
     ゲーム開始時に，盤面にランダムに地雷を設置する．
 \end{screen}
-\subsection*{処理概要}
+\subsection{処理概要}
 \begin{figure}[h]
     \centering
     \caption{仕様1の処理概要}
@@ -164,5 +167,70 @@
         \draw[-latex](\u)--(\v);
     \end{tikzpicture}
 \end{figure}
-
+\newpage
+\subsection{ソースコード}
+\begin{lstlisting}[caption=\ttfamily initTable, label=src:initTable, language=Java]
+void initTable() {// 盤面を初期化する
+  this.setMine();
+    for (int x = 0; x < this.height; x++) {
+      for (int y = 0; y < this.width; y++) {
+          if (this.table[x][y] == -1) {// 爆弾がセットされている場所は避ける
+            continue;
+          }
+          this.table[x][y] = 0; // 爆弾の場所以外は0で初期化
+          this.originalTable[x][y] = 0;
+      }
+  }
+}
+\end{lstlisting}
+\begin{lstlisting}[caption=\ttfamily setMine, label=src:setMine, language=Java]
+void setMine() {// 爆弾をセット
+  int count = 0;
+  while (count != this.numMine) {
+    // numMineの数だけ爆弾をセットできたらループを抜ける
+    int x = new java.util.Random().nextInt(getHeight());
+    int y = new java.util.Random().nextInt(getWidth());
+    if (this.table[x][y] == -1) {
+      // [x][y]にすでに爆弾がセットされていたら、もう一度乱数を決め直す
+      continue;
+    }
+    this.table[x][y] = -1; // 爆弾の場所を値-1としてセットする
+    this.originalTable[x][y] = -1;
+    count++;
+  }
+}
+\end{lstlisting}
+\newpage
+\subsection{処理}
+\subsubsection*{\srcref{src:initTable}の処理}
+盤面を初期化するにあたって，以下の処理を行う．
+\begin{enumerate}
+    \renewcommand{\labelenumi}{\arabic{enumi})}
+    \item 爆弾の設置箇所を\verb|setMine|メソッドで定める．
+    \item \verb|table|の全ての行と列に\verb|0|を代入する．ただし，爆弾である箇所は上書きしない．
+    \item \verb|originalTable|の全ての行に\verb|0|を代入する．ただし，爆弾である箇所は上書きしない．
+\end{enumerate}
+\subsubsection*{\srcref{src:setMine}の処理}
+盤面に爆弾を配置するにあたって，以下の処理を行う．
+\begin{enumerate}
+    \renewcommand{\labelenumi}{\arabic{enumi})}
+    \item 爆弾の個数を数える\verb|count|変数を定義する．
+    \item 指定された爆弾の個数が\verb|count|になるまで，爆弾を配置する．
+    \item 爆弾の配置はランダムである．乱数で指定された箇所が既に爆弾であれば再度乱数を生成し，爆弾が新たにセットできる場所では，\verb|table|,\verb|originalTable|の乱数値Indexを\verb|-1|に設定し，\verb|count|をインクリメントする．
+\end{enumerate}
+\newpage
+\section*{仕様２}
+\setcounter{subsection}{0}
+\addcontentsline{toc}{section}{仕様2}
+\setcounter{section}{2}
+\begin{screen}
+    \textbf{処理2.}\\
+    パネルを左クリックした際，クリックしたパネルを開く．
+\end{screen}
+\subsection{処理概要}
+\begin{figure}
+    \begin{tikzpicture}
+        % \node[]
+    \end{tikzpicture}
+\end{figure}
 \end{document}

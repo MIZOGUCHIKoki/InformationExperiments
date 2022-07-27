@@ -41,6 +41,7 @@ public class MineSweeper {
 	public int getWidth() {
 		return width;
 	}
+
 	/*
 	 * 爆弾 : -1
 	 * 爆弾以外 : 0
