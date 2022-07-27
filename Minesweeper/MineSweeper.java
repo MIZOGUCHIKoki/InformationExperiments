@@ -21,7 +21,7 @@ public class MineSweeper {
 	private final int numMine;
 	private final int[][] table;
 	private final int[][] originalTable;
-	private int tr;// ターン
+	private boolean tr;// 1ターン以上でtrue
 
 	public MineSweeper(int height, int width, int numMine) {
 		this.height = height;
@@ -31,7 +31,7 @@ public class MineSweeper {
 		this.table = new int[height][width];
 		this.originalTable = new int[height][width];
 		initTable();
-		this.tr = 0;
+		this.tr = false;
 	}
 
 	public int getHeight() {
@@ -79,11 +79,11 @@ public class MineSweeper {
 	}
 
 	public void openTile(int x, int y, MineSweeperGUI gui) {
-		if (this.table[x][y] == 1 && tr == 0) {// 1手目で爆弾ならば再度爆弾をセット
+		if (this.table[x][y] == 1 && !this.tr) {// 1手目で爆弾ならば再度爆弾をセット
 			this.setMine();
 			this.openTile(x, y, gui);
 		}
-		this.tr = 1;
+		this.tr = true;
 		if (this.table[x][y] == -1) { // パネルに爆弾があった場合
 			this.openAllTiles(gui);
 			gui.lose();
