@@ -101,9 +101,8 @@ public class MineSweeper {
 			gui.setColorText(x, y, mineCount);// 色を設定
 			gui.setTextToTile(x, y, mc); // 爆弾の個数を表示
 			int jud = 0;
-			for (int i = 0; i < getHeight(); i++) {
+			for (int i = 0; i < getHeight(); i++) {// 爆弾以外のパネルが全て開いているか確認
 				for (int j = 0; j < getWidth(); j++) {
-					// 爆弾以外のパネルが全て開いているか確認
 					if (this.table[i][j] == 0) {
 						// 開いていないパネルがある場合judの値を0にする
 						jud = 0;
