@@ -50,7 +50,6 @@ public class MineSweeper {
 	 */
 
 	void initTable() {// 盤面を初期化する
-		/* ----- add implementation here ----- */
 		this.setMine();
 		for (int x = 0; x < this.height; x++) {
 			for (int y = 0; y < this.width; y++) {
@@ -64,7 +63,6 @@ public class MineSweeper {
 	}
 
 	void setMine() {// 爆弾をセット
-		/* ----- add implementation here ----- */
 		int count = 0;
 		while (count != this.numMine) {// numMineの数だけ爆弾をセットできたらループを抜ける
 			int x = new java.util.Random().nextInt(getHeight());
@@ -80,7 +78,6 @@ public class MineSweeper {
 	}
 
 	public void openTile(int x, int y, MineSweeperGUI gui) {
-		/* ----- add implementation here ----- */
 		if (this.table[x][y] == 1 && tr == 0) {// 1手目で爆弾ならば再度爆弾をセット
 			this.setMine();
 		}
@@ -155,7 +152,6 @@ public class MineSweeper {
 	}
 
 	public void setFlag(int x, int y, MineSweeperGUI gui) {
-		// /* ----- add implementation here ----- */
 		if (this.table[x][y] == 0 || this.table[x][y] == -1) {
 			this.table[x][y] = -2; // 旗を立てる場所に-2を入れる
 			gui.setTextToTile(x, y, "F");
@@ -167,7 +163,6 @@ public class MineSweeper {
 	}
 
 	private void openAllTiles(MineSweeperGUI gui) {
-		/* ----- add implementation here ----- */
 		for (int x = 0; x < getHeight(); x++) {
 			for (int y = 0; y < getWidth(); y++) {
 				if (this.originalTable[x][y] == -1) {
