@@ -14,13 +14,58 @@
     linkcolor=black,
     urlcolor=blue
 }
-
+        \tikzset{cy/.style={fill=cyan!10,rounded corners,rectangle,  text centered, minimum height=1cm,text width=4.1cm}}
+        \tikzset{ye/.style={fill=yellow!10,rounded corners,rectangle,  text centered, minimum height=1cm,text width=4.1cm}}
+        \tikzset{ma/.style={fill=magenta!10,rounded corners,rectangle,  text centered, minimum height=1cm,text width=4.1cm}}
+        \tikzset{gr/.style={fill=green!10,rounded corners,rectangle,text centered,minimum height=1cm,text width=4.1cm}}
+        \tikzset{Terminal/.style={rounded rectangle,  draw,  text centered, text width=3cm, minimum height=1.5cm}}
+        \tikzset{Process/.style={rectangle,  draw,  text centered, text width=3cm, minimum height=1.5cm}}
+        \tikzset{Decision/.style={diamond,  draw,  text centered, aspect=3,text width=5cm, minimum height=1.5cm}}
     \usetikzlibrary{arrows}
     \usetikzlibrary{intersections,calc,arrows.meta,backgrounds,shapes.geometric,shapes.misc,positioning,fit,graphs}
-
+\renewcommand{\lstlistingname}{src.}
+\lstset{
+        %プログラム言語(複数の言語に対応，C,C++も可)
+    language = Java,
+        %背景色と透過度
+    %backgroundcolor={\color[gray]{.90}},
+        %枠外に行った時の自動改行
+    breaklines = true,
+        %自動改行後のインデント量(デフォルトでは20[pt])
+    breakindent = 10pt,
+        %標準の書体
+    basicstyle = \ttfamily\small,
+        %コメントの書体
+    commentstyle = {\itshape \color[cmyk]{1,0.4,1,0}},
+        %関数名等の色の設定
+    classoffset = 0,
+        %キーワード(int, ifなど)の書体
+    keywordstyle = {\bfseries \color[cmyk]{0,1,0,0}},
+        %表示する文字の書体
+    stringstyle = {\ttfamily \color[rgb]{0,0,1}},
+        %枠 tは上に線を記載, Tは上に二重線を記載
+        %他オプション：leftline，topline，bottomline，lines，single，shadowbox
+    frame = lines,
+        %frameまでの間隔(行番号とプログラムの間)
+    framesep = 5pt,
+        %行番号の位置
+    numbers = left,
+        %行番号の間隔
+    stepnumber = 1,
+        %行番号の書体
+    numberstyle = \small,
+        %タブの大きさ
+    tabsize = 4,
+        %キャプションの場所(tbならば上下両方に記載)
+    captionpos = t
+}
     \setlength{\columnsep}{5mm}
     \columnseprule=0.1mm
     \renewcommand{\thefootnote}{*\arabic{footnote}}
+    \renewcommand{\figurename}{Fig\ }
+    \renewcommand{\tablename}{Tbl\ }
+    \newcommand{\figref}[1]{Fig\ \ref{#1}}
+    \newcommand{\tabref}[1]{Tbl\ \ref{#1}}
 \makeatletter
 \renewcommand{\thefigure}{%
 \thesection.\arabic{figure}}
@@ -43,6 +88,81 @@
 \begin{abstract}
 
 \end{abstract}
+\tableofcontents
+\newpage
+\section*{はじめに}
+\addcontentsline{toc}{section}{はじめに}
+\subsection*{レポートについて}
+このレポートは，\LaTeXe を用いて作成している．また，図やグラフはTi\it{k}\normalfont zを用いて描画しており，ソースコードはlistingを用いている．
+\subsection*{符号化と変数}
+行列のステータスの符号と，新たに追加した変数を，\tabref{tbl:ini}に示す．
+\begin{table}[h]
+    \centering
+    \caption{}
+    \label{tbl:ini}
+    \begin{minipage}[t]{0.3\linewidth}
+        \centering
+        \subcaption{符号とステータス}
+        \label{tbl:符号とステータス}
+        \begin{tabular}{cl}
+            \hline
+            符号 & \multicolumn{1}{c}{ステータス} \\
+            \hline
+            0    & 爆弾以外                       \\
+            1    & 開かれたマス                   \\
+            -1   & 爆弾                           \\
+            -2   & フラグが立っている             \\
+            \hline
+        \end{tabular}
+    \end{minipage}
+    \begin{minipage}[t]{0.69\linewidth}
+        \centering
+        \subcaption{新たに追加した変数}
+        \begin{tabular}{ll}
+            \hline
+            \multicolumn{1}{c}{変数名} & \multicolumn{1}{c}{役割}                               \\
+            \hline
+            \verb|int originalTable|   & \begin{tabular}{l}
+                                                  生成した盤面の初期状態を記憶する．
+                                              \end{tabular}                 \\
+                                       &                                                        \\
+            \verb|int tr|              & \begin{tabular}{l}
+                                                             生成した盤面の初期状態を記憶する． \\
+                                                             1手目で爆弾に当たることを回避するため．
+                                                         \end{tabular} \\
+            \hline
+        \end{tabular}
+    \end{minipage}
+\end{table}
+\newpage
+\section*{仕様1}
+\setcounter{section}{1}
+\addcontentsline{toc}{section}{仕様1}
+\begin{screen}
+    \textbf{仕様1.}\\
+    ゲーム開始時に，盤面にランダムに地雷を設置する．
+\end{screen}
+\subsection*{処理概要}
+\begin{figure}[h]
+    \centering
+    \caption{仕様1の処理概要}
+    \label{fig:仕様1の処理概要}
+    \begin{tikzpicture}
+        % \node[cy](initTable){\verb|void initTable()|};
+        \node[Terminal](functionTable){\verb|initTable()|};
+        \node[Terminal,below=0.5cm of functionTable](functionMine){\verb|setMine()|};
+        \node[Decision,below=0.5cm of functionMine](checkBord){盤面を調査};
+        \node[Process,below=0.5cm of checkBord](setNumber1){\verb|table|に\verb|0|を代入};
+        \node[Process,below=0.5cm of setNumber1](setNumber2){\verb|originalTable|に\verb|0|を代入};
+        \foreach \u \v in {functionTable/functionMine,functionMine/checkBord,setNumber1/setNumber2}
+        \draw[-latex](\u)--(\v);
+        \draw[-latex](checkBord)node[right,yshift=-40]{そのマスが爆弾でなければ}--(setNumber1);
 
+        \node[Terminal,right =3cm of functionTable](setMine){\verb|setMine()|};
+        \node[Process,below =0.5cm of setMine](set){\verb|numMine|の数だけ爆弾をセットする};
+        \foreach \u \v in {functionMine/setMine,setMine/set,set/functionMine}
+        \draw[-latex](\u)--(\v);
+    \end{tikzpicture}
+\end{figure}
 
 \end{document}
