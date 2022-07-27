@@ -26,7 +26,7 @@
     \renewcommand{\lstlistingname}{src.}
     \newcommand{\srcref}[1]{src. \ref{#1}}
     \AtBeginDocument{
-        \renewcommand{\thelstlisting}{\thesection.\arabic{lstlisting}}
+        % \renewcommand{\thelstlisting}{\thesection.\arabic{lstlisting}}
     }
     \lstset{
             %プログラム言語(複数の言語に対応，C,C++も可)
@@ -49,11 +49,11 @@
         stringstyle = {\ttfamily \color[rgb]{0,0,1}},
             %枠 tは上に線を記載, Tは上に二重線を記載
             %他オプション：leftline，topline，bottomline，lines，single，shadowbox
-        frame = lines,
+        frame = leftline,
             %frameまでの間隔(行番号とプログラムの間)
         framesep = 5pt,
             %行番号の位置
-        numbers = left,
+        % numbers = left,
             %行番号の間隔
         stepnumber = 1,
             %行番号の書体
@@ -70,6 +70,7 @@
     \renewcommand{\tablename}{Tbl\ }
     \newcommand{\figref}[1]{Fig\ \ref{#1}}
     \newcommand{\tabref}[1]{Tbl\ \ref{#1}}
+    \newcommand{\met}[1]{\ttfamily #1 \normalfont (\srcref{src:#1})の処理}
 \makeatletter
 \renewcommand{\thefigure}{%
 \thesection.\arabic{figure}}
@@ -77,12 +78,12 @@
 \renewcommand{\thetable}{%
 \thesection.\arabic{table}}
 \@addtoreset{table}{section}
-\@addtoreset{lstlisting}{section}
+% \@addtoreset{lstlisting}{section}
 \makeatother
 
 
 \title{\vspace{0cm}情報学群実験第1 最終レポート}
-\author{1250373 溝口洸熙}
+\author{1250373 溝口洸熙\thanks{高知工科大学 情報学群 2年生}}
 \date{\today}
 
 
@@ -100,7 +101,7 @@
 \subsection*{レポートについて}
 このレポートは，\LaTeXe を用いて作成している．図やグラフはTi\it{k}\normalfont zを用いて描画しており，ソースコードはlistingを用いて表記している．
 \subsection*{符号化と変数}
-行列のステータスの符号と，新たに追加した変数を，以下に示す．
+あるパネルのステータスを示す符号と，新たに追加したグローバル変数を，以下に示す．
 \begin{table}[h]
     \centering
     \begin{minipage}[t]{0.3\linewidth}
@@ -112,7 +113,7 @@
             符号 & \multicolumn{1}{c}{ステータス} \\
             \hline
             0    & 爆弾以外                       \\
-            1    & 開かれたマス                   \\
+            1    & 開かれたパネル                 \\
             -1   & 爆弾                           \\
             -2   & フラグが立っている             \\
             \hline
@@ -123,16 +124,16 @@
         \subcaption*{新たに追加した変数}
         \begin{tabular}{ll}
             \hline
-            \multicolumn{1}{c}{変数名} & \multicolumn{1}{c}{役割}                               \\
+            \multicolumn{1}{c}{変数名} & \multicolumn{1}{c}{役割}                           \\
             \hline
             \verb|int originalTable|   & \begin{tabular}{l}
                                                   生成した盤面の初期状態を記憶する．
-                                              \end{tabular}                 \\
-                                       &                                                        \\
-            \verb|int tr|              & \begin{tabular}{l}
-                                                             生成した盤面の初期状態を記憶する． \\
-                                                             1手目で爆弾に当たることを回避するため．
-                                                         \end{tabular} \\
+                                              \end{tabular}             \\
+                                       &                                                    \\
+            \verb|Boolean tr|          & \begin{tabular}{l}
+                                                         2手目以降で\verb|true|になる変数． \\
+                                                         1手目で爆弾に当たることを回避するため．
+                                                     \end{tabular} \\
             \hline
         \end{tabular}
     \end{minipage}
@@ -143,7 +144,7 @@
 \addcontentsline{toc}{section}{仕様1}
 \begin{screen}
     \textbf{仕様1.}\\
-    ゲーム開始時に，盤面にランダムに地雷を設置する．
+    ゲーム開始時に，盤面上へランダムに地雷を設置する．
 \end{screen}
 \subsection{処理概要}
 \begin{figure}[h]
@@ -152,23 +153,132 @@
     \label{fig:仕様1の処理概要}
     \begin{tikzpicture}
         % \node[cy](initTable){\verb|void initTable()|};
-        \node[Terminal](functionTable){\verb|initTable()|};
-        \node[Terminal,below=0.5cm of functionTable](functionMine){\verb|setMine()|};
+        \node[Terminal](functionTable){\verb|initTable|};
+        \node[Terminal,below=0.5cm of functionTable](functionMine){\verb|setMine|};
         \node[Decision,below=0.5cm of functionMine](checkBord){盤面を調査};
         \node[Process,below=0.5cm of checkBord](setNumber1){\verb|table|に\verb|0|を代入};
         \node[Process,below=0.5cm of setNumber1](setNumber2){\verb|originalTable|に\verb|0|を代入};
         \foreach \u \v in {functionTable/functionMine,functionMine/checkBord,setNumber1/setNumber2}
         \draw[-latex](\u)--(\v);
-        \draw[-latex](checkBord)node[right,yshift=-40]{そのマスが爆弾でなければ}--(setNumber1);
+        \draw[-latex](checkBord)node[right,yshift=-40]{そのパネルが爆弾でなければ}--(setNumber1);
 
-        \node[Terminal,right =3cm of functionTable](setMine){\verb|setMine()|};
+        \node[Terminal,right =3cm of functionTable](setMine){\verb|setMine|};
         \node[Process,below =0.5cm of setMine](set){\verb|numMine|の数だけ爆弾をセットする};
-        \foreach \u \v in {functionMine/setMine,setMine/set,set/functionMine}
-        \draw[-latex](\u)--(\v);
+
+        \node[inner sep=0cm,fit={(setMine)(set)}](warp){};
+        \node[inner sep=0cm,above=0.1cm of warp.north](caption){\verb|setMine|メソッド};
+        \node[draw,dashed,rounded corners,fit={(warp)(caption)}](plate){};
+
+        \foreach \u \v in {functionMine.east/plate,plate.west/functionMine}
+        \draw[thick,-Stealth](\u)--(\v);
+        \draw[-latex](setMine)--(set);
     \end{tikzpicture}
 \end{figure}
 \newpage
-\subsection{ソースコード}
+\subsection{処理}
+\subsubsection*{\met{initTable}}
+盤面を初期化するにあたって，以下の処理を行う．
+\begin{enumerate}
+    \renewcommand{\labelenumi}{\arabic{enumi})}
+    \item 爆弾の設置箇所を\verb|setMine|メソッドで定める．
+    \item \verb|table|の全ての行と列に\verb|0|を代入する．ただし，爆弾である箇所は上書きしない．
+          \begin{lstlisting}[caption=, label=, language=Java]
+for (int x = 0; x < this.height; x++) {
+    for (int y = 0; y < this.width; y++) {
+        if (this.table[x][y] == -1) {// 爆弾がセットされている場所は避ける
+            continue;
+        }
+        this.table[x][y] = 0; // 爆弾の場所以外は0で初期化
+    }
+}
+    \end{lstlisting}
+    \item \verb|originalTable|の全ての行に\verb|0|を代入する．ただし，爆弾である箇所は上書きしない．
+          \begin{lstlisting}[caption=, label=, language=Java]
+this.originalTable[x][y] = 0;
+    \end{lstlisting}
+\end{enumerate}
+\subsubsection*{\met{setMine}}
+盤面に爆弾を配置するにあたって，以下の処理を行う．
+\begin{enumerate}
+    \renewcommand{\labelenumi}{\arabic{enumi})}
+    \item 爆弾の個数を数える\verb|count|変数を定義する．
+    \item 指定された爆弾の個数が\verb|count|になるまで，爆弾を配置する．
+          \begin{lstlisting}[caption=, label=, language=Java]
+while (count != this.numMine) {// numMineの数だけ爆弾をセットできたらループを抜ける
+...
+}
+    \end{lstlisting}
+    \item 爆弾の配置はランダムである．乱数で指定された箇所が既に爆弾であれば再度乱数を生成し，爆弾が新たにセットできる場所では，\verb|table|,\verb|originalTable|の乱数値Indexを\verb|-1|に設定し，\verb|count|をインクリメントする．
+          \begin{lstlisting}[caption=, label=, language=Java]
+...
+int x = new java.util.Random().nextInt(getHeight());
+int y = new java.util.Random().nextInt(getWidth());
+if (this.table[x][y] == -1) {
+    // [x][y]にすでに爆弾がセットされていたら、もう一度乱数を決め直す
+    continue;
+}
+count++;
+...
+    \end{lstlisting}
+\end{enumerate}
+\begin{flushright}
+    \underline{仕様1 終}
+\end{flushright}
+\newpage
+\section*{仕様２}
+\setcounter{lstlisting}{0}
+\setcounter{subsection}{0}
+\addcontentsline{toc}{section}{仕様2}
+\setcounter{section}{2}
+\begin{screen}
+    \textbf{処理2.}\\
+    パネルを左クリックした際，クリックしたパネルを開く．
+\end{screen}
+\subsection{処理概要}
+\begin{figure}[h]
+    \centering
+    \caption{仕様2の処理概要}
+    \begin{tikzpicture}
+        \node[Terminal](openTile){\verb|openTile|};
+        \node[Decision,below=0.4cm of openTile](turn){1手目で爆弾};
+        \node[Decision,below=0cm of turn](flag){そのパネルにフラグが立っている};
+        \node[Decision,below=0cm of flag](mine){爆弾を踏んだ};
+        \node[Process,below=0.4cm of mine](quarityMine){周辺の爆弾の個数を数える};
+        \node[Process,below=0.4cm of quarityMine](setNumber){開いた箇所を\verb|-1|に設定};
+        \node[Decision,below=0.4cm of setNumber](serch){全てのパネルが開いたか};
+        \node[Terminal,below=0.4cm of serch](win){\verb|gui.win()|の呼び出し};
+
+        \node[Process,right=1cm of turn](setMine){\verb|setMine|};
+        \node[Terminal,right=1cm of mine](lose){\verb|gui.lose()|の呼び出し};
+        \node[Terminal,right=1cm of serch](return){\verb|return;|};
+
+        \foreach \u \v in {openTile/turn,mine/quarityMine,quarityMine/setNumber,setNumber/serch,serch/win,turn/setMine,mine/lose,serch/return}
+        \draw[-latex](\u)--(\v);
+        \draw[-latex](setMine)|-(openTile);
+        \foreach \x \z in {turn/No,flag/No,mine/No,serch/Yes}
+        \node[right=0.5cm of \x.south]{\z};
+        \foreach \x \z in {turn/Yes,mine/Yes,serch/No}
+        \node[above=0cm of \x.east]{\z};
+    \end{tikzpicture}
+\end{figure}
+\newpage
+\subsection{処理}\label{sec:仕様2処理}
+\subsubsection*{\met{openTile}}
+\begin{enumerate}
+    \renewcommand{\labelenumi}{\arabic{enumi})}
+    \item 1手目で爆弾のタイルを開けてゲームオーバーではゲーム性が失われかねないので，1手目で爆弾である場合は，再度爆弾をセットし直し，もう一度同じタイルを開ける処理を行う．この際に仕様する変数が\verb|tr|であり，\verb|tr=false|の時は1手目，\verb|tr=true|の時は2手目以上であることを示している．
+          \begin{lstlisting}[caption=, label=, language=Java]
+if (this.table[x][y] == 1 && !this.tr) {// 1手目で爆弾ならば再度爆弾をセット
+    this.setMine();
+    this.openTile(x, y, gui);
+}
+    \end{lstlisting}
+    \item 開けたパネルに爆弾があれば，全ての
+\end{enumerate}
+\newpage
+\section*{ソースコード}
+\lstset{frame=shadowbox,numbers=left}
+\addcontentsline{toc}{section}{ソースコード}
 \begin{lstlisting}[caption=\ttfamily initTable, label=src:initTable, language=Java]
 void initTable() {// 盤面を初期化する
   this.setMine();
@@ -200,37 +310,34 @@ void setMine() {// 爆弾をセット
   }
 }
 \end{lstlisting}
-\newpage
-\subsection{処理}
-\subsubsection*{\srcref{src:initTable}の処理}
-盤面を初期化するにあたって，以下の処理を行う．
-\begin{enumerate}
-    \renewcommand{\labelenumi}{\arabic{enumi})}
-    \item 爆弾の設置箇所を\verb|setMine|メソッドで定める．
-    \item \verb|table|の全ての行と列に\verb|0|を代入する．ただし，爆弾である箇所は上書きしない．
-    \item \verb|originalTable|の全ての行に\verb|0|を代入する．ただし，爆弾である箇所は上書きしない．
-\end{enumerate}
-\subsubsection*{\srcref{src:setMine}の処理}
-盤面に爆弾を配置するにあたって，以下の処理を行う．
-\begin{enumerate}
-    \renewcommand{\labelenumi}{\arabic{enumi})}
-    \item 爆弾の個数を数える\verb|count|変数を定義する．
-    \item 指定された爆弾の個数が\verb|count|になるまで，爆弾を配置する．
-    \item 爆弾の配置はランダムである．乱数で指定された箇所が既に爆弾であれば再度乱数を生成し，爆弾が新たにセットできる場所では，\verb|table|,\verb|originalTable|の乱数値Indexを\verb|-1|に設定し，\verb|count|をインクリメントする．
-\end{enumerate}
-\newpage
-\section*{仕様２}
-\setcounter{subsection}{0}
-\addcontentsline{toc}{section}{仕様2}
-\setcounter{section}{2}
-\begin{screen}
-    \textbf{処理2.}\\
-    パネルを左クリックした際，クリックしたパネルを開く．
-\end{screen}
-\subsection{処理概要}
-\begin{figure}
-    \begin{tikzpicture}
-        % \node[]
-    \end{tikzpicture}
-\end{figure}
+\begin{lstlisting}[caption=\ttfamily openTile, label=src:openTile, language=Java]
+public void openTile(int x, int y, MineSweeperGUI gui) {
+    if (this.table[x][y] == 1 && !this.tr) {// 1手目で爆弾ならば再度爆弾をセット
+        this.setMine();
+        this.openTile(x, y, gui);
+    }
+    this.tr = true;
+    if (this.table[x][y] == -1) { // パネルに爆弾があった場合
+        this.openAllTiles(gui); gui.lose();
+	} else if (this.table[x][y] == -2) { return; } // パネルにフラグが立っている場合
+     else { // パネルに爆弾がなかった場合
+			int mineCount = this.returnMine(x, y, gui);// 周辺の爆弾の個数を調査
+			this.table[x][y] = 1; // 開かれたパネルの値を1に設定
+			String mc = String.valueOf(mineCount);
+			gui.setColorText(x, y, mineCount); gui.setTextToTile(x, y, mc); 
+            Boolean jud = true;
+			for (int i = 0; i < getHeight(); i++) {// 爆弾以外のパネルが全て開いているか確認
+				for (int j = 0; j < getWidth(); j++) {
+					if (this.table[i][j] == 0) {
+						// 開いていないパネルがある場合judの値をtrueにする
+						jud = true;
+						break;
+					} else { jud = false; }// 開いている場合falseにする
+				}
+				if (jud) { break; }
+			}
+			if (!jud) { gui.win(); }
+		}
+	}
+\end{lstlisting}
 \end{document}
