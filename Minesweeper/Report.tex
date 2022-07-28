@@ -14,9 +14,9 @@
     linkcolor=black,
     urlcolor=blue
 }
-        \tikzset{cy/.style={fill=cyan!10,rounded corners,rectangle,  text centered, minimum height=1cm,text width=4.1cm}}
-        \tikzset{ye/.style={fill=yellow!10,rounded corners,rectangle,  text centered, minimum height=1cm,text width=4.1cm}}
-        \tikzset{ma/.style={fill=magenta!10,rounded corners,rectangle,  text centered, minimum height=1cm,text width=4.1cm}}
+        \tikzset{cy/.style={fill=cyan!10,rounded corners,rectangle,  text centered, minimum height=1cm}}
+        \tikzset{ye/.style={fill=yellow!10,rounded corners,rectangle,  text centered, minimum height=1cm}}
+        \tikzset{ma/.style={fill=magenta!10,rounded corners,rectangle,  text centered, minimum height=1cm,}}
         \tikzset{gr/.style={fill=green!10,rounded corners,rectangle,text centered,minimum height=1cm,text width=4.1cm}}
         \tikzset{Terminal/.style={rounded rectangle,  draw,  text centered, text width=3cm, minimum height=1.5cm}}
         \tikzset{Process/.style={rectangle,  draw,  text centered, text width=3cm, minimum height=1.5cm}}
@@ -225,7 +225,6 @@ count++;
 \end{flushright}
 \newpage
 \section*{仕様2}
-\setcounter{lstlisting}{0}
 \setcounter{subsection}{0}
 \addcontentsline{toc}{section}{仕様2}
 \setcounter{section}{2}
@@ -310,13 +309,86 @@ gui.win();
 \end{enumerate}
 % \subsubsection{\met{returnMine}の一部}
 \newpage
+
 \section*{仕様3}
-\addcontentsline{toc}{section}{仕様3}
 \setcounter{section}{3}
+\addcontentsline{toc}{section}{仕様\thesection}
 \setcounter{subsection}{0}
-\setcounter{lstlisting}{0}
 \begin{screen}
-    \textbf{仕様3.}\\
+    \textbf{仕様\thesection.}\\
+    開いたパネルに地雷が隠されている場合，全てのパネルを開く．
+\end{screen}
+\subsection{処理概要}
+\begin{figure}[h]
+    \centering
+    \caption{全てのパネルを開く}
+    \begin{tikzpicture}
+        \node[Terminal](openTile){\verb|openTile|};
+        \node[Process,below=0.5cm of openTile](otherProcess){その他の処理};
+        \node[Decision,below=0.5cm of otherProcess](mine){爆弾を踏んだ};
+        % \node[Terminal,below=1cm of openAllTiles](lose){\verb|gui.lose|};
+        \node[Process,below=0.5cm of mine](specification2){仕様2,その他の処理};
+        \node[Terminal,below=0.5cm of specification2](win){\verb|gui.win()|の呼び出し};
+
+        \node[Terminal,right=4cm of openTile](openAllTiles){\verb|openAllTiles|};
+        \node[Process,below=0.5cm of openAllTiles](decision1){爆弾でない場所に旗あれば"\verb|XB|"と表示};
+        \node[Process,below=0.5cm of decision1](decision2){そのタイルが爆弾であれば，"\verb|B|"と表示};
+        \node[Process,below=0.5cm of decision2](show){タイルの周りにある爆弾の数を表示};
+
+        \node[inner sep=0.1cm,fit={(openAllTiles)(decision1)(decision2)(show)}](warp){};
+        \node[dashed,rounded corners,draw,fit={(warp)}](plate){};
+
+        \node[inner sep=0cm,fit={(decision1)}](warp_2){};
+        \node[red,draw,rounded corners,dotted,thick,fit={(warp_2)}](plate_2){};
+        \node[red,above left=-0.09cm of plate_2.north east]{\small 追加仕様};
+
+        \foreach \u \v in {openTile/otherProcess,otherProcess/mine,mine/specification2,specification2/win,openAllTiles/decision1,decision2/show,decision1/decision2}
+        \draw[-latex](\u)--(\v);
+        \draw[Stealth-Stealth](mine.east)--(plate);
+        \node[below=0.5cm of plate,Terminal](lose){\verb|gui.lose()|の呼び出し};
+        \draw[-latex](plate)--(lose);
+        \node[below right=0cm of mine.south]{No};
+        \node[above=0.1cm of mine.east]{Yes};
+    \end{tikzpicture}
+\end{figure}
+追加使用に関しては，\ref{sec:仕様3処理}節，XX節で詳説する．
+\newpage
+\subsection{処理}\label{sec:仕様3処理}
+\subsubsection*{\met{openAllTiles}}
+全てのタイルに対して，条件分岐を行う．
+\begin{enumerate}
+    \item そのタイルに旗は立っていたが，爆弾ではない場合，タイルに"\verb|XB|"と表示する．\label{enu:XB}
+          \begin{lstlisting}[caption=, label=, language=Java]
+if (this.originalTable[x][y] != -1 && this.table[x][y] != 2) {
+    gui.setTextToTile(x, y, "XB");
+    ...
+}
+    \end{lstlisting}
+    \item \textbf{\ref{enu:XB}}には該当せず，そのタイルが爆弾である場合，タイルに"\verb|B|"と表示する．\label{enu:B}
+          \begin{lstlisting}[caption=, label=, language=Java]
+else if (this.originalTable[x][y] == -1) {
+    gui.setTextToTile(x, y, "B");
+    ...
+} 
+    \end{lstlisting}
+    \item \textbf{\ref{enu:XB},\ref{enu:B}}いずれにも該当しない場合，周りにある爆弾の数を\verb|returnMine|メソッドで数え上げ，その数をタイルに表示する．
+          \begin{lstlisting}[caption=, label=, language=Java]
+else {
+	Integer i = this.returnMine(x, y, gui);
+	gui.setTextToTile(x, y, i.toString());
+    ...
+}
+\end{lstlisting}
+\end{enumerate}
+\newpage
+
+
+\section*{仕様4}
+\addcontentsline{toc}{section}{仕様4}
+\setcounter{section}{4}
+\setcounter{subsection}{0}
+\begin{screen}
+    \textbf{仕様\thesection.}\\
     開いていないパネルを右クリックした際，そのパネルに旗を立てる．
     また，旗が立てられているパネルの場合には畑を取り除き，旗が取り除かれるまで左クリックでパネルは開けない．
 \end{screen}
@@ -341,12 +413,14 @@ gui.win();
         \node[right=3cm of return](return2){};
         \foreach \u in {decision1,decision2}
         \draw[-latex](\u.east)-|(return2)--(return.east);
+        % \coordinate (C) at (right=1cm of decision2);
+        % \node (D) at (right=1cm of decision1 |- decision2.east){};
     \end{tikzpicture}
 \end{figure}
 \newpage
 \subsection{処理}
 \subsubsection*{\met{setFlag}}
-今，入力として\ \verb|x|行\verb|y|列\ が与えられた．以下，\ \verb|x|行\verb|y|列\ を\((x,y)\)と記す．
+今，入力として\ \verb|x|行\verb|y|列\ のIndexが与えられた．
 \begin{enumerate}
     \item そのタイルが開いていない時に旗を立てる．
           \begin{lstlisting}[caption=, label=, language=Java]
@@ -363,6 +437,50 @@ else if (this.table[x][y] == -2) {
 }
     \end{lstlisting}
 \end{enumerate}
+\begin{enumerate}
+    \renewcommand{\labelenumi}{}
+    \item \verb|openTile|メソッドに，タイルにフラグがあれば\verb|return;|する処理がある．
+          \begin{lstlisting}[caption=, label=, language=Java]
+if (this.table[x][y] == 1 || this.table[x][y] == 2) {
+    return;
+}
+        \end{lstlisting}
+\end{enumerate}
+\newpage
+\section*{仕様5}
+\addcontentsline{toc}{section}{仕様\thesection}
+\setcounter{subsection}{0}
+\setcounter{section}{5}
+\begin{screen}
+    \textbf{仕様\thesection.}\\
+    クリアもしくはゲームオーバーになった際，適切なダイアログを表示する．
+\end{screen}
+\subsection{処理}
+\begin{figure}[h]
+    \centering
+    \caption{ダイアログの表示}
+    \begin{tikzpicture}[remember picture]
+        \node[Terminal](lose){\verb|gui.lose()|};
+        \node[Terminal,right=4cm of lose](win){\verb|gui.win()|};
+        \node[draw,cy,below=0.5cm of win](dwin){\verb|resultDialog.showDialog("Win !!!")|};
+        \node[draw,cy,below=0.5cm of lose](dlose){\verb|resultDialog.showDialog("Lose ...")|};
+        \coordinate (A) at ($(dwin)!0.5!(dlose)$);
+        \node[Terminal,below=2cm of A](exit){\verb|System.exit(0)|};
+
+        \foreach \u \v in {win/dwin,lose/dlose,dwin/exit,dlose/exit}
+        \draw[-latex](\u.south)--(\v.north);
+
+        \node[inner sep=0cm,fit={(dwin)(dlose)(exit)}](warp){};
+        \node[dashed,draw,rounded corners,fit={(warp)}](plate){};
+        \node[right=2.5cm of exit.south east]{\verb|resultDialog Class|};
+    \end{tikzpicture}
+\end{figure}
+\subsection{実装箇所}
+\noindent\ovalbox{\verb|gui.lose|の実装箇所}\par
+\verb|openTile|メソッド．爆弾を開けたとき．\\
+\ovalbox{\verb|gui.win|の実装箇所}\par
+\verb|openTile|メソッド．全てのタイルが開かれた，もしくは爆弾には旗が立っている場合．
+
 \newpage
 \section*{ソースコード}
 \lstset{frame=shadowbox,numbers=left}
@@ -374,6 +492,8 @@ else if (this.table[x][y] == -2) {
 \begin{lstlisting}[caption=\ttfamily openTile, label=src:openTile, language=Java]
 \end{lstlisting}
 \begin{lstlisting}[caption=\ttfamily returnMine, label=src:returnMine, language=Java]
+\end{lstlisting}
+\begin{lstlisting}[caption=\ttfamily openAllTiles, label=src:openAllTiles, language=Java]
 \end{lstlisting}
 \begin{lstlisting}[caption=\ttfamily setFlag, label=src:setFlag, language=Java]
 \end{lstlisting}
