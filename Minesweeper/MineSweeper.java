@@ -79,8 +79,11 @@ public class MineSweeper {
 	}
 
 	public void openTile(int x, int y, MineSweeperGUI gui) {
-		if (this.table[x][y] == 1 && !this.tr) {// 1手目で爆弾ならば再度爆弾をセット
-			this.setMine();
+		if (this.table[x][y] == 1) {
+			return;
+		}
+		if (this.table[x][y] == -1 && !this.tr) {// 1手目で爆弾ならば再度爆弾をセット
+			this.initTable();
 			this.openTile(x, y, gui);
 		}
 		this.tr = true;
@@ -97,6 +100,16 @@ public class MineSweeper {
 		} else { // パネルに爆弾がなかった場合
 			int mineCount = this.returnMine(x, y, gui);// 周辺の爆弾の個数を調査
 			this.table[x][y] = 1; // 開かれたパネルの値を1に設定
+			if (mineCount == 0) {
+				try {
+					openTile(x + 1, y, gui);
+					openTile(x - 1, y, gui);
+					openTile(x, y + 1, gui);
+					openTile(x, y - 1, gui);
+				} catch (ArrayIndexOutOfBoundsException e) {
+
+				}
+			}
 			String mc = String.valueOf(mineCount);
 			gui.setColorText(x, y, mineCount);// 色を設定
 			gui.setTextToTile(x, y, mc); // 爆弾の個数を表示
