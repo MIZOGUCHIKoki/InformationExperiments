@@ -15,7 +15,6 @@ public class MineSweeper {
 
 	private final int height;
 	private final int width;
-	private final int numTile;
 	private final int numMine;
 	private final int[][] table;
 	private final int[][] originalTable;
@@ -24,7 +23,6 @@ public class MineSweeper {
 	public MineSweeper(int height, int width, int numMine) {
 		this.height = height;
 		this.width = width;
-		this.numTile = height * width;
 		this.numMine = numMine;
 		this.table = new int[height][width];
 		this.originalTable = new int[height][width];
@@ -154,13 +152,18 @@ public class MineSweeper {
 	private void openAllTiles(MineSweeperGUI gui) {
 		for (int x = 0; x < getHeight(); x++) {
 			for (int y = 0; y < getWidth(); y++) {
+				if (this.originalTable[x][y] != -1 && this.table[x][y] != 2) {
+					gui.setColorText(x, y, 0);
+					gui.setTextToTile(x, y, "XB");
+					gui.setColorBackground(x, y, 1);
+				}
 				if (this.originalTable[x][y] == -1) {
-					gui.setTextToTile(x, y, "B"); // 爆弾がある場所にBを表示
+					gui.setTextToTile(x, y, "B");
 					gui.setColorBackground(x, y, 1);
 				} else {
 					Integer i = this.returnMine(x, y, gui);
 					gui.setColorText(x, y, i);
-					gui.setTextToTile(x, y, i.toString());// 他の全ての盤面を表示
+					gui.setTextToTile(x, y, i.toString());
 				}
 			}
 		}
