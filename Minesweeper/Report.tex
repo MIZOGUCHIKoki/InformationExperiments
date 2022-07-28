@@ -291,7 +291,7 @@ count++;
     %     return;
     % }
     %     \end{lstlisting}
-    \item パネルに爆弾がない場合，その周辺の爆弾個数を{\verb|returnMine|}メソッドで取得し，そのパネルに表示する．
+    \item パネルに爆弾がない場合，その周辺の爆弾個数を{\verb|returnMine|}（\srcref{src:returnMine}）メソッドで取得し，そのパネルに表示する．
     \item 全てのパネルが開いたか否か確認する．もし，全てのパネルが開いていたら勝利となるので{\verb|gui.win|}を呼び出し，開いていないパネルが存在すれば，{\verb|return;|}する．
           \begin{lstlisting}[caption=, label=, language=Java]
 int mineCount = this.returnMine(x, y, gui);// 周辺の爆弾の個数を調査
@@ -398,6 +398,26 @@ public void openTile(int x, int y, MineSweeperGUI gui) {
         }
         gui.win();
     }
+}
+\end{lstlisting}
+\begin{lstlisting}[caption=\ttfamily returnMine, label=src:returnMine, language=Java]
+public int returnMine(int x, int y, MineSweeperGUI gui) {
+// x,yの周り8マス分の爆弾を調査
+    int mineCount = 0;
+    for (int i = x - 1; i < x + 2; i++) {
+        if (i < 0 || i >= getHeight()) { // パネルの範囲外は除く
+            continue;
+        }
+        for (int j = y - 1; j < y + 2; j++) {
+            if (j < 0 || j >= getWidth()) { // パネルの範囲外は除く
+                continue;
+            }
+            if (this.originalTable[i][j] == -1) { // 爆弾の個数をカウント
+                mineCount++;
+            }
+        }
+    }
+    return mineCount;
 }
 \end{lstlisting}
 \end{document}
