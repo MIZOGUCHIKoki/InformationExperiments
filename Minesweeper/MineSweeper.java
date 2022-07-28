@@ -79,7 +79,7 @@ public class MineSweeper {
 	}
 
 	public void openTile(int x, int y, MineSweeperGUI gui) {
-		if (this.table[x][y] == 1) {
+		if (this.table[x][y] == 1 || this.table[x][y] == 2) {
 			return;
 		}
 		if (this.table[x][y] == -1 && !this.tr) {// 1手目で爆弾ならば再度爆弾をセット
@@ -90,8 +90,6 @@ public class MineSweeper {
 		if (this.table[x][y] == -1) { // パネルに爆弾があった場合
 			this.openAllTiles(gui);
 			gui.lose();
-		} else if (this.table[x][y] == -2) { // パネルに旗が立っている場合
-			return;
 		} else { // パネルに爆弾がなかった場合
 			int mineCount = this.returnMine(x, y, gui);// 周辺の爆弾の個数を調査
 			this.table[x][y] = 1; // 開かれたパネルの値を1に設定
