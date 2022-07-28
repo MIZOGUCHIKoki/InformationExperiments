@@ -137,18 +137,6 @@ public class MineSweeper {
 				}
 			}
 		}
-		if (mineCount == 0) {// 0の場合，必ず周り8マスには爆弾がないので，周り8マスを開ける．
-			for (int i = x - 1; i < x + 2; i++) {
-				if (i < 0 || i >= getHeight()) {
-					continue;
-				}
-				for (int j = y - 1; j < y + 2; j++) {
-					if (j < 0 || j >= getWidth()) {
-						continue;
-					}
-				}
-			}
-		}
 		return mineCount;
 	}
 
