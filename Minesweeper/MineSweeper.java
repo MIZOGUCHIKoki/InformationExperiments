@@ -95,7 +95,7 @@ public class MineSweeper {
 		} else { // パネルに爆弾がなかった場合
 			int mineCount = this.returnMine(x, y, gui);// 周辺の爆弾の個数を調査
 			this.table[x][y] = 1; // 開かれたパネルの値を1に設定
-			if (mineCount == 0) {
+			if (mineCount == 0) {// もし周辺に爆弾がなければ，そのマスも開ける．
 				for (int i = x - 1; i < x + 2; i++) {
 					if (i < 0 || i >= getHeight()) { // パネルの範囲外は除く
 						continue;
