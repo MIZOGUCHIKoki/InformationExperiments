@@ -156,8 +156,7 @@ public class MineSweeper {
 					gui.setColorText(x, y, 0);
 					gui.setTextToTile(x, y, "XB");
 					gui.setColorBackground(x, y, 1);
-				}
-				if (this.originalTable[x][y] == -1) {
+				} else if (this.originalTable[x][y] == -1) {
 					gui.setTextToTile(x, y, "B");
 					gui.setColorBackground(x, y, 1);
 				} else {
