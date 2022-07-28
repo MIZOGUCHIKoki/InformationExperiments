@@ -4,7 +4,7 @@ interface MineSweeperGUI {
 
 	public void setColorText(int x, int y, int num);
 
-	public void setNull(int x, int y);
+	public void setGray(int x, int y);
 
 	public void setColor(int x, int y);
 
@@ -90,29 +90,31 @@ public class MineSweeper {
 		if (this.table[x][y] == -1) { // パネルに爆弾があった場合
 			this.openAllTiles(gui);
 			gui.lose();
-			// for (int i = 0; i < getHeight(); i++) {
-			// for (int j = 0; j < getWidth(); j++) {
-			// this.table[i][j] = -2;
-			// }
-			// }
 		} else if (this.table[x][y] == -2) { // パネルに旗が立っている場合
 			return;
 		} else { // パネルに爆弾がなかった場合
 			int mineCount = this.returnMine(x, y, gui);// 周辺の爆弾の個数を調査
 			this.table[x][y] = 1; // 開かれたパネルの値を1に設定
 			if (mineCount == 0) {
-				try {
-					openTile(x + 1, y, gui);
-					openTile(x - 1, y, gui);
-					openTile(x, y + 1, gui);
-					openTile(x, y - 1, gui);
-				} catch (ArrayIndexOutOfBoundsException e) {
-
+				for (int i = x - 1; i < x + 2; i++) {
+					if (i < 0 || i >= getHeight()) { // パネルの範囲外は除く
+						continue;
+					}
+					for (int j = y - 1; j < y + 2; j++) {
+						if (j < 0 || j >= getWidth()) { // パネルの範囲外は除く
+							continue;
+						}
+						openTile(i, j, gui);
+					}
 				}
 			}
 			String mc = String.valueOf(mineCount);
-			gui.setColorText(x, y, mineCount);// 色を設定
-			gui.setTextToTile(x, y, mc); // 爆弾の個数を表示
+			if (mineCount == 0) {
+				gui.setGray(x, y);
+			} else {
+				gui.setColorText(x, y, mineCount);// 色を設定
+				gui.setTextToTile(x, y, mc); // 爆弾の個数を表示
+			}
 			Boolean jud = true;
 			for (int i = 0; i < getHeight(); i++) {// 爆弾以外のパネルが全て開いているか確認
 				for (int j = 0; j < getWidth(); j++) {

@@ -52,7 +52,7 @@ public class Main extends Frame implements WindowListener, MineSweeperGUI {
     }
 
     @Override
-    public void setNull(int x, int y) {
+    public void setGray(int x, int y) {
         this.tileTable[y][x].setBackground(Color.gray);
     }
 
@@ -61,15 +61,19 @@ public class Main extends Frame implements WindowListener, MineSweeperGUI {
         switch (num) {
             case 1:
                 this.tileTable[y][x].setForeground(Color.blue);
+                this.setGray(x, y);
                 break;
             case 2:
                 this.tileTable[y][x].setForeground(new Color(0, 125, 0));
+                this.setGray(x, y);
                 break;
             case 3:
                 this.tileTable[y][x].setForeground(Color.red);
+                this.setGray(x, y);
                 break;
             default:
                 this.tileTable[y][x].setForeground(Color.black);
+                this.setGray(x, y);
         }
     }
 
