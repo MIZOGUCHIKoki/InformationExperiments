@@ -322,20 +322,47 @@ gui.win();
 \end{screen}
 \subsection{処理の概要}
 \begin{figure}[h]
+    \centering
     \caption{旗を立てるときの処理}
     \begin{tikzpicture}
         \node[Terminal](setFlag){\verb|setFlag|};
         \node[Decision,below=0.5cm of setFlag](decision1){\small タイルが開かれていない\\かつ旗が立っていない};
         \node[Decision,below=0.5cm of decision1](decision2){旗が既に立っている};
         \node[Process,below=0.5cm of decision2](setF){タイルに旗を立てる};
-        \node[Process,below=1cm of setF](delF){タイルからを除く};
+        \node[Process,below=1cm of setF](delF){タイルから旗を除く};
         \node[Terminal,below=1cm of delF](return){\verb|return;|};
 
         \foreach \u \v in{setFlag/decision1,decision1/decision2,decision2/setF,setF/delF,delF/return}
         \draw[-latex](\u)--(\v);
+        \foreach \u \v in {decision1/Yes,decision2/No}
+        \node[below right=0cm of \u.south]{\v};
 
+        \node[right=1cm of decision1](point1){};
+        \node[right=1cm of decision2](point2){};
+        % \draw(point1)--(point2);
+        % \path[name intersections={of=point1 and point2}];
     \end{tikzpicture}
 \end{figure}
+\newpage
+\subsection{処理}
+\subsubsection*{\met{setFlag}}
+今，入力として\ \verb|x|行\verb|y|列\ が与えられた．以下，\ \verb|x|行\verb|y|列\ を\((x,y)\)と記す．
+\begin{enumerate}
+    \item そのタイルが開いていない時に旗を立てる．
+          \begin{lstlisting}[caption=, label=, language=Java]
+if (this.table[x][y] == 0 || this.table[x][y] == -1) {
+    this.table[x][y] = -2; // 旗を立てる場所に-2を入れる
+    gui.setTextToTile(x, y, "F");
+}
+    \end{lstlisting}
+    \item そのタイルに既に旗が立っているとき，そのタイルを初期状態に戻す．
+          \begin{lstlisting}[caption=, label=, language=Java]
+else if (this.table[x][y] == -2) {
+    this.table[x][y] = this.originalTable[x][y];
+    gui.setTextToTile(x, y, "");
+}
+    \end{lstlisting}
+\end{enumerate}
 \newpage
 \section*{ソースコード}
 \lstset{frame=shadowbox,numbers=left}
@@ -347,5 +374,7 @@ gui.win();
 \begin{lstlisting}[caption=\ttfamily openTile, label=src:openTile, language=Java]
 \end{lstlisting}
 \begin{lstlisting}[caption=\ttfamily returnMine, label=src:returnMine, language=Java]
+\end{lstlisting}
+\begin{lstlisting}[caption=\ttfamily setFlag, label=src:setFlag, language=Java]
 \end{lstlisting}
 \end{document}
