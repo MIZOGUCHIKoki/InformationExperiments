@@ -332,15 +332,15 @@ gui.win();
         \node[Process,below=1cm of setF](delF){タイルから旗を除く};
         \node[Terminal,below=1cm of delF](return){\verb|return;|};
 
-        \foreach \u \v in{setFlag/decision1,decision1/decision2,decision2/setF,setF/delF,delF/return}
+        \foreach \u \v in {setFlag/decision1,decision1/decision2,decision2/setF,setF/delF,delF/return}
         \draw[-latex](\u)--(\v);
         \foreach \u \v in {decision1/Yes,decision2/No}
         \node[below right=0cm of \u.south]{\v};
-
-        \node[right=1cm of decision1](point1){};
-        \node[right=1cm of decision2](point2){};
-        % \draw(point1)--(point2);
-        % \path[name intersections={of=point1 and point2}];
+        \foreach \u \v in {decision1/No,decision2/Yes}
+        \node[above right=0cm of \u.east]{\v};
+        \node[right=3cm of return](return2){};
+        \foreach \u in {decision1,decision2}
+        \draw[-latex](\u.east)-|(return2)--(return.east);
     \end{tikzpicture}
 \end{figure}
 \newpage
