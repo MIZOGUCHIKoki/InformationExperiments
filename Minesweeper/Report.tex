@@ -249,7 +249,7 @@ count++;
         \node[Decision,below=0.4cm of setNumber](serch){全てのパネルが開いたか};
         \node[Terminal,below=0.4cm of serch](win){\verb|gui.win()|の呼び出し};
 
-        \node[Process,right=1cm of turn](setMine){\verb|setMine|};
+        \node[Process,right=1cm of turn](setMine){\verb|initTable|};
         \node[Terminal,right=1cm of mine](lose){\verb|gui.lose()|の呼び出し};
         \node[Terminal,right=1cm of serch](return){\verb|return;|};
 
@@ -264,7 +264,6 @@ count++;
         \node[inner sep=0.05cm,fit={(quarityMine)(setNumber)}](warp){};
         \node[dashed,rounded corners,draw,fit={(warp)}](plate){};
         \node[inner sep=0cm,left=0.1cm of plate.north west](caption){\textbf{仕様2}};
-
     \end{tikzpicture}
 \end{figure}
 \newpage
@@ -292,24 +291,19 @@ count++;
     %     return;
     % }
     %     \end{lstlisting}
-    \item パネルに爆弾がない場合，その周辺の爆弾個数を\verb|returnMine|メソッドで取得し，そのパネルに表示する．
-    \item 全てのパネルが開いたか否か確認する．
+    \item パネルに爆弾がない場合，その周辺の爆弾個数を{\verb|returnMine|}メソッドで取得し，そのパネルに表示する．
+    \item 全てのパネルが開いたか否か確認する．もし，全てのパネルが開いていたら勝利となるので{\verb|gui.win|}を呼び出し，開いていないパネルが存在すれば，{\verb|return;|}する．
           \begin{lstlisting}[caption=, label=, language=Java]
 int mineCount = this.returnMine(x, y, gui);// 周辺の爆弾の個数を調査
 this.table[x][y] = 1; // 開かれたパネルの値を1に設定
 ...
-Boolean jud = true;
+// 爆弾以外のパネルが全て開いているか確認
 for (int i = 0; i < getHeight(); i++) {
     for (int j = 0; j < getWidth(); j++) {
-        if (this.table[i][j] == 0) {
-            // 開いていないパネルがある場合judの値をtrueにする
-            jud = true;
-            break;
-        } else { jud = false; }
+        if (this.table[i][j] == 0) { return;}
     }
-    if (jud) { break;}
 }
-if (!jud) { gui.win(); }		
+gui.win();
 \end{lstlisting}
 \end{enumerate}
 % \subsubsection{\met{returnMine}の一部}
@@ -359,32 +353,51 @@ void setMine() {// 爆弾をセット
 \end{lstlisting}
 \begin{lstlisting}[caption=\ttfamily openTile, label=src:openTile, language=Java]
 public void openTile(int x, int y, MineSweeperGUI gui) {
-    if (this.table[x][y] == 1 && !this.tr) {// 1手目で爆弾ならば再度爆弾をセット
-        this.setMine();
+    if (this.table[x][y] == 1) {
+        return;
+    }
+    if (this.table[x][y] == -1 && !this.tr) {// 1手目で爆弾ならば再度爆弾をセット
+        this.initTable();
         this.openTile(x, y, gui);
     }
     this.tr = true;
     if (this.table[x][y] == -1) { // パネルに爆弾があった場合
-        this.openAllTiles(gui); gui.lose();
-	} else if (this.table[x][y] == -2) { return; } // パネルにフラグが立っている場合
-     else { // パネルに爆弾がなかった場合
-			int mineCount = this.returnMine(x, y, gui);// 周辺の爆弾の個数を調査
-			this.table[x][y] = 1; // 開かれたパネルの値を1に設定
-			String mc = String.valueOf(mineCount);
-			gui.setColorText(x, y, mineCount); gui.setTextToTile(x, y, mc); 
-            Boolean jud = true;
-			for (int i = 0; i < getHeight(); i++) {// 爆弾以外のパネルが全て開いているか確認
-				for (int j = 0; j < getWidth(); j++) {
-					if (this.table[i][j] == 0) {
-						// 開いていないパネルがある場合judの値をtrueにする
-						jud = true;
-						break;
-					} else { jud = false; }// 開いている場合falseにする
-				}
-				if (jud) { break; }
-			}
-			if (!jud) { gui.win(); }
-		}
-	}
+        this.openAllTiles(gui);
+        gui.lose();
+    } else if (this.table[x][y] == -2) { // パネルに旗が立っている場合
+        return;
+    } else { // パネルに爆弾がなかった場合
+        int mineCount = this.returnMine(x, y, gui);// 周辺の爆弾の個数を調査
+        this.table[x][y] = 1; // 開かれたパネルの値を1に設定
+        if (mineCount == 0) {// もし周辺に爆弾がなければ，そのマスも開ける．
+            for (int i = x - 1; i < x + 2; i++) {
+                if (i < 0 || i >= getHeight()) { // パネルの範囲外は除く
+                    continue;
+                }
+                for (int j = y - 1; j < y + 2; j++) {
+                    if (j < 0 || j >= getWidth()) { // パネルの範囲外は除く
+                        continue;
+                    }
+                    openTile(i, j, gui);
+                }
+            }
+        }
+        String mc = String.valueOf(mineCount);
+        if (mineCount == 0) {
+            gui.setGray(x, y);
+        } else {
+            gui.setColorText(x, y, mineCount);// 色を設定
+            gui.setTextToTile(x, y, mc); // 爆弾の個数を表示
+        }
+        for (int i = 0; i < getHeight(); i++) {// 爆弾以外のパネルが全て開いているか確認
+            for (int j = 0; j < getWidth(); j++) {
+                if (this.table[i][j] == 0) {
+                    return;
+                }
+            }
+        }
+        gui.win();
+    }
+}
 \end{lstlisting}
 \end{document}
