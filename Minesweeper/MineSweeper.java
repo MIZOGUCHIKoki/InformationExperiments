@@ -4,9 +4,7 @@ interface MineSweeperGUI {
 
 	public void setColorText(int x, int y, int num);
 
-	public void setGray(int x, int y);
-
-	public void setColor(int x, int y);
+	public void setColorBackground(int x, int y, int color);
 
 	public void win();
 
@@ -108,7 +106,7 @@ public class MineSweeper {
 			}
 			String mc = String.valueOf(mineCount);
 			if (mineCount == 0) {
-				gui.setGray(x, y);
+				gui.setColorBackground(x, y, 0);
 			} else {
 				gui.setColorText(x, y, mineCount);// 色を設定
 				gui.setTextToTile(x, y, mc); // 爆弾の個数を表示
@@ -158,7 +156,7 @@ public class MineSweeper {
 			for (int y = 0; y < getWidth(); y++) {
 				if (this.originalTable[x][y] == -1) {
 					gui.setTextToTile(x, y, "B"); // 爆弾がある場所にBを表示
-					gui.setColor(x, y);
+					gui.setColorBackground(x, y, 1);
 				} else {
 					Integer i = this.returnMine(x, y, gui);
 					gui.setColorText(x, y, i);
