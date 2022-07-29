@@ -1,6 +1,6 @@
 \documentclass[a4j,11pt]{jsarticle}
 %jbbok:書籍・jsarticle:論文，短い文書・jreport:レポート・letter:手紙・twocolumn:2段組
-\usepackage{amsmath,amsfonts,amssymb,mathtools,ascmac,bm,float,comment,url,fancybox,calc,subcaption,multicol,physics,tablefootnote,caption,graphics}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,ascmac,bm,float,comment,url,fancybox,calc,subcaption,multicol,physics,tablefootnote,caption,graphics,multirow}
 \usepackage{wrapfig}
 \usepackage[T1]{fontenc}
 \usepackage[margin=20truemm]{geometry}
@@ -267,26 +267,6 @@ count++;
 \subsection{処理}\label{sec:openTile}
 \subsubsection*{\met{openTile}の一部}
 \begin{enumerate}
-    %     \item 1手目で爆弾のタイルを開けてゲームオーバーではゲーム性が失われかねないので，1手目で爆弾である場合は，再度爆弾をセットし直し，もう一度同じタイルを開ける処理を行う．この際に仕様する変数が\verb|tr|であり，\verb|tr=false|の時は1手目，\verb|tr=true|の時は2手目以上であることを示している．
-    %           \begin{lstlisting}[caption=, label=, language=Java]
-    % if (this.table[x][y] == 1 && !this.tr) {// 1手目で爆弾ならば再度爆弾をセット
-    %     this.setMine();
-    %     this.openTile(x, y, gui);
-    % }
-    % \end{lstlisting}
-    %     \item 開けたパネルに爆弾があれば，全てのタイルを表示後，"You lose"のポップアップを表示する．
-    %           \begin{lstlisting}[caption=, label=, language=Java]
-    % if (this.table[x][y] == -1) { // パネルに爆弾があった場合
-    %     this.openAllTiles(gui);
-    %     gui.lose();
-    % }
-    %     \end{lstlisting}
-    %     \item もし，その場所に旗が立っているのであれば，何もせずに\verb|return;|．この機能は追加した．
-    %           \begin{lstlisting}[caption=, label=, language=Java]
-    % else if (this.table[x][y] == -2) { // 旗がパネルに立っている場合
-    %     return;
-    % }
-    %     \end{lstlisting}
     \item パネルに爆弾がない場合，その周辺の爆弾個数を{\verb|returnMine|}（\srcref{src:returnMine}）メソッドで取得し，そのパネルに表示する．
           \begin{lstlisting}[caption=, label=, language=Java]
 String mc = String.valueOf(mineCount);
@@ -306,7 +286,6 @@ for (int i = 0; i < getHeight(); i++) {
 gui.win();
 \end{lstlisting}
 \end{enumerate}
-% \subsubsection{\met{returnMine}の一部}
 \newpage
 
 \section*{仕様3}
@@ -325,12 +304,11 @@ gui.win();
         \node[Terminal](openTile){\verb|openTile|};
         \node[Process,below=0.5cm of openTile](otherProcess){その他の処理};
         \node[Decision,below=0.5cm of otherProcess](mine){爆弾を踏んだ};
-        % \node[Terminal,below=1cm of openAllTiles](lose){\verb|gui.lose|};
         \node[Process,below=0.5cm of mine](specification2){仕様2，その他の処理};
         \node[Terminal,below=0.5cm of specification2](win){\verb|gui.win()|の呼び出し};
 
         \node[Terminal,right=4cm of openTile](openAllTiles){\verb|openAllTiles|};
-        \node[Process,below=0.5cm of openAllTiles](decision1){爆弾でない場所に旗あれば"\verb|XB|"と表示};
+        \node[Process,below=0.5cm of openAllTiles](decision1){様々な条件分岐};
         \node[Process,below=0.5cm of decision1](decision2){そのタイルが爆弾であれば，"\verb|B|"と表示};
         \node[Process,below=0.5cm of decision2](show){タイルの周りにある爆弾の数を表示};
 
@@ -350,30 +328,11 @@ gui.win();
         \node[above=0.1cm of mine.east]{Yes};
     \end{tikzpicture}
 \end{figure}
-\newpage
+追加仕様に関しては，仕様8で詳説する．
 \subsection{処理}\label{sec:仕様3処理}
-\subsubsection*{\met{openAllTiles}}
-全てのタイルに対して，条件分岐を行う．
-\begin{enumerate}
-    \item そのタイルに旗は立っており，かつ爆弾ではない場合，タイルに"\verb|XB|"と表示する．（第II部で詳説する．）\label{enu:XB}
-    \item \textbf{\ref{enu:XB}}には該当せず，そのタイルが爆弾である場合，タイルに"\verb|B|"と表示する．\label{enu:B}
-          \begin{lstlisting}[caption=, label=, language=Java]
-else if (this.originalTable[x][y] == -1) {
-    gui.setTextToTile(x, y, "B");
-    ...
-} 
-    \end{lstlisting}
-    \item \textbf{\ref{enu:XB},\ref{enu:B}}いずれにも該当しない場合，周りにある爆弾の数を\verb|returnMine|メソッドで数え上げ，その数をタイルに表示する．
-          \begin{lstlisting}[caption=, label=, language=Java]
-else {
-	Integer i = this.returnMine(x, y, gui);
-	gui.setTextToTile(x, y, i.toString());
-    ...
-}
-\end{lstlisting}
-\end{enumerate}
+全てのタイルに対して，条件分岐を行う．ただ単に全てのタイルに対して\verb|openTile|メソッドを呼び出してもよかったが，その仕様では，自分がどこにフラグを立てて，そのフラグが正しいか否かの判断ができかねる．
+従って，\verb|openAllTiles|メソッド（\srcref{src:openAllTiles}）に関しては，仕様8で詳解する．
 \newpage
-
 
 \section*{仕様4}
 \addcontentsline{toc}{section}{仕様4}
@@ -436,7 +395,7 @@ else if (this.table[x][y] == -2) {
 \dotfill
 \begin{enumerate}
     \renewcommand{\labelenumi}{}
-    \item \verb|openTile|メソッドで，タイルにフラグがあれば\verb|return;|する処理がある．
+    \item \verb|openTile|メソッドで，タイルにはたがあるか，既に開けられたタイルであれば，\verb|return;|する処理がある．
           \begin{lstlisting}[caption=, label=, language=Java]
 if (this.table[x][y] == 1 || this.table[x][y] == 2) {
     return;
@@ -507,8 +466,25 @@ public void openTile(int x, int y, MineSweeperGUI gui) {
 \setcounter{section}{8}
 \setcounter{subsection}{0}
 \addcontentsline{toc}{section}{仕様8}
-実際のマインスイーパーは，旗を立てたところが爆弾でなければ，旗にばつ印をつける．この機能を実装したいと思い，\verb|openAllTiles|メソッドに幾らかの条件分岐を設けた．
-
+実際のマインスイーパーは，旗を立てたところが爆弾でなければ，旗にばつ印をつける使用になっている．また，旗の位置が正しければ，その旗は表示されたままだ．この機能を実装したいと思い，\verb|openAllTiles|メソッド（\srcref{src:openAllTiles}）に幾らかの条件分岐を設けた．条件と表示の関係を\tabref{tbl:条件とタイルの色及び表示}に示す．
+\begin{table}[h]
+    \centering
+    \caption{条件とタイルの色及び表示}
+    \label{tbl:条件とタイルの色及び表示}
+    \begin{tabular}{l|ccc}
+        \hline
+        \multicolumn{1}{c|}{\multirow{2}{*}{条件}} & \multicolumn{3}{c}{真の時の処理}                             \\
+        \cline{2-4}
+                                                   & 表示                             & 背景色   & 文字色         \\
+        \hline
+        爆弾の場所に旗が立っている                 & "\verb|F|"                       & 指定なし & 黒             \\
+        爆弾でない場所に旗が立っている             & "\verb|XB|"                      & 黒       & 白             \\
+        爆弾の場所に旗が立っていない               & "\verb|B|"                       & 赤       & black          \\
+        周りの爆弾が0でかつ開けられていない        & ""                               & 白       & --             \\
+        その他                                     & 周りの爆弾の個数                 & 指定なし & 個数に応じた色 \\
+        \hline
+    \end{tabular}
+\end{table}
 \newpage
 \section*{仕様9}
 \addcontentsline{toc}{section}{仕様9}

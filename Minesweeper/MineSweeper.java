@@ -148,32 +148,27 @@ public class MineSweeper {
 	}
 
 	private void openAllTiles(MineSweeperGUI gui) {
-		int[][] table2 = new int[this.height][this.width];
-		for (int i = 0; i < this.height; i++) {
-			for (int j = 0; j < this.width; j++) {
-				this.table[i][j] = table2[i][j];
-			}
-		}
 		for (int x = 0; x < getHeight(); x++) {
 			for (int y = 0; y < getWidth(); y++) {
 				Integer i = this.returnMine(x, y, gui);
-				if (i == 0) {
+				if (this.originalTable[x][y] == -1 && this.table[x][y] == -2) {// 爆弾の場所にフラグ
+					gui.setTextToTile(x, y, "F");
+					this.table[x][y] = 1;
+				} else if (this.originalTable[x][y] != -1 && this.table[x][y] == -2) {// 爆弾でない場所にフラグ
+					gui.setTextToTile(x, y, "XB");
+					gui.setColorBackground(x, y, 3);
+					gui.setColorText(x, y, 4);
+				} else if (this.originalTable[x][y] == -1 && this.table[x][y] != 1) {// 爆弾の場所にフラグがない
+					gui.setColorBackground(x, y, 2);
+					gui.setColorText(x, y, 4);
+					gui.setTextToTile(x, y, "B");
+				} else if (i == 0 && this.table[x][y] != 1) {// 開けられていない場所の周りの爆弾の個数が0
 					gui.setColorBackground(x, y, 0);
 					gui.setTextToTile(x, y, "");
-				} else if (this.originalTable[x][y] == -1 && this.table[x][y] == -2) {
-					System.out.println("F");
-					gui.setTextToTile(x, y, "F");
-				} else if (this.originalTable[x][y] != -1 && this.table[x][y] == -2) {
-					System.out.println("XB");
-					gui.setTextToTile(x, y, "XB");
-				} else if (this.originalTable[x][y] == -1 && this.table[x][y] != 1) {
-					System.out.println("B");
-					gui.setTextToTile(x, y, "B");
 				} else {
 					gui.setColorText(x, y, i);
 					gui.setTextToTile(x, y, i.toString());
 				}
-				this.table[x][y] = 1;
 			}
 		}
 	}
