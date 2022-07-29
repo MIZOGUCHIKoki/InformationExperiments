@@ -157,7 +157,7 @@ public class MineSweeper {
 				} else if (this.originalTable[x][y] != -1 && this.table[x][y] == -2) {// 爆弾でない場所にフラグ
 					gui.setTextToTile(x, y, "XB");
 					gui.setColorBackground(x, y, 3);
-					gui.setColorText(x, y, 4);
+					gui.setColorText(x, y, 0);
 				} else if (this.originalTable[x][y] == -1 && this.table[x][y] != 1) {// 爆弾の場所にフラグがない
 					gui.setColorBackground(x, y, 2);
 					gui.setColorText(x, y, 4);
