@@ -47,16 +47,13 @@ public class MineSweeper {
 	 */
 
 	void initTable() {// 盤面を初期化する
-		this.setMine();
-		for (int x = 0; x < this.height; x++) {
-			for (int y = 0; y < this.width; y++) {
-				if (this.table[x][y] == -1) { // 爆弾がセットされている場所は避ける
-					continue;
-				}
-				this.table[x][y] = 0; // 爆弾の場所以外は0で初期化
-				this.originalTable[x][y] = 0;
+		for (int i = 0; i < table.length; i++) {
+			for (int j = 0; j < table.length; j++) {
+				this.table[i][j] = 0;
+				this.originalTable[i][j] = 0;
 			}
 		}
+		this.setMine();
 	}
 
 	void setMine() {// 爆弾をセット
@@ -71,6 +68,7 @@ public class MineSweeper {
 			this.table[x][y] = -1; // 爆弾の場所を値-1としてセットする
 			this.originalTable[x][y] = -1;
 			count++;
+			System.out.println(x + ", " + y);
 		}
 	}
 
@@ -152,7 +150,7 @@ public class MineSweeper {
 	private void openAllTiles(MineSweeperGUI gui) {
 		for (int x = 0; x < getHeight(); x++) {
 			for (int y = 0; y < getWidth(); y++) {
-				if (this.originalTable[x][y] != -1 && this.table[x][y] != 2) {
+				if (this.originalTable[x][y] == 0 && this.table[x][y] != 2) {
 					gui.setColorText(x, y, 0);
 					gui.setTextToTile(x, y, "XB");
 					gui.setColorBackground(x, y, 1);
