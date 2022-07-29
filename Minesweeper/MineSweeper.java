@@ -102,6 +102,7 @@ public class MineSweeper {
 			String mc = String.valueOf(mineCount);
 			if (mineCount == 0) {
 				gui.setColorBackground(x, y, 0);
+				gui.setTextToTile(x, y, "");
 			} else {
 				gui.setColorText(x, y, mineCount);// 色を設定
 				gui.setTextToTile(x, y, mc); // 爆弾の個数を表示
@@ -155,32 +156,15 @@ public class MineSweeper {
 		}
 		for (int x = 0; x < getHeight(); x++) {
 			for (int y = 0; y < getWidth(); y++) {
-				// if (this.originalTable[x][y] == -1 && table2[x][y] == -2) {
-				// gui.setTextToTile(x, y, "F");
-				// // gui.setColorText(x, y, 0);
-				// } else if (this.originalTable[x][y] != -1 && table2[x][y] == -2) {
-				// // gui.setColorText(x, y, 0);
-				// gui.setTextToTile(x, y, "XB");
-				// // gui.setColorBackground(x, y, 3);
-				// } else if (this.originalTable[x][y] == -1 && table2[x][y] != -2) {
-				// gui.setTextToTile(x, y, "B");
-				// // gui.setColorText(x, y, 4);
-				// // gui.setColorBackground(x, y, 3);
-				// } else {
-				// Integer i = this.returnMine(x, y, gui);
-				// gui.setColorText(x, y, i);
-				// gui.setTextToTile(x, y, i.toString());
-				// }
-				// this.openTile(x, y, gui);
 				Integer i = this.returnMine(x, y, gui);
 				if (i == 0) {
 					gui.setColorBackground(x, y, 0);
 					gui.setTextToTile(x, y, "");
-				} else if (this.originalTable[x][y] == -1 && table[x][y] == -2) {
+				} else if (this.originalTable[x][y] == -1 && this.table[x][y] == -2) {
 					gui.setTextToTile(x, y, "F");
-				} else if (this.originalTable[x][y] != -1 && table[x][y] == -2) {
-					gui.setTextToTile(x, y, "notB");
-				} else if (this.originalTable[x][y] == -1) {
+				} else if (this.originalTable[x][y] != -1 && this.table[x][y] == -2) {
+					gui.setTextToTile(x, y, "XB");
+				} else if (this.originalTable[x][y] == -1 && this.table[x][y] != 1) {
 					gui.setTextToTile(x, y, "B");
 				} else {
 					gui.setColorText(x, y, i);
