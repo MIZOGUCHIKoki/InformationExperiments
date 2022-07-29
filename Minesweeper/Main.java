@@ -55,6 +55,9 @@ public class Main extends Frame implements WindowListener, MineSweeperGUI {
             case 1:
                 this.tileTable[y][x].setBackground(new Color(200, 255, 255));// new Color(RGB)
                 break;
+            case 2:
+                this.tileTable[y][x].setBackground(Color.red);// new Color(RGB)
+                break;
         }
     }
 
@@ -70,6 +73,8 @@ public class Main extends Frame implements WindowListener, MineSweeperGUI {
             case 3:
                 this.tileTable[y][x].setForeground(Color.red);
                 break;
+            case 4:
+                this.tileTable[y][x].setForeground(Color.white);
             default:
                 this.tileTable[y][x].setForeground(Color.black);
         }
