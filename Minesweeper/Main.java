@@ -58,6 +58,9 @@ public class Main extends Frame implements WindowListener, MineSweeperGUI {
             case 2:
                 this.tileTable[y][x].setBackground(Color.red);// new Color(RGB)
                 break;
+            case 3:
+                this.tileTable[y][x].setBackground(Color.black);
+                break;
         }
     }
 

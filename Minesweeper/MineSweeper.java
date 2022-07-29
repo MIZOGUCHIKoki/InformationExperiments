@@ -68,7 +68,6 @@ public class MineSweeper {
 			this.table[x][y] = -1; // 爆弾の場所を値-1としてセットする
 			this.originalTable[x][y] = -1;
 			count++;
-			System.out.println(x + ", " + y);
 		}
 	}
 
@@ -148,20 +147,46 @@ public class MineSweeper {
 	}
 
 	private void openAllTiles(MineSweeperGUI gui) {
+		int[][] table2 = new int[this.height][this.width];
+		for (int i = 0; i < this.height; i++) {
+			for (int j = 0; j < this.width; j++) {
+				this.table[i][j] = table2[i][j];
+			}
+		}
 		for (int x = 0; x < getHeight(); x++) {
 			for (int y = 0; y < getWidth(); y++) {
-				if (this.originalTable[x][y] == 0 && this.table[x][y] != 2) {
-					gui.setColorText(x, y, 0);
-					gui.setTextToTile(x, y, "XB");
-					gui.setColorBackground(x, y, 1);
+				// if (this.originalTable[x][y] == -1 && table2[x][y] == -2) {
+				// gui.setTextToTile(x, y, "F");
+				// // gui.setColorText(x, y, 0);
+				// } else if (this.originalTable[x][y] != -1 && table2[x][y] == -2) {
+				// // gui.setColorText(x, y, 0);
+				// gui.setTextToTile(x, y, "XB");
+				// // gui.setColorBackground(x, y, 3);
+				// } else if (this.originalTable[x][y] == -1 && table2[x][y] != -2) {
+				// gui.setTextToTile(x, y, "B");
+				// // gui.setColorText(x, y, 4);
+				// // gui.setColorBackground(x, y, 3);
+				// } else {
+				// Integer i = this.returnMine(x, y, gui);
+				// gui.setColorText(x, y, i);
+				// gui.setTextToTile(x, y, i.toString());
+				// }
+				// this.openTile(x, y, gui);
+				Integer i = this.returnMine(x, y, gui);
+				if (i == 0) {
+					gui.setColorBackground(x, y, 0);
+					gui.setTextToTile(x, y, "");
+				} else if (this.originalTable[x][y] == -1 && table[x][y] == -2) {
+					gui.setTextToTile(x, y, "F");
+				} else if (this.originalTable[x][y] != -1 && table[x][y] == -2) {
+					gui.setTextToTile(x, y, "notB");
 				} else if (this.originalTable[x][y] == -1) {
 					gui.setTextToTile(x, y, "B");
-					gui.setColorBackground(x, y, 1);
 				} else {
-					Integer i = this.returnMine(x, y, gui);
 					gui.setColorText(x, y, i);
 					gui.setTextToTile(x, y, i.toString());
 				}
+				this.table[x][y] = 1;
 			}
 		}
 	}

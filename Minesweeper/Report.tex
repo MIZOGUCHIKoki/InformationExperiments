@@ -73,10 +73,10 @@
     \newcommand{\met}[1]{\ttfamily #1 \normalfont (\srcref{src:#1})の処理}
 \makeatletter
 \renewcommand{\thefigure}{%
-\thesection.\arabic{figure}}
+\arabic{figure}}
 \@addtoreset{figure}{section}
 \renewcommand{\thetable}{%
-\thesection.\arabic{table}}
+\arabic{table}}
 \@addtoreset{table}{section}
 % \@addtoreset{lstlisting}{section}
 \makeatother
@@ -141,6 +141,7 @@
     \end{minipage}
 \end{table}
 \newpage
+\part{必須仕様}
 \section*{仕様1}
 \setcounter{section}{1}
 \addcontentsline{toc}{section}{仕様1}
@@ -180,27 +181,25 @@
 \subsubsection*{\met{initTable}}
 盤面を初期化するにあたって，以下の処理を行う．
 \begin{enumerate}
+    \item \verb|table,originalTable|の全ての行と列に\verb|0|を代入する．ただし，爆弾であるパネルは上書きしない．
     \item 爆弾の設置パネルを\verb|setMine|メソッドで定める．
-    \item \verb|table|の全ての行と列に\verb|0|を代入する．ただし，爆弾であるパネルは上書きしない．
           \begin{lstlisting}[caption=, label=, language=Java]
-for (int x = 0; x < this.height; x++) {
-    for (int y = 0; y < this.width; y++) {
-        if (this.table[x][y] == -1) {// 爆弾がセットされている場所は避ける
-            continue;
-        }
-        this.table[x][y] = 0; // 爆弾の場所以外は0で初期化
+for (int i = 0; i < table.length; i++) {
+    for (int j = 0; j < table.length; j++) {
+        this.table[i][j] = 0;
+        this.originalTable[i][j] = 0;
     }
 }
-    \end{lstlisting}
-    \item \verb|originalTable|の全ての行に\verb|0|を代入する．ただし，爆弾であるパネルは上書きしない．
-          \begin{lstlisting}[caption=, label=, language=Java]
-this.originalTable[x][y] = 0;
-    \end{lstlisting}
+this.setMine();
+            \end{lstlisting}
 \end{enumerate}
 \subsubsection*{\met{setMine}}
 盤面に爆弾を配置するにあたって，以下の処理を行う．
 \begin{enumerate}
     \item 爆弾の個数を数える\verb|count|変数を定義する．
+          \begin{lstlisting}[caption=, label=, language=Java]
+int count = 0;
+\end{lstlisting}
     \item 指定された爆弾の個数が\verb|count|になるまで，爆弾を配置する．
           \begin{lstlisting}[caption=, label=, language=Java]
 while (count != this.numMine) {// numMineの数だけ爆弾をセットできたらループを抜ける
@@ -327,7 +326,7 @@ gui.win();
         \node[Process,below=0.5cm of openTile](otherProcess){その他の処理};
         \node[Decision,below=0.5cm of otherProcess](mine){爆弾を踏んだ};
         % \node[Terminal,below=1cm of openAllTiles](lose){\verb|gui.lose|};
-        \node[Process,below=0.5cm of mine](specification2){仕様2,その他の処理};
+        \node[Process,below=0.5cm of mine](specification2){仕様2，その他の処理};
         \node[Terminal,below=0.5cm of specification2](win){\verb|gui.win()|の呼び出し};
 
         \node[Terminal,right=4cm of openTile](openAllTiles){\verb|openAllTiles|};
@@ -351,19 +350,12 @@ gui.win();
         \node[above=0.1cm of mine.east]{Yes};
     \end{tikzpicture}
 \end{figure}
-追加使用に関しては，\ref{sec:仕様3処理}節，XX節で詳説する．
 \newpage
 \subsection{処理}\label{sec:仕様3処理}
 \subsubsection*{\met{openAllTiles}}
 全てのタイルに対して，条件分岐を行う．
 \begin{enumerate}
-    \item そのタイルに旗は立っていたが，爆弾ではない場合，タイルに"\verb|XB|"と表示する．\label{enu:XB}
-          \begin{lstlisting}[caption=, label=, language=Java]
-if (this.originalTable[x][y] != -1 && this.table[x][y] != 2) {
-    gui.setTextToTile(x, y, "XB");
-    ...
-}
-    \end{lstlisting}
+    \item そのタイルに旗は立っており，かつ爆弾ではない場合，タイルに"\verb|XB|"と表示する．（第II部で詳説する．）\label{enu:XB}
     \item \textbf{\ref{enu:XB}}には該当せず，そのタイルが爆弾である場合，タイルに"\verb|B|"と表示する．\label{enu:B}
           \begin{lstlisting}[caption=, label=, language=Java]
 else if (this.originalTable[x][y] == -1) {
@@ -411,10 +403,14 @@ else {
         \foreach \u \v in {decision1/No,decision2/Yes}
         \node[above right=0cm of \u.east]{\v};
         \node[right=3cm of return](return2){};
-        \foreach \u in {decision1,decision2}
-        \draw[-latex](\u.east)-|(return2)--(return.east);
-        % \coordinate (C) at (right=1cm of decision2);
-        % \node (D) at (right=1cm of decision1 |- decision2.east){};
+        \coordinate (A) at ($(decision1.east)$);
+        \coordinate (B) at ($(decision2.east)$);
+        \coordinate (C) at ($(decision1.east)+(1cm,0cm)$);
+        \coordinate (D) at (C |- B);
+
+        \draw(A)--(C)-|(D);
+        \draw(B)--(D);
+        \draw[-latex](D)|-(return.east);
     \end{tikzpicture}
 \end{figure}
 \newpage
@@ -437,9 +433,10 @@ else if (this.table[x][y] == -2) {
 }
     \end{lstlisting}
 \end{enumerate}
+\dotfill
 \begin{enumerate}
     \renewcommand{\labelenumi}{}
-    \item \verb|openTile|メソッドに，タイルにフラグがあれば\verb|return;|する処理がある．
+    \item \verb|openTile|メソッドで，タイルにフラグがあれば\verb|return;|する処理がある．
           \begin{lstlisting}[caption=, label=, language=Java]
 if (this.table[x][y] == 1 || this.table[x][y] == 2) {
     return;
@@ -448,9 +445,9 @@ if (this.table[x][y] == 1 || this.table[x][y] == 2) {
 \end{enumerate}
 \newpage
 \section*{仕様5}
+\setcounter{section}{5}
 \addcontentsline{toc}{section}{仕様\thesection}
 \setcounter{subsection}{0}
-\setcounter{section}{5}
 \begin{screen}
     \textbf{仕様\thesection.}\\
     クリアもしくはゲームオーバーになった際，適切なダイアログを表示する．
@@ -480,7 +477,72 @@ if (this.table[x][y] == 1 || this.table[x][y] == 2) {
 \verb|openTile|メソッド．爆弾を開けたとき．\\
 \ovalbox{\verb|gui.win|の実装箇所}\par
 \verb|openTile|メソッド．全てのタイルが開かれた，もしくは爆弾には旗が立っている場合．
+\newpage
+\part{追加仕様}
+\section*{仕様6}
+\setcounter{section}{6}
+\addcontentsline{toc}{section}{仕様\thesection}
+\setcounter{subsection}{0}
+「運」のみで勝敗が決まるのは，ゲームとしては面白くない．プレイヤーは1手目から爆弾か否かを判断することは，不可能なので，1手目で爆弾のタイルを開けない仕様を追加した．
+\subsubsection*{仕様6の実装}
+\verb|openTile|メソッドにおいて，1手目で爆弾のタイルを選択した場合の条件分岐を設けている．
+\begin{lstlisting}[caption=, label=, language=Java]
+public void openTile(int x, int y, MineSweeperGUI gui) {
+    ...
+    if (this.table[x][y] == -1 && !this.tr) {
+        this.initTable();
+        this.openTile(x, y, gui);
+    }
+    this.tr=ture;
+    ...
+}
+\end{lstlisting}
+\section*{仕様7}
+\setcounter{section}{7}
+\setcounter{subsection}{0}
+\addcontentsline{toc}{section}{仕様7}
+実際のマインスイーパーは，数字ごとに色が決められている．今回作成したマインスイーパーも同様にタイルのテキストに色を設定するメソッドを作成した．（\srcref{src:setColorText}）\par
+さらに，爆弾のタイルや，既に開けているタイルを識別しやすくするため，タイルの背景色を変更するメソッドも作成した．（\srcref{src:setColorBackground}）
+\section*{仕様8}
+\setcounter{section}{8}
+\setcounter{subsection}{0}
+\addcontentsline{toc}{section}{仕様8}
+実際のマインスイーパーは，旗を立てたところが爆弾でなければ，旗にばつ印をつける．この機能を実装したいと思い，\verb|openAllTiles|メソッドに幾らかの条件分岐を設けた．
 
+\newpage
+\section*{仕様9}
+\addcontentsline{toc}{section}{仕様9}
+\setcounter{section}{9}
+実際のマインスイーパーは，周辺にある爆弾の個数が0個の場合，\verb|0|と表示するのではない．周辺にある爆弾の数が0個の場合は，「その周辺のタイルを開けることができる」ということは，明らかであるため自動的に開けてくれるのだ．
+今回作成したマインスイーパーでも，その機能を実装した．\par
+\figref{fig:タイルの一部}に対して，\tikz{\node[rectangle,dotted,draw,minimum size=0.5cm,fill=cyan!10]{};}の色のタイルは，爆弾がないことを示している．これは明らかであり，プレーヤに無駄な労力をかけることになるので，プログラムで自動的に開けることにした．\par
+\begin{figure}[h]
+    \centering
+    \caption{}
+    \label{fig:タイルの一部}
+    \begin{tikzpicture}[remember picture]
+        \tikzset{gl/.style={rectangle,fill=cyan!10,minimum size=1cm}};
+        \node at (1.5,1.5) (zero){\large\verb|0|};
+        \foreach \u in {0.5,1.5,2.5}
+        \node[gl]at(0.5,\u){};
+        \foreach \u in {0.5,1.5,2.5}
+        \node[gl]at(2.5,\u){};
+        \node[gl]at(1.5,0.5){};
+        \node[gl]at(1.5,2.5){};
+        \draw[help lines, step=1cm](0,0) grid (3,3);
+    \end{tikzpicture}
+\end{figure}
+範囲外を除いて，周りのタイルを再起的に開けていく方法をとった．これにより\tikz{\node[rectangle,dotted,draw,minimum size=0.5cm,fill=cyan!10]{};}の，タイルの周りの爆弾の個数が0個であったとしても，またさらにその周りのタイルを開けることができる．（これが再起の最大のメリットである．）
+\begin{lstlisting}[caption=, label=, language=Java]
+if (mineCount == 0) {// もし周辺に爆弾がなければ，そのマスも開ける．
+for (int i = x - 1; i < x + 2; i++) {
+    if (i < 0 || i >= getHeight()) { continue; }// 範囲外
+    for (int j = y - 1; j < y + 2; j++) {
+        if (j < 0 || j >= getWidth()) { continue; }// 範囲外
+        openTile(i, j, gui);// 再起的に呼び出し
+    }
+}
+\end{lstlisting}
 \newpage
 \section*{ソースコード}
 \lstset{frame=shadowbox,numbers=left}
@@ -496,5 +558,9 @@ if (this.table[x][y] == 1 || this.table[x][y] == 2) {
 \begin{lstlisting}[caption=\ttfamily openAllTiles, label=src:openAllTiles, language=Java]
 \end{lstlisting}
 \begin{lstlisting}[caption=\ttfamily setFlag, label=src:setFlag, language=Java]
+\end{lstlisting}
+\begin{lstlisting}[caption=\ttfamily setColorText, label=src:setColorText,language=Java]
+\end{lstlisting}
+\begin{lstlisting}[caption=\ttfamily setColorBackground, label=src:setColorBackground, language=Java]
 \end{lstlisting}
 \end{document}
