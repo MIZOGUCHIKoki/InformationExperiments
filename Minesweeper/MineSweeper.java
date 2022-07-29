@@ -118,7 +118,7 @@ public class MineSweeper {
 		}
 	}
 
-	public int returnMine(int x, int y, MineSweeperGUI gui) {// x,yの周り8マス分の爆弾を調査
+	private int returnMine(int x, int y, MineSweeperGUI gui) {// x,yの周り8マス分の爆弾を調査
 		int mineCount = 0;
 		for (int i = x - 1; i < x + 2; i++) {
 			if (i < 0 || i >= getHeight()) { // パネルの範囲外は除く
