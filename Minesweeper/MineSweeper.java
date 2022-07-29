@@ -161,10 +161,13 @@ public class MineSweeper {
 					gui.setColorBackground(x, y, 0);
 					gui.setTextToTile(x, y, "");
 				} else if (this.originalTable[x][y] == -1 && this.table[x][y] == -2) {
+					System.out.println("F");
 					gui.setTextToTile(x, y, "F");
 				} else if (this.originalTable[x][y] != -1 && this.table[x][y] == -2) {
+					System.out.println("XB");
 					gui.setTextToTile(x, y, "XB");
 				} else if (this.originalTable[x][y] == -1 && this.table[x][y] != 1) {
+					System.out.println("B");
 					gui.setTextToTile(x, y, "B");
 				} else {
 					gui.setColorText(x, y, i);
