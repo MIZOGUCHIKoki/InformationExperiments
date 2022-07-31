@@ -360,21 +360,24 @@ gui.win();
         \node[Process,below=1cm of setF](delF){タイルから旗を除く};
         \node[Terminal,below=1cm of delF](return){\verb|return;|};
 
-        \foreach \u \v in {setFlag/decision1,decision1/decision2,decision2/setF,setF/delF,delF/return}
+        \foreach \u \v in {setFlag/decision1,delF/return,decision1/decision2}
         \draw[-latex](\u)--(\v);
-        \foreach \u \v in {decision1/Yes,decision2/No}
-        \node[below right=0cm of \u.south]{\v};
-        \foreach \u \v in {decision1/No,decision2/Yes}
-        \node[above right=0cm of \u.east]{\v};
-        \node[right=3cm of return](return2){};
-        \coordinate (A) at ($(decision1.east)$);
-        \coordinate (B) at ($(decision2.east)$);
-        \coordinate (C) at ($(decision1.east)+(1cm,0cm)$);
-        \coordinate (D) at (C |- B);
 
-        \draw(A)--(C)-|(D);
-        \draw(B)--(D);
-        \draw[-latex](D)|-(return.east);
+        \coordinate (A2) at($(decision1.west)$);
+        \coordinate (B2) at($(decision2.west)$);
+        \draw[-latex](B2)|-(delF);
+        \draw[white,line width=6pt](A2) |-(setF);
+        \draw[-latex](A2)|-(setF);
+
+        \draw[-latex](decision2.east)|-(return.east);
+        \coordinate (A) at ($(setF)!0.5!(delF)$);
+        \coordinate (B) at ($(decision2.east)$);
+        \coordinate (C) at ( A -| B);
+        \draw(setF.south)|-(C);
+
+        \foreach \u \v in {decision1.west/Yes,decision1.south/No,decision2.east/No,decision2.west/Yes}
+        \node[rectangle,draw,dotted,fill=white] at (\u){\v};
+
     \end{tikzpicture}
 \end{figure}
 \newpage
@@ -538,7 +541,6 @@ for (int i = x - 1; i < x + 2; i++) {
 \part{ソースコード}\label{sec:ソースコード}
 \noindent\ovalbox{\verb|MineSweeper.java > MineSweeper class|}
 \lstset{frame=shadowbox,numbers=left}
-\addcontentsline{toc}{section}{ソースコード}
 \begin{lstlisting}[caption=\ttfamily initTable, label=src:initTable, language=Java]
 void initTable() {
     for (int i = 0; i < table.length; i++) {
