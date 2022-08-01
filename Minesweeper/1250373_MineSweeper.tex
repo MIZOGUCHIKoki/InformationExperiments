@@ -148,6 +148,30 @@
 \begin{quote}
     ボタンが押されて離されると、AWTはボタンのprocessEventを呼び出すことにより、ボタンにActionEventのインスタンスを送ります。ボタンのprocessEventメソッドはそのボタンのすべてのイベントを受け取ります。ボタンは自身のprocessActionEventメソッドを呼び出すことによってアクション・イベントを渡します。後者のメソッドはこのボタンによって生成されるアクション・イベントの通知を対象として登録されているアクション・リスナーにアクション・イベントを渡します。\\\hfill{\cite{label1}}
 \end{quote}
+\section*{周りの爆弾の数}
+このレポートでいう「周りの爆弾の数」とは，あるタイル\verb|A|に対して，\figref{fig:周りの爆弾}の\ \begin{tikzpicture}[remember picture,baseline=(putcolor.base)]
+    \node[dashed,rounded corners,rectangle,fill=cyan!10](putcolor){着色部};
+\end{tikzpicture}\ である．ただし，枠外のものは除外する．
+\begin{figure}[h]
+    \centering
+    \caption{}
+    \label{fig:周りの爆弾}
+    \begin{tikzpicture}[remember picture]
+        \tikzset{gl/.style={rectangle,fill=cyan!10,minimum size=1cm}};
+        \node at (1.5,1.5) (zero){\large\verb|A|};
+        \foreach \u in {0.5,1.5,2.5}
+        \node[gl]at(0.5,\u){};
+        \foreach \u in {0.5,1.5,2.5}
+        \node[gl]at(2.5,\u){};
+        \node[gl]at(1.5,0.5){};
+        \node[gl]at(1.5,2.5)(gri){};
+        \draw[help lines, step=1cm](0,0) grid (3,3);
+        % \coordinate (gri) at (2.5,1.5);
+    \end{tikzpicture}
+\end{figure}
+\begin{tikzpicture}[remember picture,overlay]
+    \draw[->](putcolor)--(gri);
+\end{tikzpicture}
 \newpage
 \part{必須仕様}
 \section*{仕様1}
@@ -242,26 +266,31 @@ count++;
     \caption{タイルを開くときの処理}
     \begin{tikzpicture}
         \node[Terminal](openTile){\verb|openTile|};
-        \node[Decision,below=0.4cm of openTile](turn){1手目で爆弾};
-        \node[Decision,below=0cm of turn](flag){そのパネルに旗が立っている};
+        \node[Decision,below=0.3cm of openTile,fill=cyan!10](turn){1手目で爆弾};
+        \node[left=1cm of turn.west](specification6){仕様6(p.\pageref{sec:仕様6})};
+        \draw[dotted,thick,bend left=30](specification6.east)edge($(turn.west)+(1cm,0cm)$);
+        \node[Decision,below=0cm of turn,fill=cyan!10](flag){そのパネルに旗が立っている};
+        \node[left=1cm of flag.west](specification4){仕様4(p.\pageref{sec:仕様4})};
+        \draw[dotted,thick,bend left=30]($(specification4.east)$)edge($(flag.west)+(1cm,0cm)$);
         \node[Terminal,right=1cm of flag](return2){\verb|return;|};
         \node[Decision,below=0cm of flag](mine){爆弾を踏んだ};
         \node[Process,fill=magenta!10,below=0.4cm of mine](quarityMine){周辺の爆弾の個数を数えて表示};
         \node[Process,fill=magenta!10,below=0.4cm of quarityMine](setNumber){開いたパネルを\verb|-1|に設定};
         \node[Decision,below=0.4cm of setNumber](serch){全てのパネルが開いたか};
-        \node[Terminal,below=0.4cm of serch](win){\verb|gui.win()|の呼び出し};
+        \node[Terminal,below=0.5cm of serch](win){\verb|gui.win()|の呼び出し};
 
         \node[Process,right=1cm of turn](setMine){\verb|initTable|};
         \node[Terminal,right=1cm of mine](lose){\verb|gui.lose()|の呼び出し};
-        \node[Terminal,right=1cm of serch](return){\verb|return;|};
+        \node[Terminal,right=1.5cm of serch](return){\verb|return;|};
 
         \foreach \u \v in {openTile/turn,mine/quarityMine,quarityMine/setNumber,setNumber/serch,serch/win,turn/setMine,mine/lose,serch/return,flag/return2}
         \draw[-latex](\u)--(\v);
         \draw[-latex](setMine)|-(openTile);
-        \foreach \x \z in {turn/No,flag/No,mine/No,serch/Yes}
-        \node[right=0.5cm of \x.south]{\z};
-        \foreach \x \z in {turn/Yes,mine/Yes,serch/No/,flag/No}
-        \node[above=0cm of \x.east]{\z};
+
+        \foreach \u \v in {turn/No,flag/No,mine/No,serch/Yes}
+        \node[rectangle,draw,dotted,fill=white] at (\u.south) {\v};
+        \foreach \u \v in {turn/Yes,flag/Yes,mine/Yes,serch/No}
+        \node[rectangle,draw,dotted,fill=white] at (\u.east) {\v};
 
         \node[inner sep=0.05cm,fit={(quarityMine)(setNumber)}](warp){};
         \node[dashed,rounded corners,draw,fit={(warp)}](plate){};
@@ -314,39 +343,39 @@ gui.win();
 
         \node[Terminal,right=4cm of openTile](openAllTiles){\verb|openAllTiles|};
         \node[Process,below=0.5cm of openAllTiles](decision1){様々な条件分岐};
-        \node[Process,below=0.5cm of decision1](decision2){そのタイルが爆弾であれば，"\verb|B|"と表示};
-        \node[Process,below=0.5cm of decision2](show){タイルの周りにある爆弾の数を表示};
+        \node[Process,below=0.5cm of decision1](decision2){条件に応じた表示};
+        % \node[Process,below=0.5cm of decision2](show){タイルの周りにある爆弾の数を表示};
 
-        \node[inner sep=0.1cm,fit={(openAllTiles)(decision1)(decision2)(show)}](warp){};
+        \node[inner sep=0.1cm,fit={(openAllTiles)(decision1)(decision2)}](warp){};
         \node[dashed,rounded corners,draw,fit={(warp)}](plate){};
 
-        \node[inner sep=0cm,fit={(decision1)}](warp_2){};
+        \node[inner sep=0cm,fit={(decision1)(decision2)}](warp_2){};
         \node[red,draw,rounded corners,dotted,thick,fit={(warp_2)}](plate_2){};
-        \node[red,above left=-0.09cm of plate_2.north east]{\small 追加仕様};
+        \node[above left=-0.09cm of plate_2.north east]{\scriptsize 仕様8(p.\pageref{sec:仕様8})};
 
-        \foreach \u \v in {openTile/otherProcess,otherProcess/mine,mine/specification2,specification2/win,openAllTiles/decision1,decision2/show,decision1/decision2}
+        \foreach \u \v in {openTile/otherProcess,otherProcess/mine,mine/specification2,specification2/win,openAllTiles/decision1,decision1/decision2}
         \draw[-latex](\u)--(\v);
-        \draw[Stealth-Stealth](mine.east)--(plate);
         \node[below=0.5cm of plate,Terminal](lose){\verb|gui.lose()|の呼び出し};
         \draw[-latex](plate)--(lose);
-        \node[below right=0cm of mine.south]{No};
-        \node[above=0.1cm of mine.east]{Yes};
+        \node[fill=white,draw,dotted]at(mine.south){No};
+        \node[fill=white,draw,dotted]at(mine.east)(A){Yes};
+        \draw[Stealth-Stealth](A.east)--(plate);
     \end{tikzpicture}
 \end{figure}
-追加仕様に関しては，仕様8で詳説する．
+
 \subsection{処理}\label{sec:仕様3処理}
 全てのタイルに対して，条件分岐を行う．ただ単に全てのタイルに対して\verb|openTile|メソッドを呼び出してもよかったが，その仕様では，自分がどこにフラグを立てて，そのフラグが正しいか否かの判断ができない．
-従って，\verb|openAllTiles|メソッド（\srcref{src:openAllTiles}）に関しては，仕様8で詳解する．
+従って，\verb|openAllTiles|メソッド（\srcref{src:openAllTiles}）に関しては，仕様8(p.\pageref{sec:仕様8})で詳解する．
 \newpage
 
-\section*{仕様4}
+\section*{仕様4}\label{sec:仕様4}
 \addcontentsline{toc}{section}{仕様4}
 \setcounter{section}{4}
 \setcounter{subsection}{0}
 \begin{screen}
     \textbf{仕様\thesection.}\\
     開いていないパネルを右クリックした際，そのパネルに旗を立てる．
-    また，旗が立てられているパネルの場合には畑を取り除き，旗が取り除かれるまで左クリックでパネルは開けない．
+    また，旗が立てられているパネルの場合には旗を取り除き，旗が取り除かれるまで左クリックでパネルは開けない．
 \end{screen}
 \subsection{処理の概要}
 \begin{figure}[h]
@@ -452,9 +481,9 @@ Java仮想マシンを終了するには，\verb|System.exit(0)|の実行が必�
 \end{quote}
 \newpage
 \part{追加仕様}
-\section*{仕様6}
-\setcounter{section}{6}
+\section*{仕様6}\label{sec:仕様6}
 \addcontentsline{toc}{section}{仕様\thesection}
+\setcounter{section}{6}
 \setcounter{subsection}{0}
 「運」のみで勝敗が決まるのは，ゲームとしては面白くない．プレイヤーは1手目から爆弾か否かを判断することは，不可能なので，1手目で爆弾のタイルを開けない仕様を追加した．
 \subsubsection*{仕様6の実装}
@@ -482,7 +511,7 @@ public void openTile(int x, int y, MineSweeperGUI gui) {
     スタイルから取得できる型保証された色の列挙です。領域のフォアグラウンド用のColorTypeです。\hfill{\cite{label4}}
 \end{quotation}
 \section*{仕様8}
-\setcounter{section}{8}
+\setcounter{section}{8}\label{sec:仕様8}
 \setcounter{subsection}{0}
 \addcontentsline{toc}{section}{仕様8}
 実際のマインスイーパーは，旗を立てたところが爆弾でなければ，旗にばつ印をつける使用になっている．また，旗の位置が正しければ，その旗は表示されたままだ．この機能を実装したいと思い，\verb|openAllTiles|メソッド（\srcref{src:openAllTiles}）に幾らかの条件分岐を設けた．条件と表示の関係を\tabref{tbl:条件とタイルの色及び表示}に示す．
@@ -499,7 +528,7 @@ public void openTile(int x, int y, MineSweeperGUI gui) {
         爆弾の場所に旗が立っている                 & "\verb|F|"                       & 指定なし & 黒             \\
         爆弾でない場所に旗が立っている             & "\verb|XB|"                      & 黒       & 白             \\
         爆弾の場所に旗が立っていない               & "\verb|B|"                       & 赤       & 黒             \\
-        周りの爆弾が0でかつ開いている              & ""                               & 白       & --             \\
+        周りの爆弾が0                              & ""                               & 白       & --             \\
         その他                                     & 周りの爆弾の個数                 & 指定なし & 個数に応じた色 \\
         \hline
     \end{tabular}
@@ -509,7 +538,8 @@ public void openTile(int x, int y, MineSweeperGUI gui) {
 \addcontentsline{toc}{section}{仕様9}
 \setcounter{section}{9}
 実際のマインスイーパーは，周辺にある爆弾の個数が0個の場合，そのタイルの周りに爆弾がないことは当然であるため，隣接するタイルを自動的に開ける．
-今回作成したマインスイーパーでも，その機能を実装した．\figref{fig:タイルの一部}に対して，\tikz{\node[rectangle,dotted,draw,minimum size=0.5cm,fill=cyan!10]{};}の色のタイルは，爆弾がないことを示している．
+今回作成したマインスイーパーでも，その機能を実装した．\figref{fig:タイルの一部}に対して，\begin{tikzpicture}[baseline=(B.base)]\node[rectangle,dotted,fill=cyan!10](B){着色部};\end{tikzpicture}のタイルは，爆弾がないことを示している．\par
+範囲外を除いて，周りのタイルを再起的に開けていく方法をとった．これにより\begin{tikzpicture}[baseline=(A.base)]\node[rectangle,dotted,fill=cyan!10](A){着色部};\end{tikzpicture}の，タイルの周りの爆弾の個数が0個であったとしても，またさらにその周りのタイルを開けることができる．
 \begin{figure}[h]
     \centering
     \caption{}
@@ -526,11 +556,10 @@ public void openTile(int x, int y, MineSweeperGUI gui) {
         \draw[help lines, step=1cm](0,0) grid (3,3);
     \end{tikzpicture}
 \end{figure}
-範囲外を除いて，周りのタイルを再起的に開けていく方法をとった．これにより\tikz{\node[rectangle,dotted,draw,minimum size=0.5cm,fill=cyan!10]{};}の，タイルの周りの爆弾の個数が0個であったとしても，またさらにその周りのタイルを開けることができる．
 \begin{lstlisting}[caption=, label=, language=Java]
-if (mineCount == 0) {// もし周辺に爆弾がなければ，そのマスも開ける．
-for (int i = x - 1; i < x + 2; i++) {
-    if (i < 0 || i >= getHeight()) { continue; }// 範囲外
+    if (mineCount == 0) {// もし周辺に爆弾がなければ，そのマスも開ける．
+    for (int i = x - 1; i < x + 2; i++) {
+        if (i < 0 || i >= getHeight()) { continue; }// 範囲外
     for (int j = y - 1; j < y + 2; j++) {
         if (j < 0 || j >= getWidth()) { continue; }// 範囲外
         openTile(i, j, gui);// 再起的に呼び出し
