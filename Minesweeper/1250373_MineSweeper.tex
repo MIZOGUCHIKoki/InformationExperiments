@@ -169,9 +169,9 @@
         % \coordinate (gri) at (2.5,1.5);
     \end{tikzpicture}
 \end{figure}
-\begin{tikzpicture}[remember picture,overlay]
-    \draw[->](putcolor)--(gri);
-\end{tikzpicture}
+% \begin{tikzpicture}[remember picture,overlay]
+%     \draw[](putcolor)--(gri);
+% \end{tikzpicture}
 \newpage
 \part{必須仕様}
 \section*{仕様1}
@@ -504,8 +504,9 @@ public void openTile(int x, int y, MineSweeperGUI gui) {
 \setcounter{subsection}{0}
 \addcontentsline{toc}{section}{仕様7}
 実際のマインスイーパーは，数字ごとに色が決められている．今回作成したマインスイーパーも同様にタイルのテキストに色を設定するメソッドを作成した．（\srcref{src:setColorText}）\par
-さらに，爆弾のタイルや，既に開けているタイルを識別しやすくするため，タイルの背景色を変更するメソッドも作成した．（\srcref{src:setColorBackground}）
-以下を参考にして，\verb|Main.java|を変更した．
+さらに，爆弾のタイルや，既に開けているタイルを識別しやすくするため，タイルの背景色を変更するメソッドも作成した．（\srcref{src:setColorBackground}）\par
+
+更に，以下を参考にして，\verb|Main.java|を変更した．
 \begin{quotation}
     このコンポーネントのバックグラウンド・カラーを設定します。バックグラウンド・カラーが各コンポーネントにそれぞれ異なる影響を与えます。\hfill{\cite{label3}}\par
     スタイルから取得できる型保証された色の列挙です。領域のフォアグラウンド用のColorTypeです。\hfill{\cite{label4}}
@@ -753,7 +754,7 @@ public void setColorBackground(int x, int y, int color) {
 しかし，実際にアルゴリズムとしてマインスイーパーを考えると，なかなか簡単にはいかず，それぞれのの処理を詳細に，かつ順を追って見ていく必要があった．コンピュータは正直者なので，少しでも違う条件を与えると，当然だが予想だにしない挙動をする．
 これがプログラミングの面白いところであるが，同時に難点でもある．それぞれの処理が何を指すのか，その処理が無駄ではないのかなどを熟考した期間はとても充実していた．\par
 今回作成したマインスイーパーには課題もある．それは，やや処理効率が悪いということだ．今回の課題では，それほど大きな2次元配列を扱うことはなかったが，これが大きな2次元配列になると，二重ループは好ましくない．（\(O(n^2)\)の時間がかかる故．）従って，今後は別の配列に対して，今の情報を格納する方法も検討したい．
-メモリーの問題も生じると思うので，実験の結果を見て，より良い解決策を模索したい．さらに，LinuxのJavaGUIの"背景色"はそのままタイルの色になるが，MacのJava GUIの背景色は，なぜかタイルの色ではなくタイルの後ろの色になる．ボタンとタイルの背景色の違いなども改善する必要がある．（\figref{fig:マインスイーパーの実行例}）\par
+メモリーの問題も生じると思うので，実験の結果を見て，より良い解決策を模索したい．さらに，LinuxのJavaGUIの背景色はそのままタイルの色になるが，MacのJava GUIの背景色は，なぜかタイルの色ではなくタイルの後ろの色になる．ボタンとタイルの背景色の違いなども改善する必要がある．（\figref{fig:マインスイーパーの実行例}）\par
 最後に，このレポートを最後まで読んでくださった指導者の方に感謝申し上げる．
 \begin{figure}[h]
     \centering
