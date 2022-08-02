@@ -107,7 +107,7 @@
 このレポートは，\LaTeXe を用いて作成している．図やグラフはTi\it{k}\normalfont Zを用いて描画しており，ソースコードはlistingを用いて表記している．
 各参照には参照箇所まで誘導するリンクもついている．
 \subsection*{符号化と変数}
-あるパネルのステータスを示す符号と，新たに追加したグローバル変数を，以下に示す．\par
+あるパネルのステータスを示す符号と，新たに追加したフィールド変数を，以下に示す．\par
 \begin{table}[h]
     \centering
     \begin{minipage}[t]{0.3\linewidth}
@@ -130,16 +130,16 @@
         \subcaption*{新たに追加した変数}
         \begin{tabular}{ll}
             \hline
-            \multicolumn{1}{c}{変数名} & \multicolumn{1}{c}{役割}                           \\
+            \multicolumn{1}{c}{変数名}              & \multicolumn{1}{c}{役割}                           \\
             \hline
-            \verb|int originalTable|   & \begin{tabular}{l}
-                                                  生成した盤面の初期状態を記憶する．
-                                              \end{tabular}             \\
-                                       &                                                    \\
-            \verb|Boolean tr|          & \begin{tabular}{l}
-                                                         2手目以降で\verb|true|になる変数． \\
-                                                         1手目で爆弾に当たることを回避するため．
-                                                     \end{tabular} \\
+            \scriptsize\verb|int[][] originalTable| & \begin{tabular}{l}
+                                                           生成した盤面の初期状態を記憶する．
+                                                       \end{tabular}                 \\
+                                                    &                                                    \\
+            \verb|boolean tr|                       & \begin{tabular}{l}
+                                                                      2手目以降で\verb|true|になる変数． \\
+                                                                      1手目で爆弾に当たることを回避するため．
+                                                                  \end{tabular} \\
             \hline
         \end{tabular}
     \end{minipage}
@@ -148,10 +148,10 @@
 \begin{quote}
     ボタンが押されて離されると、AWTはボタンのprocessEventを呼び出すことにより、ボタンにActionEventのインスタンスを送ります。ボタンのprocessEventメソッドはそのボタンのすべてのイベントを受け取ります。ボタンは自身のprocessActionEventメソッドを呼び出すことによってアクション・イベントを渡します。後者のメソッドはこのボタンによって生成されるアクション・イベントの通知を対象として登録されているアクション・リスナーにアクション・イベントを渡します。\\\hfill{\cite{label1}}
 \end{quote}
-\section*{周りの爆弾の数}
+\subsection*{周りの爆弾の数}
 このレポートでいう「周りの爆弾の数」とは，あるタイル\verb|A|に対して，\figref{fig:周りの爆弾}の\ \begin{tikzpicture}[remember picture,baseline=(putcolor.base)]
     \node[dashed,rounded corners,rectangle,fill=cyan!10](putcolor){着色部};
-\end{tikzpicture}\ である．ただし，枠外のものは除外する．
+\end{tikzpicture}\ である．
 \begin{figure}[h]
     \centering
     \caption{}
@@ -166,12 +166,12 @@
         \node[gl]at(1.5,0.5){};
         \node[gl]at(1.5,2.5)(gri){};
         \draw[help lines, step=1cm](0,0) grid (3,3);
-        % \coordinate (gri) at (2.5,1.5);
+        \coordinate (gri) at (2.5,1.5);
     \end{tikzpicture}
 \end{figure}
-% \begin{tikzpicture}[remember picture,overlay]
-%     \draw[](putcolor)--(gri);
-% \end{tikzpicture}
+\begin{tikzpicture}[remember picture,overlay]
+    \draw[](putcolor)--(gri);
+\end{tikzpicture}
 \newpage
 \part{必須仕様}
 \section*{仕様1}
@@ -213,7 +213,7 @@
 \subsubsection*{\met{initTable}}
 盤面を初期化するにあたって，以下の処理を行う．
 \begin{enumerate}
-    \item \verb|table,originalTable|の全ての行と列に\verb|0|を代入する．ただし，爆弾であるパネルは上書きしない．
+    \item \verb|table,originalTable|の全てのパネルに\verb|0|を代入する．ただし，爆弾であるパネルは上書きしない．
     \item 爆弾の設置パネルを\verb|setMine|メソッドで定める．
           \begin{lstlisting}[caption=, label=, language=Java]
 for (int i = 0; i < table.length; i++) {
@@ -232,13 +232,13 @@ this.setMine();
           \begin{lstlisting}[caption=, label=, language=Java]
 int count = 0;
 \end{lstlisting}
-    \item 指定された爆弾の個数が\verb|count|になるまで，爆弾を配置する．
+    \item \verb|count|が指定された爆弾の個数になるまで，爆弾を配置する．
           \begin{lstlisting}[caption=, label=, language=Java]
 while (count != this.numMine) {// numMineの数だけ爆弾をセットできたらループを抜ける
 ...
 }
     \end{lstlisting}
-    \item 爆弾の配置はランダムである．乱数で指定されたパネルが既に爆弾であれば再度乱数を生成し，爆弾が新たにセットできる場所では，\verb|table|,\verb|originalTable|の乱数値Indexを\verb|-1|に設定し，\verb|count|をインクリメントする．
+    \item 爆弾の配置はランダムである．乱数で指定されたパネルが既に爆弾であれば再度乱数を生成する．爆弾が新たにセットできる場所では，\verb|table|,\verb|originalTable|の乱数値Indexを\verb|-1|に設定し，\verb|count|をインクリメントする．
           \begin{lstlisting}[caption=, label=, language=Java]
 ...
 int x = new java.util.Random().nextInt(getHeight());
@@ -257,7 +257,7 @@ count++;
 \addcontentsline{toc}{section}{仕様2}
 \setcounter{section}{2}
 \begin{screen}
-    \textbf{処理2.}\\
+    \textbf{仕様2.}\\
     パネルを左クリックした際，クリックしたパネルを開く．
 \end{screen}
 \subsection{処理概要}
@@ -306,7 +306,7 @@ count++;
 String mc = String.valueOf(mineCount);
 gui.setTextToTile(x, y, mc); // 爆弾の個数を表示
     \end{lstlisting}
-    \item 全てのパネルが開いたか否か確認する．もし，全てのパネルが開いていたら勝利となるので{\verb|gui.win|}を呼び出し，開いていないパネルが存在すれば，{\verb|return;|}する．
+    \item 全てのパネルが開いたか否か確認する．全てのパネルが開いていたら勝利となるので{\verb|gui.win|}を呼び出し，開いていないパネルが存在すれば，{\verb|return;|}する．
           \begin{lstlisting}[caption=, label=, language=Java]
 int mineCount = this.returnMine(x, y, gui);// 周辺の爆弾の個数を調査
 this.table[x][y] = 1; // 開かれたパネルの値を1に設定
@@ -432,7 +432,7 @@ else if (this.table[x][y] == -2) {
 \dotfill
 \begin{enumerate}
     \renewcommand{\labelenumi}{}
-    \item \verb|openTile|メソッドで，タイルにはたがあるか，既に開けられたタイルであれば，\verb|return;|する処理がある．
+    \item \verb|openTile|メソッドで，「タイルに旗がある」または「既に開けられたタイルである」ならば，\verb|return;|する処理がある．
           \begin{lstlisting}[caption=, label=, language=Java]
 if (this.table[x][y] == 1 || this.table[x][y] == 2) {
     return;
@@ -465,14 +465,14 @@ if (this.table[x][y] == 1 || this.table[x][y] == 2) {
 
         \node[inner sep=0cm,fit={(dwin)(dlose)(exit)}](warp){};
         \node[dashed,draw,rounded corners,fit={(warp)}](plate){};
-        \node[right=2.5cm of exit.south east]{\verb|resultDialog Class|};
+        \node at ($(plate.south east)+(-1.8cm,0.3cm)$){\verb|resultDialog Class|};
     \end{tikzpicture}
 \end{figure}
 \subsection{実装箇所}
 \noindent\ovalbox{\verb|gui.lose|の実装箇所}\par
 \verb|openTile|メソッド．爆弾を開けたとき．\\
 \ovalbox{\verb|gui.win|の実装箇所}\par
-\verb|openTile|メソッド．全てのタイルが開かれた，もしくは爆弾には旗が立っている場合．\\\par
+\verb|openTile|メソッド．旗以外の全てのタイルが開かれた時．\\\par
 Java仮想マシンを終了するには，\verb|System.exit(0)|の実行が必要．\verb|System.exit|に関しては以下を参照した．
 \begin{quote}
     Systemクラスには有用なクラス・フィールドおよびメソッドがあります。インスタンス化することはできません。\\
@@ -503,10 +503,10 @@ public void openTile(int x, int y, MineSweeperGUI gui) {
 \setcounter{section}{7}
 \setcounter{subsection}{0}
 \addcontentsline{toc}{section}{仕様7}
-実際のマインスイーパーは，数字ごとに色が決められている．今回作成したマインスイーパーも同様にタイルのテキストに色を設定するメソッドを作成した．（\srcref{src:setColorText}）\par
+実際のマインスイーパー\footnote{ここではWindows xpに標準搭載のマインスイーパーを指す．}は，数字ごとに色が決められている．今回作成したマインスイーパーも同様にタイルのテキストに色を設定するメソッドを作成した．（\srcref{src:setColorText}）\par
 さらに，爆弾のタイルや，既に開けているタイルを識別しやすくするため，タイルの背景色を変更するメソッドも作成した．（\srcref{src:setColorBackground}）\par
 
-更に，以下を参考にして，\verb|Main.java|を変更した．
+以下を参考にして，\verb|Main.java|を変更した．
 \begin{quotation}
     このコンポーネントのバックグラウンド・カラーを設定します。バックグラウンド・カラーが各コンポーネントにそれぞれ異なる影響を与えます。\hfill{\cite{label3}}\par
     スタイルから取得できる型保証された色の列挙です。領域のフォアグラウンド用のColorTypeです。\hfill{\cite{label4}}
@@ -515,7 +515,7 @@ public void openTile(int x, int y, MineSweeperGUI gui) {
 \setcounter{section}{8}\label{sec:仕様8}
 \setcounter{subsection}{0}
 \addcontentsline{toc}{section}{仕様8}
-実際のマインスイーパーは，旗を立てたところが爆弾でなければ，旗にばつ印をつける使用になっている．また，旗の位置が正しければ，その旗は表示されたままだ．この機能を実装したいと思い，\verb|openAllTiles|メソッド（\srcref{src:openAllTiles}）に幾らかの条件分岐を設けた．条件と表示の関係を\tabref{tbl:条件とタイルの色及び表示}に示す．
+実際のマインスイーパーは，旗を立てたところが爆弾でなければ，旗に\(\times\)印をつける仕様になっている．また，旗の位置が正しければ，その旗は表示されたままだ．この機能を実装したいと思い，\verb|openAllTiles|メソッド（\srcref{src:openAllTiles}）に幾らかの条件分岐を設けた．条件と表示の関係を\tabref{tbl:条件とタイルの色及び表示}に示す．
 \begin{table}[h]
     \centering
     \caption{条件とタイルの色及び表示}
@@ -540,7 +540,7 @@ public void openTile(int x, int y, MineSweeperGUI gui) {
 \setcounter{section}{9}
 実際のマインスイーパーは，周辺にある爆弾の個数が0個の場合，そのタイルの周りに爆弾がないことは当然であるため，隣接するタイルを自動的に開ける．
 今回作成したマインスイーパーでも，その機能を実装した．\figref{fig:タイルの一部}に対して，\begin{tikzpicture}[baseline=(B.base)]\node[rectangle,dotted,fill=cyan!10](B){着色部};\end{tikzpicture}のタイルは，爆弾がないことを示している．\par
-範囲外を除いて，周りのタイルを再起的に開けていく方法をとった．これにより\begin{tikzpicture}[baseline=(A.base)]\node[rectangle,dotted,fill=cyan!10](A){着色部};\end{tikzpicture}の，タイルの周りの爆弾の個数が0個であったとしても，またさらにその周りのタイルを開けることができる．
+そこで，範囲外を除いて周りのタイルを再帰的にタイルを開けていく方法をとった．これにより\begin{tikzpicture}[baseline=(A.base)]\node[rectangle,dotted,fill=cyan!10](A){着色部};\end{tikzpicture}の，タイルの周りの爆弾の個数が0個であったとしても，またさらにその周りのタイルを開けることができる．
 \begin{figure}[h]
     \centering
     \caption{}
@@ -751,9 +751,9 @@ public void setColorBackground(int x, int y, int color) {
 \part{まとめ}
 今回のマインスイーパーの課題を通して，様々な学びがあった．\par
 ゲームを模倣して作るためには，そのゲームのルールや性質をしっかりと学ぶ必要がある．幸にして，私は小学生の頃からマインスイーパーに触れており，（Windows xp内蔵）ルールの理解という面では苦労しなかった．\par
-しかし，実際にアルゴリズムとしてマインスイーパーを考えると，なかなか簡単にはいかず，それぞれのの処理を詳細に，かつ順を追って見ていく必要があった．コンピュータは正直者なので，少しでも違う条件を与えると，当然だが予想だにしない挙動をする．
+しかし，実際にアルゴリズムとしてマインスイーパーを考えると，なかなか簡単にはいかず，それぞれの処理を詳細に，かつ順を追って見ていく必要があった．コンピュータは正直者なので，少しでも違う条件を与えると，当然だが予想だにしない挙動をする．
 これがプログラミングの面白いところであるが，同時に難点でもある．それぞれの処理が何を指すのか，その処理が無駄ではないのかなどを熟考した期間はとても充実していた．\par
-今回作成したマインスイーパーには課題もある．それは，やや処理効率が悪いということだ．今回の課題では，それほど大きな2次元配列を扱うことはなかったが，これが大きな2次元配列になると，二重ループは好ましくない．（\(O(n^2)\)の時間がかかる故．）従って，今後は別の配列に対して，今の情報を格納する方法も検討したい．
+今回作成したマインスイーパーには課題もある．それは，やや処理効率が悪いということだ．今回の課題では，それほど大きな2次元配列を扱うことはなかった．しかし，処理する2次元配列が大きなものになると，処理に\(O(n^2)\)の時間がかかるため，二重ループは好ましくない．従って，今後は別の配列に対して，今の情報を格納する方法も検討したい．
 メモリーの問題も生じると思うので，実験の結果を見て，より良い解決策を模索したい．さらに，LinuxのJavaGUIの背景色はそのままタイルの色になるが，MacのJava GUIの背景色は，なぜかタイルの色ではなくタイルの後ろの色になる．ボタンとタイルの背景色の違いなども改善する必要がある．（\figref{fig:マインスイーパーの実行例}）\par
 最後に，このレポートを最後まで読んでくださった指導者の方に感謝申し上げる．
 \begin{figure}[h]
