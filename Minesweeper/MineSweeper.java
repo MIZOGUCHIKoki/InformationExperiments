@@ -1,4 +1,3 @@
-
 interface MineSweeperGUI {
 	public void setTextToTile(int x, int y, String text);
 
