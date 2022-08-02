@@ -434,7 +434,7 @@ else if (this.table[x][y] == -2) {
     \renewcommand{\labelenumi}{}
     \item \verb|openTile|メソッドで，「タイルに旗がある」または「既に開けられたタイルである」ならば，\verb|return;|する処理がある．
           \begin{lstlisting}[caption=, label=, language=Java]
-if (this.table[x][y] == 1 || this.table[x][y] == 2) {
+if (this.table[x][y] == 1 || this.table[x][y] == -2) {
     return;
 }
         \end{lstlisting}
