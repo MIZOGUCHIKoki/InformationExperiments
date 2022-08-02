@@ -71,7 +71,7 @@ public class MineSweeper {
 	}
 
 	public void openTile(int x, int y, MineSweeperGUI gui) {
-		if (this.table[x][y] == 1 || this.table[x][y] == 2) {
+		if (this.table[x][y] == 1 || this.table[x][y] == -2) {
 			return;
 		}
 		if (this.table[x][y] == -1 && !this.tr) {// 1手目で爆弾ならば再度爆弾をセット
