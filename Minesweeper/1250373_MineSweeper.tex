@@ -95,7 +95,7 @@
 
 \begin{abstract}
     このレポートは，情報学群実験第1の最終レポートである．
-    マインスイーパーを作成し，それに対して指定された仕様1〜5と，追加した仕様6〜9の処理概要や処理の詳解がされている．仕様に対するソースコードは p.\pageref{sec:ソースコード}から記載している．
+    マインスイーパーを作成し，それに対して指定された仕様1〜5と，追加した仕様6〜9の処理概要や処理の詳説がされている．仕様に対するソースコードは p.\pageref{sec:ソースコード}から記載している．
     実行は問題なくできており，仕様通りの動作となっている．この課題に取り組むに当たって，様々な課題も見えてきた．
 \end{abstract}
 \newpage
@@ -130,16 +130,16 @@
         \subcaption*{新たに追加した変数}
         \begin{tabular}{ll}
             \hline
-            \multicolumn{1}{c}{変数名}              & \multicolumn{1}{c}{役割}                           \\
+            \multicolumn{1}{c}{変数名}        & \multicolumn{1}{c}{役割}  \\
             \hline
             \scriptsize\verb|int[][] originalTable| & \begin{tabular}{l}
-                                                           生成した盤面の初期状態を記憶する．
-                                                       \end{tabular}                 \\
-                                                    &                                                    \\
-            \verb|boolean tr|                       & \begin{tabular}{l}
-                                                                      2手目以降で\verb|true|になる変数． \\
-                                                                      1手目で爆弾に当たることを回避するため．
-                                                                  \end{tabular} \\
+                生成した盤面の初期状態を記憶する．
+            \end{tabular} \\
+                                              &                           \\
+            \verb|boolean tr|            & \begin{tabular}{l}
+                2手目以降で\verb|true|になる変数． \\
+                1手目で爆弾に当たることを回避するため．
+            \end{tabular} \\
             \hline
         \end{tabular}
     \end{minipage}
@@ -365,7 +365,7 @@ gui.win();
 
 \subsection{処理}\label{sec:仕様3処理}
 全てのタイルに対して，条件分岐を行う．ただ単に全てのタイルに対して\verb|openTile|メソッドを呼び出してもよかったが，その仕様では，自分がどこにフラグを立てて，そのフラグが正しいか否かの判断ができない．
-従って，\verb|openAllTiles|メソッド（\srcref{src:openAllTiles}）に関しては，仕様8(p.\pageref{sec:仕様8})で詳解する．
+従って，\verb|openAllTiles|メソッド（\srcref{src:openAllTiles}）に関しては，仕様8(p.\pageref{sec:仕様8})で詳説する．
 \newpage
 
 \section*{仕様4}\label{sec:仕様4}
@@ -526,9 +526,9 @@ public void openTile(int x, int y, MineSweeperGUI gui) {
         \cline{2-4}
                                                    & 表示                             & 背景色   & 文字色         \\
         \hline
-        爆弾の場所に旗が立っている                 & "\verb|F|"                       & 指定なし & 黒             \\
-        爆弾でない場所に旗が立っている             & "\verb|XB|"                      & 黒       & 白             \\
-        爆弾の場所に旗が立っていない               & "\verb|B|"                       & 赤       & 黒             \\
+        爆弾の場所に旗が立っている                 & "\verb|F|"        & 指定なし & 黒             \\
+        爆弾でない場所に旗が立っている             & "\verb|XB|"        & 黒       & 白             \\
+        爆弾の場所に旗が立っていない               & "\verb|B|"        & 赤       & 黒             \\
         周りの爆弾が0                              & ""                               & 白       & --             \\
         その他                                     & 周りの爆弾の個数                 & 指定なし & 個数に応じた色 \\
         \hline
