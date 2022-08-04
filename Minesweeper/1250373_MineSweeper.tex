@@ -151,7 +151,7 @@
 \end{quote}\normalsize
 \vspace{-0.5cm}
 \subsection*{周りの爆弾の数}
-このレポートでいう「周りの爆弾の数」とは，あるタイル\verb|A|に対して，\figref{fig:周りの爆弾}の\ \begin{tikzpicture}[remember picture,baseline=(putcolor.base)]
+このレポートでいう「周りの爆弾の数」とは，あるタイル\verb|A,B|に対して，\figref{fig:周りの爆弾}の\ \begin{tikzpicture}[remember picture,baseline=(putcolor.base)]
     \node[dashed,rounded corners,rectangle,fill=cyan!10](putcolor){着色部};
 \end{tikzpicture}\ である．\footnote{当然，パネル外のものは「爆弾なし」とする．}
 \begin{figure}[h]
@@ -178,7 +178,7 @@
         \centering
         \begin{tikzpicture}[remember picture]
             \tikzset{gl/.style={rectangle,fill=cyan!10,minimum size=1cm}};
-            \node at (1.5,1.5) (zero){\large\verb|A|};
+            \node[cyan] at (1.5,1.5) (zero){\large\verb|A|};
             \foreach \u in {0.5,1.5,2.5}
             \node[gl]at(0.5,\u){};
             \foreach \u in {0.5,1.5,2.5}
