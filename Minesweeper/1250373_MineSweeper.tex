@@ -10,8 +10,8 @@
 \usepackage{xcolor}
 \hypersetup{
     colorlinks=true,
-    citecolor=black,
-    linkcolor=black,
+    citecolor=blue,
+    linkcolor=blue,
     urlcolor=blue
 }
         \tikzset{cy/.style={fill=cyan!10,rounded corners,rectangle,  text centered, minimum height=1cm}}
@@ -79,6 +79,7 @@
 \arabic{table}}
 \@addtoreset{table}{section}
 % \@addtoreset{lstlisting}{section}
+\@addtoreset{footnote}{page}
 \makeatother
 \renewcommand{\labelenumi}{\textbf{\arabic{enumi})\ }}
 
@@ -95,17 +96,17 @@
 
 \begin{abstract}
     このレポートは，情報学群実験第1の最終レポートである．
-    マインスイーパーを作成し，それに対して指定された仕様1〜5と，追加した仕様6〜9の処理概要や処理を掲載している．仕様に対するソースコードは p.\pageref{sec:ソースコード}から記載している．
+    マインスイーパーを作成し，それに対して指定された仕様1〜5と，追加した仕様6〜9の処理概要や処理を記載している．仕様に対するソースコードは p.\pageref{sec:ソースコード}から記載している．
     実行は問題なくできており，仕様通りの動作となっている．この課題に取り組むに当たって，様々な課題も見えてきた．
 \end{abstract}
 \newpage
 \tableofcontents
 \newpage
-\section*{はじめに}
+\section*{はじめに}\label{sec:はじめに}
 \addcontentsline{toc}{section}{はじめに}
 \subsection*{レポートについて}
-このレポートは，\LaTeXe を用いて作成している．図やグラフはTi\it{k}\normalfont Zを用いて描画しており，ソースコードはlistingを用いて表記している．
-各参照には参照箇所まで誘導するリンクもついている．
+このレポートは，\LaTeXe を用いて作成している．図やグラフはTi\it{k}\normalfont Zを用いて描画しており，ソースコードは\verb|listing|環境を用いて表記している．
+各参照には参照箇所まで誘導するリンクもついている．\footnote{PDFビューア（ウェブブラウザ，evinceなど）でこの文書を開くと，参照箇所は\textcolor{blue}{青色文字}で表示される．\\例：このページ番号は\pageref{sec:はじめに}である．}
 \subsection*{符号化と変数}
 あるパネルのステータスを示す符号と，新たに追加したフィールド変数を，以下に示す．\par
 \begin{table}[h]
@@ -130,47 +131,68 @@
         \subcaption*{新たに追加した変数}
         \begin{tabular}{ll}
             \hline
-            \multicolumn{1}{c}{変数名}        & \multicolumn{1}{c}{役割}  \\
+            \multicolumn{1}{c}{変数名}              & \multicolumn{1}{c}{役割}                           \\
             \hline
             \scriptsize\verb|int[][] originalTable| & \begin{tabular}{l}
-                生成した盤面の初期状態を記憶する．
-            \end{tabular} \\
-                                              &                           \\
-            \verb|boolean tr|            & \begin{tabular}{l}
-                2手目以降で\verb|true|になる変数． \\
-                1手目で爆弾に当たることを回避するため．
-            \end{tabular} \\
+                                                           生成した盤面の初期状態を記憶する．
+                                                       \end{tabular}                 \\
+                                                    &                                                    \\
+            \verb|boolean tr|                       & \begin{tabular}{l}
+                                                                      2手目以降で\verb|true|になる変数． \\
+                                                                      1手目で爆弾に当たることを回避するため．
+                                                                  \end{tabular} \\
             \hline
         \end{tabular}
     \end{minipage}
 \end{table}
 また，このマインスイーパーはJavaのButtonクラスが使用されている．ボタンを離した時にアクションが起こるので，以下の情報を参考に，\verb|Main.java|を解読した．
-\begin{quote}
+\begin{quote}\small
     ボタンが押されて離されると、AWTはボタンのprocessEventを呼び出すことにより、ボタンにActionEventのインスタンスを送ります。ボタンのprocessEventメソッドはそのボタンのすべてのイベントを受け取ります。ボタンは自身のprocessActionEventメソッドを呼び出すことによってアクション・イベントを渡します。後者のメソッドはこのボタンによって生成されるアクション・イベントの通知を対象として登録されているアクション・リスナーにアクション・イベントを渡します。\\\hfill{\cite{label1}}
-\end{quote}
+\end{quote}\normalsize
+\vspace{-0.5cm}
 \subsection*{周りの爆弾の数}
 このレポートでいう「周りの爆弾の数」とは，あるタイル\verb|A|に対して，\figref{fig:周りの爆弾}の\ \begin{tikzpicture}[remember picture,baseline=(putcolor.base)]
     \node[dashed,rounded corners,rectangle,fill=cyan!10](putcolor){着色部};
-\end{tikzpicture}\ である．
+\end{tikzpicture}\ である．\footnote{当然，パネル外のものは「爆弾なし」とする．}
 \begin{figure}[h]
     \centering
     \caption{}
     \label{fig:周りの爆弾}
-    \begin{tikzpicture}[remember picture]
-        \tikzset{gl/.style={rectangle,fill=cyan!10,minimum size=1cm}};
-        \node at (1.5,1.5) (zero){\large\verb|A|};
-        \foreach \u in {0.5,1.5,2.5}
-        \node[gl]at(0.5,\u){};
-        \foreach \u in {0.5,1.5,2.5}
-        \node[gl]at(2.5,\u){};
-        \node[gl]at(1.5,0.5){};
-        \node[gl]at(1.5,2.5)(gri){};
-        \draw[help lines, step=1cm](0,0) grid (3,3);
-        \coordinate (gri) at (2.5,1.5);
-    \end{tikzpicture}
+    \begin{minipage}[t]{0.45\linewidth}
+        \centering
+        \begin{tikzpicture}
+            \tikzset{gl/.style={rectangle,fill=cyan!10,minimum size=1cm}};
+            \node[cyan] at (0.5,2.5) (zero){\large\verb|A|};
+            \foreach \u \v in {0.5/1.5,1.5/1.5,1.5/2.5}
+            \node[gl]at(\u,\v){};
+            \node[magenta] at (2.5,1.5)(B){\large\verb|B|};
+            \tikzset{mz/.style={rectangle,fill=magenta!10,minimum size=1cm}};
+            \foreach \u \v in {2.5/2.5,1.5/0.5,2.5/0.5}
+            \node[mz]at(\u,\v){};
+            \fill[fill=magenta!10](1.5,1)--(2,1)--(2,3)--(1.5,3)--cycle;
+
+            \draw[help lines, step=1cm](0,0) grid (3,3);
+        \end{tikzpicture}
+    \end{minipage}
+    \begin{minipage}[t]{0.45\linewidth}
+        \centering
+        \begin{tikzpicture}[remember picture]
+            \tikzset{gl/.style={rectangle,fill=cyan!10,minimum size=1cm}};
+            \node at (1.5,1.5) (zero){\large\verb|A|};
+            \foreach \u in {0.5,1.5,2.5}
+            \node[gl]at(0.5,\u){};
+            \foreach \u in {0.5,1.5,2.5}
+            \node[gl]at(2.5,\u){};
+            \node[gl]at(1.5,0.5){};
+            \node[gl]at(1.5,2.5)(gri){};
+            \draw[help lines, step=1cm](0,0) grid (3,3);
+            \coordinate (gri) at (3.3,2.5);
+            % \draw[fill=black](gri)circle[radius=0.06];
+        \end{tikzpicture}
+    \end{minipage}
 \end{figure}
 \begin{tikzpicture}[remember picture,overlay]
-    \draw[](putcolor)--(gri);
+    \draw[->,dashed,thick](putcolor.south east)to[bend left=45](gri);
 \end{tikzpicture}
 \newpage
 \part{必須仕様}
@@ -184,28 +206,29 @@
 \subsection{処理概要}
 \begin{figure}[h]
     \centering
-    \caption{盤面上へランダムに地雷を設置する}
+    \caption{盤面上へランダムに爆弾を設置する}
     \begin{tikzpicture}
-        % \node[cy](initTable){\verb|void initTable()|};
         \node[Terminal](functionTable){\verb|initTable|};
-        \node[Process,below=0.5cm of functionTable](functionMine){\verb|setMine|};
-        \node[Decision,below=0.5cm of functionMine](checkBord){盤面を調査};
-        \node[Process,below=0.5cm of checkBord](setNumber1){\verb|table|に\verb|0|を代入};
-        \node[Process,below=0.5cm of setNumber1](setNumber2){\verb|originalTable|に\verb|0|を代入};
-        \foreach \u \v in {functionTable/functionMine,functionMine/checkBord,setNumber1/setNumber2}
-        \draw[-latex](\u)--(\v);
-        \draw[-latex](checkBord)node[right,yshift=-40]{そのパネルが爆弾でなければ}--(setNumber1);
+        \node[Process,fill=green!10,below=0.5cm of functionTable](setNumber1){\verb|table|に\verb|0|を代入};
+        \node[Process,fill=green!10,below=0.5cm of setNumber1](setNumber2){\verb|originalTable|に\verb|0|を代入};
+        \node[Process,below=0.5cm of setNumber2](functionMine){\verb|setMine|};
+
 
         \node[Terminal,right =3cm of functionTable](setMine){\verb|setMine|};
         \node[Process,below =0.5cm of setMine](set){\verb|numMine|の数だけ爆弾をセットする};
 
+        \foreach \u \v in {functionTable/setNumber1,setNumber1/setNumber2,setNumber2/functionMine,setMine/set}
+        \draw[-latex](\u)--(\v);
+
         \node[inner sep=0cm,fit={(setMine)(set)}](warp){};
         \node[inner sep=0cm,above=0.1cm of warp.north](caption){\verb|setMine|メソッド};
         \node[draw,dashed,rounded corners,fit={(warp)(caption)}](plate){};
+        \draw[-Stealth](functionMine.east)-|($(functionMine.east)!0.5!(setMine.west)$)|-(plate.west|-setMine.east);
 
-        \foreach \u \v in {functionMine.east/plate,plate.west/functionMine}
-        \draw[thick,-Stealth](\u)--(\v);
-        \draw[-latex](setMine)--(set);
+        \node[] at($(setNumber1.west)!0.5!(setNumber2.west)+(-1.5cm,0cm)$)(ftn){全行全列に代入};
+        \draw[dotted,thick,->](ftn.south)to [bend right=30](setNumber2.west);
+        \draw[dotted,thick,->](ftn.north)to [bend left=30](setNumber1.west);
+
     \end{tikzpicture}
 \end{figure}
 \newpage
@@ -268,29 +291,33 @@ count++;
         \node[Terminal](openTile){\verb|openTile|};
         \node[Decision,below=0.3cm of openTile,fill=cyan!10](turn){1手目で爆弾};
         \node[left=1cm of turn.west](specification6){仕様6(p.\pageref{sec:仕様6})};
-        \draw[dotted,thick,bend left=30](specification6.east)edge($(turn.west)+(1cm,0cm)$);
+        \draw[dashed,thick,->]($(specification6.east)$)to[bend left=30]($(turn.west)+(1cm,0cm)$);
         \node[Decision,below=0cm of turn,fill=cyan!10](flag){そのパネルに旗が立っている};
         \node[left=1cm of flag.west](specification4){仕様4(p.\pageref{sec:仕様4})};
-        \draw[dotted,thick,bend left=30]($(specification4.east)$)edge($(flag.west)+(1cm,0cm)$);
-        \node[Terminal,right=1cm of flag](return2){\verb|return;|};
+        \draw[dashed,thick,->]($(specification4.east)$)to[bend left=30]($(flag.west)+(1cm,0cm)$);
+        % \node[Terminal,right=1cm of flag](return2){\verb|return;|};
         \node[Decision,below=0cm of flag](mine){爆弾を踏んだ};
         \node[Process,fill=magenta!10,below=0.4cm of mine](quarityMine){周辺の爆弾の個数を数えて表示};
         \node[Process,fill=magenta!10,below=0.4cm of quarityMine](setNumber){開いたパネルを\verb|-1|に設定};
         \node[Decision,below=0.4cm of setNumber](serch){全てのパネルが開いたか};
         \node[Terminal,below=0.5cm of serch](win){\verb|gui.win()|の呼び出し};
 
-        \node[Process,right=1cm of turn](setMine){\verb|initTable|};
-        \node[Terminal,right=1cm of mine](lose){\verb|gui.lose()|の呼び出し};
-        \node[Terminal,right=1.5cm of serch](return){\verb|return;|};
+        \foreach \u \v in {turn/No,flag/No,mine/No,serch/Yes}
+        \node[rectangle,draw,dotted,fill=white] at (\u.south) (\u\v) {\v};
+        \foreach \u \v in {turn/Yes,flag/Yes,mine/Yes,serch/No}
+        \node[rectangle,draw,dotted,fill=white] at (\u.east) (\u\v) {\v};
 
-        \foreach \u \v in {openTile/turn,mine/quarityMine,quarityMine/setNumber,setNumber/serch,serch/win,turn/setMine,mine/lose,serch/return,flag/return2}
+        \node[Terminal,right=1.5cm of serch](return){\verb|return;|};
+        \node[Process] at (return|-turnYes.east) (setMine){\verb|initTable|};
+        \node[Terminal]at (return|-mineYes.east) (lose){\verb|gui.lose()|の呼び出し};
+
+        \foreach \u \v in {openTile/turn,mineNo/quarityMine,quarityMine/setNumber,setNumber/serch,serchYes/win,turnYes/setMine,mineYes/lose}
         \draw[-latex](\u)--(\v);
         \draw[-latex](setMine)|-(openTile);
+        \draw[line width=6pt,white](flagYes)-|($(serchNo)!0.5!(return.west)$|-flagYes.east);
+        \draw(flagYes)-|($(serchNo)!0.5!(return.west)$|-flagYes.east);
+        \draw[-latex](serchNo.east)--(return.west);
 
-        \foreach \u \v in {turn/No,flag/No,mine/No,serch/Yes}
-        \node[rectangle,draw,dotted,fill=white] at (\u.south) {\v};
-        \foreach \u \v in {turn/Yes,flag/Yes,mine/Yes,serch/No}
-        \node[rectangle,draw,dotted,fill=white] at (\u.east) {\v};
 
         \node[inner sep=0.05cm,fit={(quarityMine)(setNumber)}](warp){};
         \node[dashed,rounded corners,draw,fit={(warp)}](plate){};
@@ -344,7 +371,6 @@ gui.win();
         \node[Terminal,right=4cm of openTile](openAllTiles){\verb|openAllTiles|};
         \node[Process,below=0.5cm of openAllTiles](decision1){様々な条件分岐};
         \node[Process,below=0.5cm of decision1](decision2){条件に応じた表示};
-        % \node[Process,below=0.5cm of decision2](show){タイルの周りにある爆弾の数を表示};
 
         \node[inner sep=0.1cm,fit={(openAllTiles)(decision1)(decision2)}](warp){};
         \node[dashed,rounded corners,draw,fit={(warp)}](plate){};
@@ -358,8 +384,10 @@ gui.win();
         \node[below=0.5cm of plate,Terminal](lose){\verb|gui.lose()|の呼び出し};
         \draw[-latex](plate)--(lose);
         \node[fill=white,draw,dotted]at(mine.south){No};
-        \node[fill=white,draw,dotted]at(mine.east)(A){Yes};
-        \draw[Stealth-Stealth](A.east)--(plate);
+        \node[fill=white,draw,dotted]at(mine.east)(YES){Yes};
+        \coordinate (A) at ($(YES.east)!0.5!(YES.east-|plate.west)$);
+        \draw[-Stealth](A)--(YES.east);
+        \draw[-Stealth](A)|-(openAllTiles-|plate.west);
     \end{tikzpicture}
 \end{figure}
 
@@ -526,9 +554,9 @@ public void openTile(int x, int y, MineSweeperGUI gui) {
         \cline{2-4}
                                                    & 表示                             & 背景色   & 文字色         \\
         \hline
-        爆弾の場所に旗が立っている                 & "\verb|F|"        & 指定なし & 黒             \\
-        爆弾でない場所に旗が立っている             & "\verb|XB|"        & 黒       & 白             \\
-        爆弾の場所に旗が立っていない               & "\verb|B|"        & 赤       & 黒             \\
+        爆弾の場所に旗が立っている                 & "\verb|F|"                       & 指定なし & 黒             \\
+        爆弾でない場所に旗が立っている             & "\verb|XB|"                      & 黒       & 白             \\
+        爆弾の場所に旗が立っていない               & "\verb|B|"                       & 赤       & 黒             \\
         周りの爆弾が0                              & ""                               & 白       & --             \\
         その他                                     & 周りの爆弾の個数                 & 指定なし & 個数に応じた色 \\
         \hline
