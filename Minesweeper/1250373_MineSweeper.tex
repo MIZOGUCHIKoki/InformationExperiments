@@ -298,7 +298,7 @@ count++;
         % \node[Terminal,right=1cm of flag](return2){\verb|return;|};
         \node[Decision,below=0cm of flag](mine){爆弾を踏んだ};
         \node[Process,fill=magenta!10,below=0.4cm of mine](quarityMine){周辺の爆弾の個数を数えて表示};
-        \node[Process,fill=magenta!10,below=0.4cm of quarityMine](setNumber){開いたパネルを\verb|-1|に設定};
+        \node[Process,fill=magenta!10,below=0.4cm of quarityMine](setNumber){開いたパネルを\verb|1|に設定};
         \node[Decision,below=0.4cm of setNumber](serch){全てのパネルが開いたか};
         \node[Terminal,below=0.5cm of serch](win){\verb|gui.win()|の呼び出し};
 
