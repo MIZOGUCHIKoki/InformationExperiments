@@ -1,0 +1,50 @@
+\documentclass[a4paper,11pt,twoside]{ltjsreport}
+\usepackage[top=20truemm,bottom=20truemm,left=15truemm,right=15truemm,headheight=20pt]{geometry}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{type1cm}
+\usepackage{listings}
+\hypersetup{
+    colorlinks=true,
+    citecolor=black,
+    linkcolor=black,
+    urlcolor=blue
+}
+% set pagestyle
+\renewcommand{\chaptermark}[1]{\markboth{第\ \thechapter\ 章\ \ #1}{}}
+\fancypagestyle{pg}{%
+    \fancyhf{}
+    \renewcommand{\headrule}{}
+    \fancyhead[LE,RO]{\leftmark}
+    \fancyfoot[C]{-\ \thepage\ -}
+}
+\fancypagestyle{toc}{
+    \pagenumbering{roman}
+    \renewcommand{\headrule}{}
+    \fancyhf{}
+    \cfoot{-\ \thepage\ -}
+}
+\title{{\normalsize 情報学群実験第2 レポート}\\\vspace{1em}ARM アセンブリ言語における即値代入の制限に関する実験 } 
+\author{1250373 溝口洸熙\thanks{高知工科大学 情報学群 2年 清水研究室}}
+\date{\today}
+\makeatletter
+\renewcommand{\chapter}{%
+  \if@openright\cleardoublepage\else\clearpage\fi
+  \global\@topnum\z@
+  \secdef\@chapter\@schapter}
+\makeatother
+\begin{document}
+\maketitle
+\clearpage
+\pagestyle{toc}
+\renewcommand{\lstlistlistingname}{ソースコード}
+\tableofcontents
+\listoffigures
+\listoftables
+\lstlistoflistings
+\clearpage
+\pagestyle{pg}
+\setcounter{page}{0}
+\pagenumbering{arabic}
+\input{kadai1.tex}
+\end{document}
