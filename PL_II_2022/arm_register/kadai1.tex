@@ -1,1 +1,126 @@
-\chapter{即値代入の規則性}
+\chapter{即値代入の制限における規則性}
+\section{実験の目的}
+\aasm の{\ttfamily mov}命令\footnote{レジスタに即値，またはレジスタの値を代入する命令．}は，\iasm で扱った{\ttfamily mov}命令と対応する．しかし，\aasm の{\ttfamily mov}命令において，レジスタに代入できる即値には制限がある．本実験の目的は，制限について調べることである．
+\section{実験の方法}
+コンピュータ（\ref{src:usingpc}）を利用して，{\ttfamily mov.s}（\ref{src:mov}）ファイルをアセンブルする．
+\begin{lstlisting}[caption={利用コンピュータ及び実行環境},label={src:usingpc},language={Bash},numbers={none},breakindent={0pt}]
+$ uname -a
+Linux KUT20VLIN-322 5.4.0-70-generic #78~18.04.1-Ubuntu SMP Sat Mar 20 14:10:07 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
+$ arm-none-eabi-as --version
+GNU assembler (2,27-9ubuntu1+9) 2.27
+$ arm-none-eabi-ld --version
+ - 不明 - 
+\end{lstlisting}
+\begin{tabular}[c]{cc}
+    \begin{minipage}[t]{0.45\textwidth}
+        \centering
+        \begin{lstlisting}[caption={アセンブル},label={src:assmeble},language={Bash},frame={left}]
+$ arm-none-eabi-as mov.s -o mov.o
+$ arm-none-eabi-ld mov.o -o mov
+$ ./mov ; echo $?
+3
+    \end{lstlisting}
+        \begin{flushleft}
+            \ref{src:assmeble}: 4行目は，\ref{src:mov}: 5行目のテスト値を出力する．
+        \end{flushleft}
+    \end{minipage} &
+    \begin{minipage}[t]{0.45\textwidth}
+        \centering
+        \begin{lstlisting}[caption={{\ttfamily mov.s}},label={src:mov},frame={left}]
+    .section    .text
+    .global     _start
+_start:
+    mov r7, #1
+    mov r0, #3 @ test number
+    swi #0
+\end{lstlisting}
+    \end{minipage}
+    \vspace{0.5em}                                                                          \\
+    \begin{minipage}[c]{0.45\textwidth}
+        アセンブル（\ref{src:assmeble}）の際に\ref{src:error}の出力が得られた場合は，\ref{src:mov}: 5行目に問題があり即値の代入に失敗している．
+    \end{minipage}
+    \hspace{1em}                                                                          &
+    \begin{minipage}[c]{0.45\textwidth}
+        \begin{lstlisting}[numbers={none},caption={Error出力},label={src:error},frame={single}]
+mov.s: Assembler messages:
+mov.s:5: Error: invalid constant (4d1) after fixup
+    \end{lstlisting}
+    \end{minipage}
+\end{tabular}
+様々なテスト値を簡単に試すためにスクリプトファイルによる自動実行プログラム（\ref{src:test}）を作成し，実行した（\ref{src:testexec}）．
+実行するに際して，空ファイル{\ttfamily test.s}を作成し，{\ttfamily mov.s}の一部を，変更する必要がある．テストする即値は，\(1\leq N\leq 2^{21}\)である．
+\begin{center}
+    \begin{minipage}[t]{0.34\textwidth}
+        \centering
+        \begin{lstlisting}[caption={{\ttfamily mov.s}変更後},label={src:mov2},frame={left}]
+    .equ    N,  %d
+    .section    .text
+    .global     _start
+_start:
+    mov r7, #1
+    mov r0, #N @ test number
+    swi #0
+    \end{lstlisting}
+        \begin{lstlisting}[language={Bash},numbers={none},caption={実行},label={src:testexec},frame={leftline}]
+$ bash test.sh          
+    \end{lstlisting}
+    \end{minipage}
+    \hspace{2em}
+    \begin{minipage}[t]{0.58\textwidth}
+        \centering
+        \begin{lstlisting}[language={bash},caption={{\ttfamily test.sh}},label={src:test},frame={left}]
+#!/bin/bash
+W=0
+for i in 'seq 0 2097152'
+do
+sed -e "s/%d/$i/g" mov.s > test.s
+arm-none-eabi-as test.s -o test.o > /dev/null 2>&1
+if [ $? -eq 0]; then
+    echo "$i, $(( $i - $W ))"
+    V=$i
+    W-$i
+fi
+done
+    \end{lstlisting}
+    \end{minipage}
+\end{center}
+実行結果には，アセンブルできた即値とその即値の前にアセンブルできた即値との差（前項との差）が出力される．
+\section{実験結果}
+実験結果を\ref{tbl:実験結果}に示す．
+\begin{table}[h]
+    \begin{minipage}[t]{0.45\textwidth}
+        \centering
+        \caption{実験結果}
+        \label{tbl:実験結果}
+        \scalebox{0.8}{
+            \begin{tabular}{lcc}
+                \multicolumn{1}{c}{入力数値} & アセンブルの可否 & \multicolumn{1}{c}{前項との差} \\
+                \hline
+                0                        & OK       & -                         \\
+                1                        & OK       & 1                         \\
+                2                        & OK       & 1                         \\
+                \vdots                   & \vdots   & \vdots                    \\
+                256                      & OK       & 1                         \\
+                260                      & OK       & 4                         \\
+                \vdots                   & \vdots   & \vdots                    \\
+                1024                     & OK       & 4                         \\
+                1040                     & OK       & 16                        \\
+                \vdots                   & \vdots   & \vdots                    \\
+                4096                     & OK       & 16                        \\
+                4160                     & OK       & 64                        \\
+                \vdots                   & \vdots   & \vdots                    \\
+                16384                    & OK       & 64                        \\
+                16640                    & OK       & 256                       \\
+                \vdots                   & \vdots   & \vdots                    \\
+                66536                    & OK       & 256                       \\
+                65569                    & OK       & 1024                      \\
+                \vdots                   & \vdots   & \vdots                    \\
+                \hline
+            \end{tabular}
+        }
+    \end{minipage}
+    \begin{minipage}[t]{0.45\textwidth}
+        \hspace{1\zw}
+        \ref{tbl:実験結果}の他にも，\(2^{32}-1\)，の値もアセンブルできた．
+    \end{minipage}
+\end{table}
