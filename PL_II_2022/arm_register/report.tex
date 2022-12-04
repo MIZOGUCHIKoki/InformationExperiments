@@ -3,11 +3,14 @@
 \usepackage{amsmath,amssymb,mathtools}
 \usepackage{fancyhdr,framed}
 \usepackage{hyperref,graphics}
+\usepackage{wrapfig}
 \usepackage{type1cm}
 \usepackage{listings,lstlangarm}
-\usepackage{tcolorbox,url,cite}
+\usepackage{tcolorbox,url,cite,float}
+\usepackage{tikz}
+\usetikzlibrary{calc}
 \tcbuselibrary{raster,skins}
-\bibliographystyle{jusrt}
+\bibliographystyle{junsrt}
 
 \hypersetup{
     colorlinks=true,
@@ -29,7 +32,7 @@
 }
 \renewcommand{\lstlistingname}{}
 \AtBeginDocument{
-    \renewcommand{\thelstlisting}{src \thechapter.\arabic{lstlisting}}
+    \renewcommand{\thelstlisting}{src\ \arabic{lstlisting}}
 }
 \lstset{
         %プログラム言語(複数の言語に対応，C,C++も可)
@@ -85,8 +88,8 @@
   \secdef\@chapter\@schapter}
   \renewcommand{\figurename}{}
   \renewcommand{\tablename}{}
-  \renewcommand{\thefigure}{Fig\ \thechapter.\arabic{figure}}
-  \renewcommand{\thetable}{Tbl\ \thechapter.\arabic{table}}
+  \renewcommand{\thefigure}{Fig\ \arabic{figure}}
+  \renewcommand{\thetable}{Tbl\ \arabic{table}}
   \@addtoreset{figure}{chapter}
   \@addtoreset{table}{chapter}
   \@addtoreset{lstlisting}{chapter}
