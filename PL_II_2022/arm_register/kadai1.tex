@@ -1,6 +1,6 @@
 \chapter{即値代入の制限における規則性}
 \section{実験の目的}
-\aasm の{\ttfamily mov}命令\footnote{レジスタに即値，またはレジスタの値を代入する命令．}は，\iasm で扱った{\ttfamily mov}命令と対応する．しかし，\aasm の{\ttfamily mov}命令において，レジスタに代入できる即値には制限がある．本実験の目的は，制限について調べることである．
+\aasm の{\ttfamily mov}命令\footnote{レジスタに即値，またはレジスタの値を代入する命令．}は，\iasm で扱った{\ttfamily mov}命令と対応する．しかし，\aasm の{\ttfamily mov}命令において，レジスタに代入できる即値には制限がある．本実験の目的は，その制限について実験に基づき示すことである．\par
 \section{実験の方法}
 コンピュータ（\ref{src:usingpc}）を利用して，{\ttfamily mov.s}（\ref{src:mov}）ファイルをアセンブルする．
 \begin{lstlisting}[caption={利用コンピュータ及び実行環境},label={src:usingpc},language={Bash},numbers={none},breakindent={0pt}]
@@ -8,8 +8,8 @@ $ uname -a
 Linux KUT20VLIN-322 5.4.0-70-generic #78~18.04.1-Ubuntu SMP Sat Mar 20 14:10:07 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
 $ arm-none-eabi-as --version
 GNU assembler (2,27-9ubuntu1+9) 2.27
-$ arm-none-eabi-ld --version
- - 不明 - 
+$ bash --version
+GNU bash, バージョン 4.4.20(1)-release (x86_64-pc-linux-gnu)
 \end{lstlisting}
 \begin{tabular}[c]{cc}
     \begin{minipage}[t]{0.45\textwidth}
@@ -48,7 +48,7 @@ mov.s:5: Error: invalid constant (4d1) after fixup
     \end{minipage}
 \end{tabular}
 様々なテスト値を簡単に試すためにスクリプトファイルによる自動実行プログラム（\ref{src:test}）を作成し，実行した（\ref{src:testexec}）．
-実行するに際して，空ファイル{\ttfamily test.s}を作成し，{\ttfamily mov.s}の一部を，変更する必要がある．テストする即値は，\(1\leq N\leq 2^{21}\)である．
+実行するに際して，空ファイル{\ttfamily test.s}を作成し，{\ttfamily mov.s}の一部を，変更する必要がある．テストする即値は，\(1\leq N\leq 2^{25}\)である．
 \begin{center}
     \begin{minipage}[t]{0.34\textwidth}
         \centering
@@ -68,15 +68,15 @@ $ bash test.sh
     \hspace{2em}
     \begin{minipage}[t]{0.58\textwidth}
         \centering
-        \begin{lstlisting}[language={bash},caption={{\ttfamily test.sh}},label={src:test},frame={left}]
+        \begin{lstlisting}[language={Bash},caption={{\ttfamily test.sh}},label={src:test},frame={left}]
 #!/bin/bash
 W=0
-for i in 'seq 0 2097152'
+for i in 'seq 0 33554432'
 do
 sed -e "s/%d/$i/g" mov.s > test.s
 arm-none-eabi-as test.s -o test.o > /dev/null 2>&1
 if [ $? -eq 0]; then
-    echo "$i, $(( $i - $W ))"
+    echo "$i, OK, $(( $i - $W ))"
     V=$i
     W-$i
 fi
@@ -86,12 +86,13 @@ done
 \end{center}
 実行結果には，アセンブルできた即値とその即値の前にアセンブルできた即値との差（前項との差）が出力される．
 \section{実験結果}
-実験結果を\ref{tbl:実験結果}に示す．
+実験結果を\ref{tbl:規則的な実験結果}，\ref{tbl:例外的な実験結果の一部}に示す．
 \begin{table}[h]
+    \centering
     \begin{minipage}[t]{0.45\textwidth}
         \centering
-        \caption{実験結果}
-        \label{tbl:実験結果}
+        \caption{規則的な実験結果}
+        \label{tbl:規則的な実験結果}
         \scalebox{0.8}{
             \begin{tabular}{lcc}
                 \multicolumn{1}{c}{入力数値} & アセンブルの可否 & \multicolumn{1}{c}{前項との差} \\
@@ -115,12 +116,46 @@ done
                 66536                    & OK       & 256                       \\
                 65569                    & OK       & 1024                      \\
                 \vdots                   & \vdots   & \vdots                    \\
+                \(2^{24}\)               & OK       & \(4^9\)                   \\
                 \hline
             \end{tabular}
         }
     \end{minipage}
     \begin{minipage}[t]{0.45\textwidth}
-        \hspace{1\zw}
-        \ref{tbl:実験結果}の他にも，\(2^{32}-1\)，の値もアセンブルできた．
+        \centering
+        \caption{例外的な実験結果}
+        \label{tbl:例外的な実験結果の一部}
+        \scalebox{0.8}{
+            \begin{tabular}{lcc}
+                \multicolumn{1}{c}{入力数値} & アセンブルの可否 & 前項との差 \\
+                \hline
+                \(2^{32}-1\)             & OK       &       \\
+                \(2^{31}-1\)             & OK       &       \\
+                \(2^{30}-1\)             & OK       &       \\
+                \multicolumn{3}{c}{\vdots}                  \\
+                \hline
+            \end{tabular}
+        }
+        \begin{flushleft}
+            {
+                \ref{tbl:規則的な実験結果}を入力数値\(n\in\{0\}\cup\mathbb{Z_+}\)に対して，アセンブルの可能条件を一般化する．
+                \begin{tcolorbox}[
+                        enhanced,
+                        title={\bfseries \hypertarget{kisoku1}{規則 1}},
+                        attach boxed title to top left={xshift=3mm,yshift*=-\tcboxedtitleheight/2},
+                        sharp corners
+                    ]
+                    \begin{align*}
+                        2^p< n\leq 2^{p+1} &    & (p=2k+6)
+                        \intertext{となる\(k(1\leq k\leq 9)\)に対して，}
+                        n\bmod 4^k         & =0
+                        \intertext{が\(n\)をアセンブルできる条件である．}
+                    \end{align*}
+                \end{tcolorbox}
+            }
+        \end{flushleft}
     \end{minipage}
 \end{table}
+\section{考察}
+\ref{tbl:規則的な実験結果}より，{\ttfamily mov}命令による24Bitまでの即値の代入に関しては\hyperlink{kisoku1}{\bfseries 規則1}に従っていることが判る．ただし，\ref{tbl:例外的な実験結果の一部}より24Bit以降の即値の代入に関してはこの限りでない．\par
+また，\cite{armasm}より，

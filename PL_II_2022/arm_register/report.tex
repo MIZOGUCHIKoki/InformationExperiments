@@ -1,10 +1,14 @@
 \documentclass[a4paper,11pt,twoside]{ltjsreport}
 \usepackage[top=20truemm,bottom=20truemm,left=15truemm,right=15truemm,headheight=20pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools}
 \usepackage{fancyhdr,framed}
 \usepackage{hyperref,graphics}
 \usepackage{type1cm}
 \usepackage{listings,lstlangarm}
+\usepackage{tcolorbox,url,cite}
+\tcbuselibrary{raster,skins}
 \bibliographystyle{jusrt}
+
 \hypersetup{
     colorlinks=true,
     citecolor=black,
@@ -22,12 +26,6 @@
     \renewcommand{\headrulewidth}{1.0pt}
     \fancyhead[LE,RO]{\leftmark}
     \fancyfoot[C]{-\ \thepage\ -}
-}
-\fancypagestyle{toc}{
-    \renewcommand{\headrulewidth}{0.0pt}
-    \fancyhf{}
-    \pagenumbering{roman}
-    \cfoot{-\ \thepage\ -}
 }
 \renewcommand{\lstlistingname}{}
 \AtBeginDocument{
@@ -72,13 +70,12 @@
 \lstdefinelanguage{Bash}{
     alsodigit = {-},
     morekeywords=[1]{
-        uname,arm-none-eabi-as,arm-none-eabi-ld,for,do,done,fi,if,sed,echo,bash
+        uname,arm-none-eabi-as,arm-none-eabi-ld
     },
-    morecomment=[l]{\#},
     sensitive=true
 }
 
-\title{{\normalsize 情報学群実験第2 レポート}\\\vspace{1em}ARM アセンブリ言語における即値代入の制限に関する実験 } 
+\title{{\normalsize 情報学群実験第2 レポート}\\\vspace{1em}ARM アセンブリ言語の即値代入制限に関する実験 } 
 \author{1250373 溝口洸熙\thanks{高知工科大学 情報学群 2年 清水研究室}}
 \date{\today}
 \makeatletter
@@ -101,14 +98,9 @@
 \newcommand{\iasm}{{\ttfamily i386 Assembler}}
 \begin{document}
 \maketitle
-\clearpage
-\pagestyle{toc}
-\renewcommand{\lstlistlistingname}{ソースコード}
-\tableofcontents
-\lstlistoflistings
-\clearpage
 \pagestyle{pg}
 \setcounter{page}{0}
 \pagenumbering{arabic}
 \input{kadai1.tex}
+\bibliography{bib}
 \end{document}
