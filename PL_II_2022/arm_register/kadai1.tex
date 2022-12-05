@@ -48,7 +48,7 @@ mov.s:5: Error: invalid constant (4d1) after fixup
     \end{minipage}
 \end{tabular}
 様々なテスト値を簡単に試すためにスクリプトファイルによる自動実行プログラム（\ref{src:test}）を作成し，実行した\footnote{実行するに際して，空ファイル{\ttfamily test.s}を作成し，{\ttfamily mov.s}の一部を変更する必要がある．}（\ref{src:testexec}）．
-テストする即値は，\(1\leq N\leq 15512\)である．実行結果には，アセンブルできた即値とその即値の前にアセンブルできた即値との差（前項との差）が出力される．\par
+テストする即値は，\(1\leq N\leq 266240\)である．実行結果には，アセンブルできた即値とその即値の前にアセンブルできた即値との差（前項との差）が出力される．\par
 手入力での実験に関しては，実験したい数値\(n\)を\ref{src:mov}: 5行目の {\ttfamily mov r0, \#n}と入力し，アセンブルする．
 \begin{center}
     \begin{minipage}[t]{0.34\textwidth}
