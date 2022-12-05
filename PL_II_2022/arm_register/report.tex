@@ -27,7 +27,7 @@
 \fancypagestyle{pg}{%
     \fancyhf{}
     \renewcommand{\headrulewidth}{1.0pt}
-    \fancyhead[LE,RO]{\leftmark}
+    \fancyhead[LO,RE]{\leftmark}
     \fancyfoot[C]{-\ \thepage\ -}
 }
 \fancypagestyle{sj}{
@@ -78,7 +78,7 @@
 \lstdefinelanguage{Bash}{
     alsodigit = {-},
     morekeywords=[1]{
-        uname,arm-none-eabi-as,arm-none-eabi-ld
+        uname,arm-none-eabi-as,arm-none-eabi-ld,for,if,fi,done,sed,do,bash
     },
     sensitive=true
 }
@@ -93,8 +93,8 @@
   \secdef\@chapter\@schapter}
   \renewcommand{\figurename}{}
   \renewcommand{\tablename}{}
-  \renewcommand{\thefigure}{Fig\ \arabic{figure}}
-  \renewcommand{\thetable}{Tbl\ \arabic{table}}
+  \renewcommand{\thefigure}{Fig: \arabic{figure}}
+  \renewcommand{\thetable}{Tbl: \arabic{table}}
   \@addtoreset{figure}{chapter}
   \@addtoreset{table}{chapter}
   \@addtoreset{lstlisting}{chapter}
