@@ -23,7 +23,7 @@
 \ltjsetparameter{jacharrange={-2}}
 
 % set pagestyle
-\renewcommand{\chaptermark}[1]{\markboth{第\ \thechapter\ 章\ \ #1}{}}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
 \fancypagestyle{pg}{%
     \fancyhf{}
     \renewcommand{\headrulewidth}{1.0pt}
@@ -104,6 +104,7 @@
 % define commands.
 \newcommand{\aasm}{{\ttfamily arm Assembler}}
 \newcommand{\iasm}{{\ttfamily i386 Assembler}}
+\renewcommand{\thesection}{\arabic{section}}
 \begin{document}
 \maketitle
 \pagestyle{pg}

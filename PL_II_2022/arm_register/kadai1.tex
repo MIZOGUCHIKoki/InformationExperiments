@@ -1,4 +1,4 @@
-\chapter{即値代入の制限における規則性}
+\chapter*{即値代入の制限における規則性}
 \section{実験の目的}
 \aasm の{\ttfamily mov}命令\footnote{レジスタに即値，またはレジスタの値を代入する命令．}は，\iasm で扱った{\ttfamily mov}命令と対応する．しかし，\aasm の{\ttfamily mov}命令において，レジスタに代入できる即値には制限がある．本実験の目的は，その制限について実験に基づき示すことである．\par
 \section{実験の方法}
@@ -48,7 +48,8 @@ mov.s:5: Error: invalid constant (4d1) after fixup
     \end{minipage}
 \end{tabular}
 様々なテスト値を簡単に試すためにスクリプトファイルによる自動実行プログラム（\ref{src:test}）を作成し，実行した\footnote{実行するに際して，空ファイル{\ttfamily test.s}を作成し，{\ttfamily mov.s}の一部を変更する必要がある．}（\ref{src:testexec}）．
-テストする即値は，\(1\leq N\leq 15512\)である．実行結果には，アセンブルできた即値とその即値の前にアセンブルできた即値との差（前項との差）が出力される．
+テストする即値は，\(1\leq N\leq 15512\)である．実行結果には，アセンブルできた即値とその即値の前にアセンブルできた即値との差（前項との差）が出力される．\par
+手入力での実験に関しては，実験したい数値\(n\)を\ref{src:mov}: 5行目の {\ttfamily mov r0, \#n}と入力し，アセンブルする．
 \begin{center}
     \begin{minipage}[t]{0.34\textwidth}
         \centering
@@ -144,8 +145,12 @@ done
             \begin{tcolorbox}[
                     enhanced,
                     title={\bfseries \hypertarget{kisoku1}{規則 1}},
-                    attach boxed title to top left={xshift=3mm,yshift*=-\tcboxedtitleheight/2},
-                    sharp corners
+                    boxed title style={skin=enhancedfirst jigsaw,arc=1mm,bottom=0mm,boxrule=0mm},
+                    sharp corners=northwest,
+                    arc=1mm,
+                    attach boxed title to top left={yshift=-.5mm},
+                    colframe=gray!80,
+                    colbacktitle=gray!80,
                 ]
                 \begin{align*}
                     2^p< n\leq 2^{p+2} &    & (p=2k+6)
@@ -161,8 +166,35 @@ done
 \newcommand{\kisokua}{\hyperlink{kisoku1}{\bfseries 規則1}}
 \paragraph{結果からの考察}\ref{tbl:実験結果シェル}より，{\ttfamily mov}命令による18ビットまでの即値の代入に関しては\kisokua に従っていることが判る．
 さらに，入力数値のビット列が8ビットに収まり，その8ビットに収まったビット列の先頭と，レジスタの1ビット目との距離が2の倍数である必要がある（\ref{fig:exec}）．\par
-また\ref{tbl:実験結果手入力}より，入力数値\(i\)が{\ttfamily 0xffffff}より大きい場合，\(N(i)\)が\kisokua に準拠するならばアセンブルが可能であることが予想される（\ref{fig:exec2}）．\par
-つまり，入力数値\(n\in\{0\}\cup\mathbb{Z_+}\)に対して，アセンブルの可能条件は以下のようになることが予想される．
+\paragraph{条件の推測} \ref{fig:exec}，\ref{fig:exec2}より，入力数値に対して右に\(2n(n<16)\)回ローテートし，上位24ビットが全て同じ数値であれば{\ttfamily mov}命令での即値代入が可能であると推測した．
+\ref{tbl:実験結果手入力}より，入力数値\(i\)が{\ttfamily 0xFFFFFF}より大きい場合，\(N(i)\)が\kisokua に準拠するならばアセンブルが可能であることが予想される（\ref{fig:exec2}）．\par
+従って，入力数値\(n\in\{0\}\cup\mathbb{Z_+}\)に対して，アセンブルの可能条件は以下のようになることが予想される．
+\begin{tcolorbox}[
+        enhanced,
+        title={\bfseries 規則},
+        boxed title style={skin=enhancedfirst jigsaw,arc=1mm,bottom=0mm,boxrule=0mm},
+        sharp corners=northwest,
+        arc=1mm,
+        attach boxed title to top left={yshift=-.5mm},
+        colframe=black,
+        colbacktitle=black,
+    ]
+    \begin{equation}
+        n' =\left\{
+        \begin{aligned}
+            n    &  & (0\leq n<2^{24})        \\
+            N(n) &  & (2^{24}\leq n<2^{31}-1)
+        \end{aligned}
+        \right.
+    \end{equation}
+    \tcblower
+    \begin{align*}
+        2^p< n'\leq 2^{p+2} &    & (p=2k+6)
+        \intertext{となる\(k(1\leq k\leq 5)\)に対して，}
+        n'\bmod 4^k         & =0
+    \end{align*}
+    であることが，\(n\)をアセンブルできる条件である．
+\end{tcolorbox}
 \newcounter{reg}
 \setcounter{reg}{-1}
 \newcommand{\reg}[1][]{\refstepcounter{reg}\arabic{reg}}
@@ -194,6 +226,7 @@ done
             \node[below] at ($(4,0)!0.5!(8,0)$){\scriptsize 8ビットに収まっている};
         \end{tikzpicture}
     \end{center}
+    \vspace{-1em}
     \caption{アセンブル可能な即値の例2}
     \label{fig:exec2}
     \begin{center}
@@ -221,7 +254,8 @@ done
             \node[below] at ($(4,0)!0.5!(8,0)$){\scriptsize 8ビットに収まっている};
         \end{tikzpicture}
     \end{center}
-    \caption{アセンブルが不可能な即値の例1}
+    \vspace{-1em}
+    \caption{アセンブルが不可能な即値の例}
     \setcounter{reg}{-1}
     \begin{center}
         \begin{tikzpicture}
@@ -242,33 +276,6 @@ done
             \node at (\u,0.5){{\ttfamily 0}};
             \foreach \u in {0.25,0.75,...,3.75}
             \node at (\u,0.5){{\ttfamily 0}};
-            \draw[latex-latex,thick](8.5,-0.5)--(16,-0.5)node[midway,fill=white]{\scriptsize 2の倍数ビットではない};
-            \draw[dashed](8.5,0)--(8.5,-1);
-            \draw[dashed](16,0)--(16,-1);
-            \node[below] at ($(4,0)!0.5!(9,0)$){\scriptsize 8ビットより大きい};
-        \end{tikzpicture}
-    \end{center}
-    \caption{アセンブルが不可能な即値の例2}
-    \setcounter{reg}{-1}
-    \begin{center}
-        \begin{tikzpicture}
-            \fill[fill=magenta!10,opacity=.5](4,0)rectangle(8.5,1);
-            \draw[thick](4,0)rectangle(8.5,1);
-            \draw (0,0) rectangle (16,1);
-            \foreach \u in {0.5,1.0, ..., 16.0}
-            \draw (\u,0)--(\u,0.2);
-            \foreach \u in {0.5,1.0, ..., 16.0}
-            \draw (\u,1)--(\u,0.8);
-            \foreach \u in {4.25,5.25,6.75,7.75,8.25}
-            \node at (\u,0.5){{\ttfamily 0}};
-            \foreach \u in {4.75,5.75,6.25,7.25}
-            \node at (\u,0.5){{\ttfamily 1}};
-            \foreach \u in {15.75,15.25,...,0.25}
-            \node[above] at (\u,1){\scriptsize\ttfamily \reg};
-            \foreach \u in {15.75,15.25,...,8.75}
-            \node at (\u,0.5){{\ttfamily 1}};
-            \foreach \u in {0.25,0.75,...,3.75}
-            \node at (\u,0.5){{\ttfamily 1}};
             \draw[latex-latex,thick](8.5,-0.5)--(16,-0.5)node[midway,fill=white]{\scriptsize 2の倍数ビットではない};
             \draw[dashed](8.5,0)--(8.5,-1);
             \draw[dashed](16,0)--(16,-1);
@@ -318,7 +325,7 @@ done
 さらに，12ビットの即値を12ビットの番号として処理するのではなく，4ビットの回転値と8ビットの値として処理する（\ref{fig:即値の利用}）．
 この回転値\(r\)は即値\(I\)を右へ\(2r\)ローテートするために用いる．\par
 仮に\(i=\){\ttfamily\ 0x00D30000}が入力されたとする．\(i\)のビット列と右ローテートを\ref{fig:ex}に示す．\(i\)はそのままだと即値として利用できないため，即値として利用できる下位8ビット\(I\)にローテートさせる．（シフトではない．）
-このとき16ビットシフトさせたのでこの値を2で割った8を回転数\(r\)に格納し，下位12ビットのみで23ビット必要である数値\(i=\){\ttfamily\ 0x00D30000}を\ref{fig:結果}のように表すことができる．
+このとき16ビットシフトさせたのでこの値を2で割った8を回転数\(r\)に格納し，下位12ビットのみで23ビット必要である数値\(i=\){\ttfamily\ 0x00D30000}を\ref{fig:結果}のように表すことができる．\par
 \begin{figure}[H]
     \centering
     \caption{\(i\)のビット列，右ローテート}
