@@ -167,7 +167,7 @@ done
 \paragraph{結果からの考察}\ref{tbl:実験結果シェル}より，{\ttfamily mov}命令による18ビットまでの即値の代入に関しては\kisokua に従っていることが判る．
 さらに，入力数値のビット列が8ビットに収まり，その8ビットに収まったビット列の先頭と，レジスタの1ビット目との距離が2の倍数である必要がある（\ref{fig:exec}）．\par
 \paragraph{条件の推測} \ref{fig:exec}，\ref{fig:exec2}より，入力数値に対して右に\(2n(n<16)\)回ローテートし，上位24ビットが全て同じ数値であれば{\ttfamily mov}命令での即値代入が可能であると推測した．
-\ref{tbl:実験結果手入力}より，入力数値\(i\)が{\ttfamily 0xFFFFFF}より大きい場合，\(N(i)\)が\kisokua に準拠するならばアセンブルが可能であることが予想される（\ref{fig:exec2}）．\par
+\ref{tbl:実験結果手入力}より，入力数値\(i\)が{\ttfamily 0xFFFFFF}より大きい場合，\(N(i)\)が\kisokua に準拠するならばアセンブル可能であることが予想される（\ref{fig:exec2}）．\par
 従って，入力数値\(n\in\{0\}\cup\mathbb{Z_+}\)に対して，アセンブルの可能条件は以下のようになることが予想される．
 \begin{tcolorbox}[
         enhanced,
@@ -226,6 +226,7 @@ done
             \node[below] at ($(4,0)!0.5!(8,0)$){\scriptsize 8ビットに収まっている};
         \end{tikzpicture}
     \end{center}
+    \setcounter{reg}{-1}
     \vspace{-1em}
     \caption{アセンブル可能な即値の例2}
     \label{fig:exec2}
@@ -351,6 +352,7 @@ done
         \node at (\u,0.5){{\ttfamily 0}};
         \coordinate (S) at (8,0);
         \coordinate (G) at (4,0);
+        \setcounter{reg}{-1}
         \fill[fill=magenta!10,opacity=.5](12,-1)rectangle(16,-2);
         \draw[thick](12,-1)rectangle(16,-2);
         \draw (0,-1) rectangle (16,-2);
@@ -372,5 +374,5 @@ done
         \draw(S)--(S2);
     \end{tikzpicture}
 \end{figure}
-\paragraph{このような設計になっている理由} ARMデータ処理命令のビットレイアウト\cite{armasm}によると，1つのレジスタ内に{\ttfamily Cond}や，加減算，移動，比較などを正確に定義するための値も格納されている．32ビット全てを即値に当てることができず，より少ないビット数でより多くの数値を表現するためにこのような設計になったのだろう．
+\paragraph{このような設計になっている理由} ARMデータ処理命令のビットレイアウト\cite{armasm}によると，1つのレジスタ内に{\ttfamily Cond}や，加減算，移動，比較などを正確に定義するための値も格納されている．32ビット全てを即値に当てることができず，より少ないビット数でより多くの数値を表現するために，このような設計になったのだろう．
 この設計においての不都合は，幾つかの即値を{\ttfamily mov}命令において代入できないことだが，\(2^n(n\in\mathbb{N},0\leq n\leq 31)\)や，32ビット・ワード内の任意の4バイトの位置にあるバイト値の代入を保証しており，最も一般的なケースをカバーしているので使用上の問題は少ないと言える．\cite[p.52]{armprocesser}
