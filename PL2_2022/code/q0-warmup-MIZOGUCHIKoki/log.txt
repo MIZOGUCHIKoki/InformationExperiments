@@ -1,0 +1,67 @@
+* e0c8430 edit gitignore
+* f6c1133 clean
+* b734dc9 commit
+* eb86a37 changed file name
+* f4c8723 delete unnecessesary comment
+* 8fd5e16 completed
+* 5d0741a completed
+* 16c2c42 completed
+* 85b8bc8 able to execute
+* 0ac0090 execute cmp
+* 8059cbd execute
+* e6343af able to execute
+* 21d8111 able to execute
+* 26a5c3b edited
+* c951dc8 edited
+* 90e210a edited
+* 3b7d17a edited
+* 679d793 edited
+* 4045a57 edited
+* dc238db edited
+* 396f20b edited
+* a9a4d9d edited
+* 81bfdaa edited
+* 2cda7a1 delete reverse.s
+* bde9433 able to execute
+* 116121a create reverse.s
+* 5e5d30d edited
+* a2f8c71 edited
+* 58a696a edited
+* 5a80f4d edited
+* d79242b edited
+* 96e1f66 255以上の数値
+* c95a295 changed data1
+* 6f7a876 changed data2
+* 801e329 able to execute
+* 6d4b507 create and edited
+* 8e67156 able to execute
+* 73b3890 able to execute
+* 1f41e2c able to execute
+* e360a63 create file nprime255.s
+* 3229cc2 completed
+* 2fa535c remove file
+* 35a14fb edited completed
+* 2302cb3 changed file name
+* f5145b9 edited
+* 4a3e859 create sum35.s
+* 437969b create file 521.s
+* 665d63c create 521.s
+* d8fe56c remove test.text
+* b321580 create dir and files
+* afeb6d9 changed comments
+* e3d9187 cmpleted Exp_1.2-3
+* 978cad5 edited header
+* 243154e complete Exp1.2-1
+* c6f3df1 delete Exp Dir
+* cd23fab changed comments
+* fb7fa95 create Exp_1.2-1
+* 79b7b1f continue
+* b5328da create files
+* 4a4c684 delete test file
+* ca20f52 test
+* ab62195 changed answer
+* f3ec110 Update README.md
+* 5e35c0a 解答完了
+* ad33193 予習課題の修正（問題の方）
+* 6daee2d 解答入力完了
+* 272886f Initial commit

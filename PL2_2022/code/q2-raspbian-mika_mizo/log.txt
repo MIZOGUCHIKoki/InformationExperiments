@@ -1,0 +1,165 @@
+* 255df0e code golf
+* a5a904e commenout rm
+*   5a83a9d Merge branch 'master' of https://github.com/kut-info-pl2/q2-raspbian-mika_mizo
+|\  
+| * af25fd5 remove mizo target
+| * 9b00668 add exit code
+| * 2b41550 executed successfully
+| *   36062df Merge branch 'master' of https://github.com/kut-info-pl2/q2-raspbian-mika_mizo
+| |\  
+| * | 9e0d738 changed output
+* | | 39affb8 ta advised
+| |/  
+|/|   
+* | ba0d97d add sub sp, #4
+* | b79a747 rm push and pop r13
+* | a34668e add push and pop r13
+* | 3aee55a rm test2.s
+* | 349925a r3 changed r14
+* | 19e975f push and pop r14
+* | e388f3f ldr r3,r4
+* | eea390e bx r3 changed bx r14
+* | b9054e6 test
+|/  
+*   ce9bf08 Merge branch 'master' of https://github.com/kut-info-pl2/q2-raspbian-mika_mizo
+|\  
+| * 5167bbc test push
+* | 5d1e806 deal with all register
+|/  
+* f41514a remove pop r8
+* fa34ea6 added register operation mnemonic
+* a047b26 changed pop mnimonic
+* 40f224b test args
+* 0e427b9 added args of clean target
+* f2cd845 not to use r5 register
+* 5a29fce remove mnemonic
+* 3474172 add push and pop operation for r0 register
+* 20715ed changed making executable file file
+* 6667e50 remove useless mnemonic
+* 4ed4a92 remove useless mnemonic
+* 09a250a executed successfully
+* 0cdecfb remake testfile
+* 74e7e10 remove this file
+* 61075a5 fixed error of making exec file target
+* 54711c3 push and pop
+*   97117a7 Merge branch 'master' of https://github.com/kut-info-pl2/q2-raspbian-mika_mizo
+|\  
+| * 2217e0d only push
+* | 89d599d assemble deal with test file
+|/  
+* 9a272fa commit
+* 59d2ead initial commit
+* 3fbc966 changed args of clean target
+* f36e2ee initial commit
+* e6c2fbd executed successfully
+* 015df64 executed successfully
+* 8b1f6d8 null
+* 4764832 remove useless mnimonic
+* 69cf8e5 codegolf
+* ac0e06d remove useless mnemonic
+* ab30879 remove mnemonic [mov r0, #0]
+* 80b3678 remove useless code
+*   7de94ac Merge branch 'master' of https://github.com/kut-info-pl2/q2-raspbian-mika_mizo
+|\  
+| * e9e8625 code golf
+| * f104f23 code golf
+* | 65d81b7 codegolf
+|/  
+* 0bb227c accept code golf
+* d5c4b07 accept code golf
+*   da51b9d Merge branch 'master' of https://github.com/kut-info-pl2/q2-raspbian-mika_mizo
+|\  
+| * 0a3713f executed successfully
+* | 5ba2b30 codegolf set ndata-1
+|/  
+* c571f25 一つ前に戻した
+* 1b46fa7 codegolf addressing
+* fcabaef code golf
+*   101b60d Merge branch 'master' of https://github.com/kut-info-pl2/q2-raspbian-mika_mizo
+|\  
+| * 16f1873 executed successfully
+* | 31d1c2a test
+|/  
+* f1b17ca addpl changed addcs
+* 7c5f552 test
+* 32e6690 define memory
+* a3855e4 added write process (Segmentation Fault)
+* 5c02d94 test
+* b64accc ldrb changed ldr
+* c1a59da ldrsb to ldr
+* be32f5a ldrsbからsbを削除
+* 1da90bf data1, ndata .word to .byte
+* 56341f3 r2 ldrsb → ldrb
+* 36955ed r2を読み込むのをldrsbに変更
+* e985895 ldr =N
+*   028599a Merge branch 'master' of https://github.com/kut-info-pl2/q2-raspbian-mika_mizo
+|\  
+| * e85fa5d able to output number of digits
+* | 2d8b37b ndataを主記憶に変更
+|/  
+* 05fc0a2 first_push
+* 0836a64 first-push
+*   8992035 git pMerge branch 'master' of https://github.com/kut-info-pl2/q2-raspbian-mika_mizo
+|\  
+| * db8d218 remove useless mnemonic
+| *   85026ab Merge branch 'master' of https://github.com/kut-info-pl2/q2-raspbian-mika_mizo
+| |\  
+| * | f56440f fixed mnemonic
+* | | 2d85387 remove 0,1
+| |/  
+|/|   
+* | b97ff44 add message
+* | 042b250 Merge branch 'master' of https://github.com/kut-info-pl2/q2-raspbian-mika_mizo
+|\| 
+| *   00cc2e8 Merge branch 'master' of https://github.com/kut-info-pl2/q2-raspbian-mika_mizo
+| |\  
+| * | 3bcc49d executed successfully
+* | | eb58e75 add message
+| |/  
+|/|   
+* | 450a104 test
+|/  
+* a721554 code golf
+* 72b1939 loop0 add位置を変更
+* 5bb4b79 test
+* 31e3d9e 0と1反転
+* 9238b1b square + 1
+* 4f80860 loop1 cmp r2 #2
+* 91b932c fixed loop0
+* cfb79ac fixed square
+* cade3ea first push
+* b0dbfad remove mnemonic
+* 526571d remove mnemonic 'mov n-2, 0'
+* 80b412d remove cmp mnemonic
+* 04a5d5b changed clean arg
+* a247025 changed n of f(n)
+* de32cac executed successfully
+* e22107f added targets which making o file
+* a0e7680 initial commit
+* 321131d reduce commnand
+*   4b6468b Merge branch 'master' of https://github.com/kut-info-pl2/q2-raspbian-mika_mizo
+|\  
+| * f1b0a24 changed command of insert number
+| * 05286e7 executed sccuessfully
+* | e5dcf8d abs test
+|/  
+* 49b3ae9 first commit
+* 1ab42d3 first commit
+* 7508016 test Makefile
+* b6d05e1 remove test target
+* f9c4a8a fix typo
+* fb28217 added target for test
+* 34c1063 add Makefile
+* 3955534 test
+* fd2049b add target
+* 2f45c8c changed clean target. removing exec file function is added
+* f71a1dc remove test target
+* e59834b changed arges of making o file
+* befdf6b initial commit
+*   0a3d4a6 Merge branch 'master' of https://github.com/kut-info-pl2/q2-raspbian-mika_mizo
+|\  
+| * 7243dab test
+* | a8ce0b4 remove old file
+|/  
+* 650784d initial commit
+* 1784bc9 Initial commit
