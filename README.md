@@ -1,8 +1,8 @@
-## 情報学群実験 2022年度
-### 情報学群実験第1
+## 情報学群実験
+### 情報学群実験第1 (2022)
 - Study課題
 - [最終課題](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/main/PL1_2022/Minesweeper)
-### 情報学群実験第2
+### 情報学群実験第2 (2022 - 2023)
 - Report
 - [整列アルゴリズムに関する実験](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/main/PL2_2022/i386_sort)
 - [即値代入制限に関する実験](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/main/PL2_2022/arm_register)
