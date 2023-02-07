@@ -1,0 +1,115 @@
+\documentclass[a4j,11pt]{jsarticle}
+%jbbok:書籍・jsarticle:論文，短い文書・jreport:レポート・letter:手紙・twocolumn:2段組
+\usepackage{amsmath,amsfonts,amssymb,mathtools,ascmac,bm,float,comment,url,fancybox,calc,subcaption}
+\usepackage{wrapfig}
+\usepackage[T1]{fontenc}
+\usepackage[margin=20truemm]{geometry}
+\usepackage[dvipdfmx]{graphicx,color,hyperref}
+\usepackage{tikz,listings,jlisting}
+\usepackage{pxjahyper}
+\usepackage{xcolor}
+\hypersetup{
+    colorlinks=true,
+    citecolor=black,
+    linkcolor=black,
+    urlcolor=blue
+}
+
+    \usetikzlibrary{arrows}
+    \usetikzlibrary{intersections,calc,arrows.meta,backgrounds,shapes.geometric,shapes.misc,positioning,fit}
+
+    \setlength{\columnsep}{5mm}
+    \columnseprule=0.1mm
+    \renewcommand{\thefootnote}{\arabic{footnote})}
+    \captionsetup[subfigure]{labelformat=simple}
+    \renewcommand{\thesubfigure}{(\alph{subfigure})}
+
+\newcounter{point}
+\setcounter{point}{0}
+\newcommand{\Po}[1][]{\refstepcounter{point}変更点{\thepoint}}
+    \title{\vspace{0cm}Study課題 05}
+    \author{1250373 溝口洸熙\thanks{高知工科大学 情報学群 学士2年}} 
+    \date{\today}
+\renewcommand{\lstlistingname}{src.}
+\lstset{
+        %プログラム言語(複数の言語に対応，C,C++も可)
+    language = Java,
+        %背景色と透過度
+    %backgroundcolor={\color[gray]{.90}},
+        %枠外に行った時の自動改行
+    breaklines = true,
+        %自動改行後のインデント量(デフォルトでは20[pt])
+    breakindent = 10pt,
+        %標準の書体
+    basicstyle = \ttfamily\small,
+        %コメントの書体
+    commentstyle = {\itshape \color[cmyk]{1,0.4,1,0}},
+        %関数名等の色の設定
+    classoffset = 0,
+        %キーワード(int, ifなど)の書体
+    keywordstyle = {\bfseries \color[cmyk]{0,1,0,0}},
+        %表示する文字の書体
+    stringstyle = {\ttfamily \color[rgb]{0,0,1}},
+        %枠 tは上に線を記載, Tは上に二重線を記載
+        %他オプション：leftline，topline，bottomline，lines，single，shadowbox
+    frame = lines,
+        %frameまでの間隔(行番号とプログラムの間)
+    framesep = 5pt,
+        %行番号の位置
+    numbers = left,
+        %行番号の間隔
+    stepnumber = 1,
+        %行番号の書体
+    numberstyle = \small,
+        %タブの大きさ
+    tabsize = 4,
+        %キャプションの場所(tbならば上下両方に記載)
+    captionpos = t
+}
+
+\begin{document}
+%\twocolumn[
+\maketitle
+%]
+\begin{abstract}
+    このレポートは，Study課題の変更点をまとめたものである．コードの転記には\verb|listings|,\verb|jlisting|を用いており，描画には\ Ti\emph{k}\normalfont Z\ を用いている．このレポートは，ソースコードの行番号を消している．「変更点$n$」はカウンタを用いている．また，対戦相手が人間でない場合は，NPC（Non Player Character）と表記する．
+\end{abstract}
+\section*{前提}
+配布されたファイル\verb|Board.java|内にあったメソッドを全て使用している．
+\section*{\Po:先手後手の判定}
+このボードゲームの変更前は，人間とNPCとの対戦であり，人間が先手で固定されていた．変更後は，NPCとNPCとの対戦であり，先手か後手かの判別を記録するシステムはやや分かりにくい．\par
+そこで，プレイヤーが2人存在することを考えて，変数\verb|turn|を設け，何度碁盤が操作されたかを記録する．\verb|turn|を2で割った剰余を判定材料とし，先手か後手かの判断をしている．
+\section*{\Po:コメントの工夫}
+メソッドの返り値が\verb|Boolean|型の場合，\verb|true,false|のそれぞれの場合どのような意味を成すのか，コメントすることを心掛けた．
+たとえば，\verb|Board.java|の\ovalbox{\verb|isEnd();|}メソッドにおいて，\verb|true|の場合は「空白あり」，\verb|false|の場合は「空白なし」のコメントを付している．
+\section*{\Po:重複処理の削除}
+NPC同士の対戦であるので，双方の操作が同一である．つまり，先手の処理と後手の処理を人間 対 NPCの時のように分ける必要がないので，
+盤面の表示，勝利判定などは1度でよく，非常にシンプルなコードになった．（src.\ref{code}）
+\newpage
+\begin{lstlisting}[caption=\ttfamily C4.java, label=code, language=Java]
+while (true) {
+  int x = -1, y = -1;
+  turn++;
+  do {
+    x = rand.nextInt(5);
+    y = rand.nextInt(5);
+  } while (b.isLegal(x, y));
+  if(turn % 2 == 0){
+    System.out.println("先手は " + x + " " + y + " に置きました");
+  }else{
+    System.out.println("後手は " + x + " " + y + " に置きました");
+  }
+
+  b.showBoard();// 盤面表示
+
+  if(b.isWinning()) {// 勝利判定
+    break;
+  }
+
+  if(!b.isEnd()){// 空白の有無判定
+    hasEmpty = false;
+    break;
+  }
+}
+\end{lstlisting}
+\end{document}

@@ -1,0 +1,18 @@
+Tiles status
+爆弾      ：  -1
+爆弾以外  ：   0
+フラグ    ：  -2
+開かれた  ：   1
+
+TextColor
+1 blue
+2 (0, 125, 0)[Green]
+3 red
+0 white
+d black
+
+BackGroundColor
+0 white
+1 (200, 255, 255)[Cyan]
+2 red
+3 black

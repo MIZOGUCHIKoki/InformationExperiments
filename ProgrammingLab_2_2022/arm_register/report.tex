@@ -1,0 +1,116 @@
+\documentclass[a4paper,11pt,twoside]{ltjsreport}
+\usepackage[top=20truemm,bottom=20truemm,left=15truemm,right=15truemm,headheight=20pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{fancyhdr,framed}
+\usepackage{hyperref,graphics}
+\usepackage{wrapfig}
+\usepackage{type1cm}
+\usepackage{listings,lstlangarm}
+\usepackage{tcolorbox,url,cite,float}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\tcbuselibrary{raster,skins}
+\bibliographystyle{junsrt}
+
+\hypersetup{
+    colorlinks=true,
+    citecolor=black,
+    linkcolor=black,
+    urlcolor=blue
+}
+\renewcommand{\indent}{1\zw}
+\setlength{\parindent}{1\zw}
+\ltjsetparameter{jacharrange={-2}}
+
+% set pagestyle
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\fancypagestyle{pg}{%
+    \fancyhf{}
+    \renewcommand{\headrulewidth}{1.0pt}
+    \fancyhead[LO,RE]{\leftmark}
+    \fancyfoot[C]{-\ \thepage\ -}
+}
+\fancypagestyle{sj}{
+    \fancyhf{}
+    \renewcommand{\headrulewidth}{0pt}
+    \fancyfoot[C]{-\ \thepage\ -}
+}
+\renewcommand{\lstlistingname}{}
+\AtBeginDocument{
+    \renewcommand{\thelstlisting}{src\ \arabic{lstlisting}}
+}
+\lstset{
+        %プログラム言語(複数の言語に対応，C,C++も可)
+    language = [arm]Assembler,
+        %背景色と透過度
+    %backgroundcolor={\color[gray]{.90}},
+        %枠外に行った時の自動改行
+    breaklines = true,
+        %自動改行後のインデント量(デフォルトでは20[pt])
+    breakindent = 10pt,
+        %標準の書体
+    basicstyle = \ttfamily\small,
+        %コメントの書体
+    commentstyle = {\ttfamily \color[cmyk]{1,0.4,1,0}},
+        %関数名等の色の設定
+    classoffset = 0,
+        %キーワード(int, ifなど)の書体
+    keywordstyle = {\bfseries\ttfamily \color[cmyk]{0,1,0,0}},
+        %表示する文字の書体
+    stringstyle = {\ttfamily \color[rgb]{0,0,1}},
+        %枠 tは上に線を記載, Tは上に二重線を記載
+        %他オプション：leftline，topline，bottomline，lines，single，shadowbox
+    frame = single,
+        %frameまでの間隔(行番号とプログラムの間)
+    framesep = 5pt,
+        %行番号の位置
+    numbers = left,
+        %行番号の間隔
+    stepnumber = 1,
+        %行番号の書体
+    numberstyle = \small,
+        %タブの大きさ
+    tabsize = 4,
+        %キャプションの場所(tbならば上下両方に記載)
+    captionpos = t
+}
+
+\lstdefinelanguage{Bash}{
+    alsodigit = {-},
+    morekeywords=[1]{
+        uname,arm-none-eabi-as,arm-none-eabi-ld,for,if,fi,done,sed,do,bash
+    },
+    sensitive=true
+}
+
+\title{{\normalsize 情報学群実験第2 レポート}\\\vspace{1em}ARM アセンブリ言語の即値代入制限に関する実験 } 
+\author{1250373 溝口洸熙\thanks{高知工科大学 情報学群 2年 清水研究室}}
+\date{\today}
+\makeatletter
+\renewcommand{\chapter}{%
+  \if@openright\cleardoublepage\else\clearpage\fi
+  \global\@topnum\z@
+  \secdef\@chapter\@schapter}
+  \renewcommand{\figurename}{}
+  \renewcommand{\tablename}{}
+  \renewcommand{\thefigure}{Fig: \arabic{figure}}
+  \renewcommand{\thetable}{Tbl: \arabic{table}}
+  \@addtoreset{figure}{chapter}
+  \@addtoreset{table}{chapter}
+  \@addtoreset{lstlisting}{chapter}
+  \@addtoreset{footnote}{page}
+\makeatother
+
+% define commands.
+\newcommand{\aasm}{{\ttfamily arm Assembler}}
+\newcommand{\iasm}{{\ttfamily i386 Assembler}}
+\renewcommand{\thesection}{\arabic{section}}
+\begin{document}
+\maketitle
+\pagestyle{pg}
+\setcounter{page}{0}
+\pagenumbering{arabic}
+\input{kadai1.tex}
+\input{syaji.tex}
+\bibliography{bib}
+\end{document}
