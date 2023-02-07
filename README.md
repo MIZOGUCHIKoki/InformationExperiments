@@ -17,3 +17,5 @@
         - Contributors: [MIKAMI Shu](https://github.com/MikamiShu), [MIZOGUCHI Koki](https://github.com/MIZOGUCHIKoki),
     - [q3-g15](https://github.com/MIZOGUCHIKoki/g3-g15.git)
         - Contributors: [TANAKA Ryo](https://github.com/tanakaryo341), [MIKAMI Shu](https://github.com/MikamiShu), [MIZOGUCHI Koki](https://github.com/MIZOGUCHIKoki), [YAMADA Koki](https://github.com/1250382KoukiYamada)
+## プログラミング演習
+- [画像処理](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/main/ImageProcessing) 2022
