@@ -1,11 +1,11 @@
 ## 情報学群実験
 ### 情報学群実験第1 (2022)
 - Study課題
-- [最終課題](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/main/PL1_2022/Minesweeper)
+- [最終課題](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/main/ProgrammingLab_1/Minesweeper)
 ### 情報学群実験第2 (2022 - 2023)
 - Report
-    - [整列アルゴリズムに関する実験](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/main/PL2_2022/i386_sort)
-    - [即値代入制限に関する実験](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/main/PL2_2022/arm_register)
+    - [整列アルゴリズムに関する実験](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/main/ProgrammingLab_2/i386_sort)
+    - [即値代入制限に関する実験](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/main/ProgrammingLab_2/arm_register)
 - Source Code
     - [q0-warmup-MIZOGUCHIKoki](https://github.com/MIZOGUCHIKoki/q0-warmup-MIZOGUCHIKoki.git)
         - Contributor : [MIZOGUCHI Koki](https://github.com/MIZOGUCHIKoki),
