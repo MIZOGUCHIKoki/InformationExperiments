@@ -1,19 +1,19 @@
 ## 情報学群実験 2022年度
-- 情報学群実験第1
-    - Study課題
-    - [最終課題](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/main/PL1_2022/Minesweeper)
-- 情報学群実験第2
-  - Report
-    - [整列アルゴリズムに関する実験](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/main/PL2_2022/i386_sort)
-    - [即値代入制限に関する実験](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/main/PL2_2022/arm_register)
-  - Source Code
-    - [q0-warmup-MIZOGUCHIKoki](https://github.com/MIZOGUCHIKoki/q0-warmup-MIZOGUCHIKoki.git)
-        - Contributor : [MIZOGUCHI Koki](https://github.com/MIZOGUCHIKoki),
-    - [q1-i386-mika_mizo](https://github.com/MIZOGUCHIKoki/q1-i386-mika_mizo.git)
-        - Contributors: [MIKAMI Shu](https://github.com/MikamiShu), [MIZOGUCHI Koki](https://github.com/MIZOGUCHIKoki),
-    - [q2-raspbian-mika_mizo](https://github.com/MIZOGUCHIKoki/q2-raspbian-mika_mizo.git)
-        - Contributors: [MIKAMI Shu](https://github.com/MikamiShu), [MIZOGUCHI Koki](https://github.com/MIZOGUCHIKoki),
-    - [q3-rasppielement-mika_mizo](https://github.com/MIZOGUCHIKoki/q3-rasppielement-mika_mizo.git)
-        - Contributors: [MIKAMI Shu](https://github.com/MikamiShu), [MIZOGUCHI Koki](https://github.com/MIZOGUCHIKoki),
-    - [q3-g15](https://github.com/MIZOGUCHIKoki/g3-g15.git)
-        - Contributors: [TANAKA Ryo](https://github.com/tanakaryo341), [MIKAMI Shu](https://github.com/MikamiShu), [MIZOGUCHI Koki](https://github.com/MIZOGUCHIKoki), [YAMADA Koki](https://github.com/1250382KoukiYamada)
+### 情報学群実験第1
+- Study課題
+- [最終課題](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/main/PL1_2022/Minesweeper)
+### 情報学群実験第2
+- Report
+- [整列アルゴリズムに関する実験](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/main/PL2_2022/i386_sort)
+- [即値代入制限に関する実験](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/main/PL2_2022/arm_register)
+- Source Code
+- [q0-warmup-MIZOGUCHIKoki](https://github.com/MIZOGUCHIKoki/q0-warmup-MIZOGUCHIKoki.git)
+    - Contributor : [MIZOGUCHI Koki](https://github.com/MIZOGUCHIKoki),
+- [q1-i386-mika_mizo](https://github.com/MIZOGUCHIKoki/q1-i386-mika_mizo.git)
+    - Contributors: [MIKAMI Shu](https://github.com/MikamiShu), [MIZOGUCHI Koki](https://github.com/MIZOGUCHIKoki),
+- [q2-raspbian-mika_mizo](https://github.com/MIZOGUCHIKoki/q2-raspbian-mika_mizo.git)
+    - Contributors: [MIKAMI Shu](https://github.com/MikamiShu), [MIZOGUCHI Koki](https://github.com/MIZOGUCHIKoki),
+- [q3-rasppielement-mika_mizo](https://github.com/MIZOGUCHIKoki/q3-rasppielement-mika_mizo.git)
+    - Contributors: [MIKAMI Shu](https://github.com/MikamiShu), [MIZOGUCHI Koki](https://github.com/MIZOGUCHIKoki),
+- [q3-g15](https://github.com/MIZOGUCHIKoki/g3-g15.git)
+    - Contributors: [TANAKA Ryo](https://github.com/tanakaryo341), [MIKAMI Shu](https://github.com/MikamiShu), [MIZOGUCHI Koki](https://github.com/MIZOGUCHIKoki), [YAMADA Koki](https://github.com/1250382KoukiYamada)
