@@ -8,7 +8,7 @@
     - [Immediate assignment](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/main/ProgrammingLab_2/arm_register)
 - Source Code
     - [q0-warmup-MIZOGUCHIKoki](https://github.com/MIZOGUCHIKoki/q0-warmup-MIZOGUCHIKoki.git)
-        - Contributor : [MIZOGUCHI Koki](https://github.com/MIZOGUCHIKoki),
+        - Contributor : [MIZOGUCHI Koki](https://github.com/MIZOGUCHIKoki)
     - [q1-i386-mika_mizo](https://github.com/MIZOGUCHIKoki/q1-i386-mika_mizo.git)
         - Contributors: [MIKAMI Shu](https://github.com/MikamiShu), [MIZOGUCHI Koki](https://github.com/MIZOGUCHIKoki),
     - [q2-raspbian-mika_mizo](https://github.com/MIZOGUCHIKoki/q2-raspbian-mika_mizo.git)
