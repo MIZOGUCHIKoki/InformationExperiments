@@ -2,7 +2,7 @@
 MIZOGUCHI Koki (溝口 洸熙)
 - School of Information 3rd grade (2023)
 - E-mail: [250373b@ugs.kochi-tech.ac.jp](mailto:250373b@ugs.kochi-tech.ac.jp)
-⚠️：コードの剽窃はバレるので，行わないこと！！！
+- ⚠️：コードの剽窃はバレるので，行わないこと！！！
 ### 情報学群実験第1 (2022)
 - Study Works
 - [Final assignment](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/main/ProgrammingLab_1/Minesweeper)
