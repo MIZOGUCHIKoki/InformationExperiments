@@ -1,12 +1,18 @@
-## Information Laboratories
+## Information 
 MIZOGUCHI Koki (溝口 洸熙)
 - School of Information 3rd grade (2023)
 - E-mail: [250373b@ugs.kochi-tech.ac.jp](mailto:250373b@ugs.kochi-tech.ac.jp)
 - ⚠️：コードの剽窃はバレるので，行わないこと！！！
-### 情報学群実験第1 (2022)
+<details>
+<summary>情報学群実験第1 (2022)</summary>
+    
 - [Study Works](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/main/ProgrammingLab_1)
 - [Final assignment](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/main/ProgrammingLab_1/Minesweeper)
-### 情報学群実験第2 (2022 - 2023)
+</details>
+
+<details>
+<summary>情報学群実験第2 (2022 - 2023)</summary>
+    
 - Report
     - [Sort algorithm](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/main/ProgrammingLab_2/i386_sort)
     - [Immediate assignment](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/main/ProgrammingLab_2/arm_register)
@@ -21,7 +27,12 @@ MIZOGUCHI Koki (溝口 洸熙)
         - Contributors: [MIKAMI Shu](https://github.com/MikamiShu), [MIZOGUCHI Koki](https://github.com/MIZOGUCHIKoki),
     - [q3-g15](https://github.com/MIZOGUCHIKoki/q3-g15.git)
         - Contributors: [TANAKA Ryo](https://github.com/tanakaryo341), [MIKAMI Shu](https://github.com/MikamiShu), [MIZOGUCHI Koki](https://github.com/MIZOGUCHIKoki), [YAMADA Koki](https://github.com/1250382KoukiYamada)
-### 情報学群実験第3C / 3i
+
+</details>
+
+<details>
+<summary>情報学群実験第3C / 3i (2023)</summary>
+    
 - [Report](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/main/Report)
 - [Codes](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i)
   - [00_introduction](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/main/00_introduction)
@@ -38,5 +49,7 @@ MIZOGUCHI Koki (溝口 洸熙)
   - [12_Data analysis](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/main/12_DataAnalysis)
   - [13_Behavioral experiment](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/main/13_BehavioralExperiment)
   - [14_Data analysis statistical](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/main/14_DataAnalysisStatistical)
+</details>
+
 ## Programming Exercises
 - [Image processing](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/main/ImageProcessing) (2022)
