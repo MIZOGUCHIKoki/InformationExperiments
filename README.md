@@ -2,7 +2,7 @@
 MIZOGUCHI Koki (溝口 洸熙)
 - School of Information 3rd grade (2023)
 - E-mail: [250373b@ugs.kochi-tech.ac.jp](mailto:250373b@ugs.kochi-tech.ac.jp)
-- ⚠️：コードの剽窃はバレるので，行わないこと！！！
+- ⚠️：コードの剽窃はバレるので，行わないこと！！！（自分の力にもなりません．）
 ## 情報学群実験
 <details>
 <summary>情報学群実験第1 (2022)</summary>
