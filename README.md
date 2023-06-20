@@ -21,9 +21,7 @@ MIZOGUCHI Koki (溝口 洸熙)
         - Contributors: [MIKAMI Shu](https://github.com/MikamiShu), [MIZOGUCHI Koki](https://github.com/MIZOGUCHIKoki),
     - [q3-g15](https://github.com/MIZOGUCHIKoki/q3-g15.git)
         - Contributors: [TANAKA Ryo](https://github.com/tanakaryo341), [MIKAMI Shu](https://github.com/MikamiShu), [MIZOGUCHI Koki](https://github.com/MIZOGUCHIKoki), [YAMADA Koki](https://github.com/1250382KoukiYamada)
-## Programming Exercises
-- [Image processing](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/main/ImageProcessing) (2022)
-## 情報学群実験第3C / 3i
+### 情報学群実験第3C / 3i
 - [Report](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/main/Report)
 - [Codes](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i)
   - [00_introduction](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/main/00_introduction)
@@ -40,3 +38,5 @@ MIZOGUCHI Koki (溝口 洸熙)
   - [12_Data analysis](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/main/12_DataAnalysis)
   - [13_Behavioral experiment](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/main/13_BehavioralExperiment)
   - [14_Data analysis statistical](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/main/14_DataAnalysisStatistical)
+## Programming Exercises
+- [Image processing](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/main/ImageProcessing) (2022)
