@@ -7,16 +7,16 @@ MIZOGUCHI Koki (溝口 洸熙)
 <details>
 <summary>情報学群実験第1 (2022)</summary>
     
-- [Study Works](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/main/ProgrammingLab_1)
-- [Final assignment](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/main/ProgrammingLab_1/Minesweeper)
+- [Study Works](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/master/ProgrammingLab_1)
+- [Final assignment](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/master/ProgrammingLab_1/Minesweeper)
 </details>
 
 <details>
 <summary>情報学群実験第2 (2022 - 2023)</summary>
     
 - Report
-    - [Sort algorithm](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/main/ProgrammingLab_2/i386_sort)
-    - [Immediate assignment](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/main/ProgrammingLab_2/arm_register)
+    - [Sort algorithm](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/master/ProgrammingLab_2/i386_sort)
+    - [Immediate assignment](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/master/ProgrammingLab_2/arm_register)
 - Source Code
     - [q0-warmup-MIZOGUCHIKoki](https://github.com/MIZOGUCHIKoki/q0-warmup-MIZOGUCHIKoki.git)
         - Contributor : [MIZOGUCHI Koki](https://github.com/MIZOGUCHIKoki)
@@ -34,23 +34,23 @@ MIZOGUCHI Koki (溝口 洸熙)
 <details>
 <summary>情報学群実験第3C / 3i (2023)</summary>
     
-- [Report](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/main/Report)
+- [Report](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/master/Report)
 - [Codes](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i)
-  - [00_introduction](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/main/00_introduction)
-  - [01_EngineeringCharacteristicsOfSound](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/main/01_EngineeringCharacteristicsOfSound)
-  - [02_Frequency analysis](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/main/02_FrequencyAnalysis)
-  - [03_Speech synthesis](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/main/03_SpeechSynthesis)
-  - [04_Hearing audio signals](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/main/04_Hearing_AudioSignals)
-  - [05_Understanding images](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/main/05_UnderstandingImages)
-  - [06_Image filtering](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/main/06_ImageFiltering)
-  - [07_Direction aftereffect](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/main/07_DirectionAftereffect)
-  - [08_Fourier analysis of images](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/main/08_FourierAnalysisOfImages)
-  - [09_WEB interface](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/main/09_WebInterface)
-  - [10_Universal design](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/main/10_UniversalDesign)
-  - [12_Data analysis](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/main/12_DataAnalysis)
-  - [13_Behavioral experiment](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/main/13_BehavioralExperiment)
-  - [14_Data analysis statistical](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/main/14_DataAnalysisStatistical)
+  - [00_introduction](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/master/00_introduction)
+  - [01_EngineeringCharacteristicsOfSound](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/master/01_EngineeringCharacteristicsOfSound)
+  - [02_Frequency analysis](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/master/02_FrequencyAnalysis)
+  - [03_Speech synthesis](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/master/03_SpeechSynthesis)
+  - [04_Hearing audio signals](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/master/04_Hearing_AudioSignals)
+  - [05_Understanding images](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/master/05_UnderstandingImages)
+  - [06_Image filtering](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/master/06_ImageFiltering)
+  - [07_Direction aftereffect](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/master/07_DirectionAftereffect)
+  - [08_Fourier analysis of images](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/master/08_FourierAnalysisOfImages)
+  - [09_WEB interface](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/master/09_WebInterface)
+  - [10_Universal design](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/master/10_UniversalDesign)
+  - [12_Data analysis](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/master/12_DataAnalysis)
+  - [13_Behavioral experiment](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/master/13_BehavioralExperiment)
+  - [14_Data analysis statistical](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/master/14_DataAnalysisStatistical)
 </details>
 
 ## Programming Exercises
-- [Image processing](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/main/ImageProcessing) (2022)
+- [Image processing](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/master/ImageProcessing) (2022)
