@@ -52,5 +52,13 @@ MIZOGUCHI Koki (溝口 洸熙)
   - [14_Data analysis statistical](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/master/14_DataAnalysisStatistical)
 </details>
 
+<details>
+<summary>情報学群実験第4C / 4i (2023)</summary>
+    
+- [Report1 (DNS / e-mail)](https://github.com/MIZOGUCHIKoki/InformationExperiment_4c-4i/tree/master/report1)    
+- [Report2 (Network / Firewall) ](https://github.com/MIZOGUCHIKoki/InformationExperiment_4c-4i/tree/master/report2)
+- [Report3 (Cloud / AWS) ](https://github.com/MIZOGUCHIKoki/InformationExperiment_4c-4i/tree/master/report2)
+</details>
+
 ## Programming Exercises
 - [Image processing](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/master/ImageProcessing) (2022)
