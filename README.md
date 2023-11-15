@@ -34,7 +34,7 @@ MIZOGUCHI Koki (溝口 洸熙)
 <details>
 <summary>情報学群実験第3C / 3i (2023)</summary>
     
-- [Report](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/master/Report)
+- [Report](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/master/docs)
 - [Codes](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i)
   - [00_introduction](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/master/00_introduction)
   - [01_EngineeringCharacteristicsOfSound](https://github.com/MIZOGUCHIKoki/InformationExperiment_3c-3i/tree/master/01_EngineeringCharacteristicsOfSound)
@@ -55,9 +55,9 @@ MIZOGUCHI Koki (溝口 洸熙)
 <details>
 <summary>情報学群実験第4C / 4i (2023)</summary>
     
-- [Report1 (DNS / e-mail)](https://github.com/MIZOGUCHIKoki/InformationExperiment_4c-4i/tree/master/report1)    
-- [Report2 (Network / Firewall) ](https://github.com/MIZOGUCHIKoki/InformationExperiment_4c-4i/tree/master/report2)
-- [Report3 (Cloud / AWS) ](https://github.com/MIZOGUCHIKoki/InformationExperiment_4c-4i/tree/master/report2)
+- [Report1 (DNS / e-mail)](https://github.com/MIZOGUCHIKoki/InformationExperiment_4c-4i/tree/master/docs/report1)    
+- [Report2 (Network / Firewall) ](https://github.com/MIZOGUCHIKoki/InformationExperiment_4c-4i/tree/master/docs/report2)
+- [Report3 (Cloud / AWS) ](https://github.com/MIZOGUCHIKoki/InformationExperiment_4c-4i/tree/master/docs/report2)
 </details>
 
 ## Programming Exercises
