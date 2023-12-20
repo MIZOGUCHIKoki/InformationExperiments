@@ -20,13 +20,13 @@ int main()
     pid_t pid;
     int pdf[2];
     char buff[256];
-    int status;
-
+    // int status;
     pipe(pdf);
     pid = fork();
-
+    printf("\n 通過点\n");
     if (pid == 0) // 子プロセス
     {             // パイプから読み込み，標準出力へ出力
+        printf("\n 通過点（CP内）\n");
         read(pdf[0], buff, 256);
         printf("\n child process -> %s\n", buff);
     }

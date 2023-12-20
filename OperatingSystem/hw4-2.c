@@ -16,15 +16,10 @@
 #include <pthread.h>
 int flag = 0;
 char buff[256];
-
 void *func(void *param)
 {
-    int i = 0;
     while (flag == 0)
-    {
-        i++;
-        printf("%d\n", i);
-    }
+        ;
 
     printf("\n Thread -> %s\n", buff);
     pthread_exit(0);
