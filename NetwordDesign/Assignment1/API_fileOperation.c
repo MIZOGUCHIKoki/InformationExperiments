@@ -78,6 +78,7 @@ int putchar(int c); // same as putc(c, stdout). "stdout" is a standard output.
 */
 void IOby1Char(FILE *fp, FILE *fp_out)
 {
+    printf("-----I/O by 1 character-----\n");
     char c;
     if ((c = fgetc(fp)) == EOF) // read 1 char from fp.
     {
@@ -119,6 +120,7 @@ int puts (const char *str);
 */
 void IObyRow(FILE *fp)
 {
+    printf("-----I/O by row-----\n");
     int buffsize = 7; // 6 + '\0'
     char buf[buffsize];
     char *r;
@@ -130,6 +132,7 @@ void IObyRow(FILE *fp)
     }
     printf("buf = %s\n", buf);
     printf("r = %s\n", r);
+    printf("Input:");
     fgets(buf, buffsize, stdin); // from standard input.
     printf("buf = %s\n", buf);
 
