@@ -1,0 +1,21 @@
+$ cat test.txt 
+abcdefg
+$ gcc assignment1.c ; ./a.out test.txt
+count:0 index:0  | 00 00 00 00 00 |
+count:5 index:1  | 61 62 63 64 65 |
+c:61
+count:5 index:2  | 61 62 63 64 65 |
+c:62
+count:5 index:3  | 61 62 63 64 65 |
+c:63
+count:5 index:4  | 61 62 63 64 65 |
+c:64
+count:5 index:5  | 61 62 63 64 65 |
+c:65
+count:3 index:1  | 66 67 0a 64 65 |
+c:66
+count:3 index:2  | 66 67 0a 64 65 |
+c:67
+count:3 index:3  | 66 67 0a 64 65 |
+c:0a
+count:0 index:0  | 66 67 0a 64 65 |

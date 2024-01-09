@@ -1,0 +1,94 @@
+\documentclass[12pt]{jlreq}
+\usepackage{listings,xcolor,lastpage,framed}
+\usepackage[left=10truemm,right=10truemm,top=20truemm,bottom=20truemm,headheight=22pt]{geometry}
+\usepackage{fancyhdr}
+\renewcommand{\texttt}[1]{{\ttfamily\bfseries\ #1\ }}
+\fancyhf{}
+\fancyhead[R]{\thepage\ / \pageref{LastPage}}
+\fancyhead[C]{Assignment No.1}
+\fancyhead[L]{1250373 溝口 洸熙}
+
+\fancyfoot[R]{Compiled by Cloud LaTeX}
+\fancyfoot[C]{Network-Design 2023}
+\fancyfoot[L]{\fbox{Deadline: Jan. 8th, 2024 23:59}}
+\pagestyle{fancy}
+\lstset{ %ここで設定する内容は，全てのlstlisting環境で適用されます．
+%【凡例】コマンド名 = {設定値} % コマンドの意味 (デフォルト値 | 選択肢)
+  language = {C}, %利用言語
+% --- コード書式設定 ---
+  basicstyle = {\ttfamily\scriptsize}, % 基本書式
+  commentstyle = {\color{green!50!black}\ttfamily\scriptsize}, % コメント書式
+  keywordstyle = [1]{\color{red!50!black}\bfseries\ttfamily\scriptsize}, % キーワード書式：区分[1]
+  keywordstyle = [2]{\color{red}\bfseries\ttfamily\scriptsize}, % キーワード書式：区分[2]
+  keywordstyle = [3]{\color{orange}\bfseries\ttfamily\scriptsize}, % キーワード書式：区分[3]
+  stringstyle = {\color{blue}\ttfamily}, % 文字列書式
+  showspaces = {false}, % 空白表示 (false | true, false)
+  showtabs = {false}, % Tabを表示 (false | true, false)
+  tab = {}, % Tab記号( | $\mapsto$, $\to$など)
+% --- その他の設定 ---
+  frame = {single}, % フレーム設定 (none | leftline, topline, bottomline, lines, single, shadowbox, {T,t, B,b, L,l, R,r})
+  framesep = {.1cm}, % フレームまでの間隔 ( 0cm | Npt, Ncmなど)
+  breaklines = {true}, % 1行が長いとき，改行するか否かの設定 (false | true, false)
+  breakindent = {20pt}, % 改行時インデント量 (20pt | Npt)
+% --- 行番号の設定 ---  
+  numbers = {left}, % 行番号を左に表示 (none | left, right)
+  numberstyle = {\scriptsize}, % 行番号の書式
+  numbersep = {10pt}, % 行番号と本文の間隔 (10pt | Npt)
+  stepnumber = {1}, % 行番号の増分（何行おきに行番号を表示するか）(1 | N)
+% --- Caption設定 ---
+  captionpos = {t} % Captionの位置 (t | t, b)
+}
+\begin{document}
+\section*{課題要旨}
+低レベルAPIである\texttt{open}，\texttt{close}，\texttt{read}は，それぞれファイルを開く，閉じる，読み込むという機能を持つ．
+バッファリングは，ファイルの読み書きを効率化するために行われるが，低レベルAPIでは行われない．
+本課題ではバッファリングをする高レベルAPIを作成する．
+
+\section*{ソースコードの説明}
+ソースコードは別途提出しているほか，付録としてp.\pageref{apendix}に貼付している．
+\paragraph{構造体の定義}
+バッファリングをするに際して，「ファイル」を定義するため，その構造体内にバッファを持つ必要がある．
+バッファは\texttt{buffer}として\texttt{char}型の配列で定義し，配列の位置を指すポインタを\texttt{index}として\texttt{int}型で定義する．
+また，バッファサイズをヘッダで\texttt{MyBufferSize}として定義する．
+\texttt{int}型の\texttt{count}は，\texttt{read}を用いて\texttt{buffer}へ何オクテット書き込んだかを保持する．
+この構造体を\texttt{my\_file}として定義する．
+
+\paragraph{ファイルを開く}
+\texttt{my\_file}型のポインタ関数として\texttt{my\_fopen}を定義する．
+ファイル名のポインタを引数として受け取る．
+\texttt{open}を用いてファイルを開き，そのファイルディスクリプタを変数\texttt{fd}に保持する．
+正常にファイルが開かれた場合，\texttt{my\_file}型のポインタ変数\texttt{*fp}を宣言し，そのために必要なメモリを\texttt{malloc}を用いて動的に確保する．
+それぞれのメンバを初期化\footnote{本課題では，学習のためソースコード上ではアロー演算子を利用していない．\texttt{(*fp).index = 0}と\texttt{fp->index = 0}は同義である．}して，\texttt{fp}を返す．
+正常にファイルを開けなかった場合は，\texttt{NULL}を返す．
+
+\paragraph{ファイルを閉じる}
+ファイルを閉じる関数として\texttt{int}型の\texttt{my\_fclose}を定義する．
+引数として，\texttt{my\_file}型のポインタを受け取る．
+\texttt{close}を用いてファイルを閉じる．\texttt{close}の仕様により，正常に閉じられた場合は\texttt{0}を，閉じられなかった場合は\texttt{-1}を返す．
+このとき，\texttt{my\_fopen}で動的に確保したメモリを\texttt{free}を用いて解放する．
+
+\paragraph{1文字単位の入力}
+指定されたファイルを1文字単位で入力する関数として\texttt{int}型の\texttt{my\_getc}を定義する．
+引数として，\texttt{my\_file}型のポインタを受け取る．
+バッファリングの機構として，\texttt{fp->index}が\texttt{fp->count}より大きくなった場合，つまりバッファを全て読み取った場合，または\texttt{fp->buffer}が空である場合は，\texttt{read}を用いて\texttt{MyBufferSize}オクテットを読み取り，\texttt{fp->buffer}に格納する．
+このとき，\texttt{fp->index}，を初期化し，\texttt{fp->count}に\texttt{read}で読み取ったオクテット数を格納する．
+ここで，\texttt{read}で読み取ったオクテッド数が0以下である場合，\texttt{EOF}を返す．
+\texttt{size =  0}のとき，これ以上読み取ることができない状況であり，\texttt{size = -1}のとき，エラーが発生した状況である．
+\texttt{fp->buffer}に内容があり，\texttt{(*fp).index}が読み取ったサイズと等しくなるまで，\texttt{fp->buffer}上の\texttt{fp->index}番地を返し，\texttt{fp->index}をインクリメントする．
+\texttt{fp->buffer}がすべて読み取られた場合，\texttt{EOF}を返す．
+
+\section*{考察}
+バッファリングの機構により，\texttt{read}を用いてファイルを読み取る回数が減り，ファイルの読み取りが効率化されるとされている．
+しかし，配列が空であるかどうかを判定するために，今回であれば\texttt{MyBufferSize}回の判定を行う必要がある．
+このため，\texttt{MyBufferSize}が大きいほど，初回のファイル読み取りに時間がかかると考えられる．
+グローバル関数に\texttt{is\_buffer\_empty}を定義し，\texttt{fp->buffer}が空であるかどうかをファイルを開いて初めて\texttt{my\_fgetc}を呼び出すときに判定することで，\texttt{MyBufferSize}回の判定を行う必要がなくなる．
+
+\section*{感想}
+すでにある\texttt{read}，\texttt{open}などの仕様をしっかりと確認しつつ，コーディングすることが求められた．
+本来，プログラミングする際に，用いる関数の仕様をしっかりと確認することが重要であるが，今回の課題を通して，その重要性を再認識することができた．
+\newpage
+\section*{付録：ソースコード}
+\label{apendix}
+\lstinputlisting[caption={\texttt{assignment1.c}}]{../assignment1.c}
+\lstinputlisting[caption={\texttt{output}}]{../out.txt}
+\end{document}

@@ -1,60 +1,82 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-
-// 定数の宣言
-// 効率化を考えるなら 1KB とか 4KB とか，ある程度の大きさが必要だが，
-// 動作確認のためには小さな値にしてみるとよい．
 #define MyBufferSize 5
 
-// ファイル構造体FILEに相当する構造体
-// 本物のライブラリーで用意されている FILE を使ってはいけない．
+bool isBlank = false;
+
 struct my_file
 {
-    int fd;                    /* ファイルディスクリプター */
-    int count;                 /* ファイルから読んだ文字数 */
-    int index;                 /* 次に使う位置 */
-    char buffer[MyBufferSize]; /* バッファー */
+    int fd;                    // file descriptor
+    int count;                 // number of characters read from buffer
+    int index;                 // index of next character to be read from buffer
+    char buffer[MyBufferSize]; // buffer
 };
 
 struct my_file *my_fopen(char *filename)
 {
     int fd;
-    fd = open(filename, O_RDONLY);
+    fd = open(filename, O_RDONLY); // Request OS to open file
+    isBlank = false;
     if (fd != EOF)
     {
-        struct my_file *fp;
-        fp = (struct my_file *)malloc(sizeof(struct my_file));
-        fp->fd = fd;
-        // 必要な初期化を加筆する
+        struct my_file *fp;                                    // file structure's memory pointer.
+        fp = (struct my_file *)malloc(sizeof(struct my_file)); // Allocate memory for file structure.
+        (*fp).fd = fd;
+        (*fp).count = 0;
+        (*fp).index = 0;
         return fp;
     }
     else
     {
-        return NULL; /* オープンできなかった場合 */
+        return NULL; // When failed to open, return NULL.
     }
 }
 
 int my_fclose(struct my_file *fp)
 {
     int r;
-    // OSに対してクローズ処理を要求
-    // ファイル構造体用のメモリー領域を開放する
-    return r;
+    r = close((*fp).fd); // Request OS to close file.
+    free(fp);            // Free up memory allocalted by malloc for file structure.
+    return r;            // When success to close file, return 0, otherwise return -1(EOF).
+}
+
+// Check if array is blank. (If array is blank, return ture.)
+bool is_array_blank(char *array, int size)
+{
+    for (int i = 0; i < size; i++)
+    {
+        if (array[i] != '\0')
+            return false;
+    }
+    return true;
 }
 
 int my_fgetc(struct my_file *fp)
 {
     int c, size;
-    // バッファーが空ならOSから read する
-    // バッファーから1文字取って返す
+    // When count is 0 or buffer is blank, read file and store it in buffer.
+    if ((*fp).index == (*fp).count || is_array_blank((*fp).buffer, MyBufferSize))
+    {
+        // {-1, numberOfBytes} = read(fileDescriptor, buffer, size);
+        size = read((*fp).fd, (*fp).buffer, MyBufferSize);
+        (*fp).index = 0; // initialize index
+        (*fp).count = size;
+        if (size <= 0) // When failed or end of the file, return EOF.
+            return EOF;
+    }
+    if ((*fp).index == (*fp).count)
+        return EOF;
+    c = (*fp).buffer[(*fp).index]; // Get character from buffer[index]
+    (*fp).index++;                 // increment index
     return c;
 }
 
-// デバッグ用にファイル構造体の中を出力する
+// FOR DEBUG (Auther: Prof. SHIKIDA)
 void print_filestr(struct my_file *fp)
 {
     int i;
@@ -66,6 +88,7 @@ void print_filestr(struct my_file *fp)
     fprintf(stderr, " |\n");
 }
 
+// (Auther: Prof. SHIKIDA)
 int main(int argc, char *argv[])
 {
     struct my_file *fp;
@@ -87,9 +110,8 @@ int main(int argc, char *argv[])
         c = my_fgetc(fp);
         print_filestr(fp);
         if (c == EOF)
-        {
             break;
-        }
+
         printf("c:%02x\n", c);
     }
     my_fclose(fp);
