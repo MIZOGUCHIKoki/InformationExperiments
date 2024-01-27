@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.tikz": "latex",
+        "*.html.erb": "erb",
+        "pthread.h": "c"
+    }
+}
