@@ -8,33 +8,33 @@
 
 #define RCVSIZE 32 // Size of receive buffer
 
-void ErrorHandling(char *message);                 // Error handling function
-char *HostName2IpAddr(char *hostName, char *port); // Convert host name to IP address
+void ErrorHandling(char *message);                              // Error handling function
+void HostName2IpAddr(char *hostName, char *port, char *ipAddr); // Convert host name to IP address
 
 int main(int argc, char *argv[])
 {
     printf(">> executed client ------ \n");
-    int sock;                       // socket descriptor
-    struct sockaddr_in server_addr; // server address structure
-    char *serverHostFromArgs;       // server host from command line
-    // char *serverIpAddr;             // server IP address
-    char *serverPort;              // server port
-    char *sendString;              // string to send to server
-    unsigned int sendStringLen;    // length of sendString
-    char Buffer[RCVSIZE];          // Buffer for received string
-    unsigned int BufferLen;        // length of Buffer
-    int bytesRcvd, totalBytesRcvd; // bytes read in single recv() and total bytes read
+    int sock;                                                            // socket descriptor
+    struct sockaddr_in server_addr;                                      // server address structure
+    char *serverHostFromArgs;                                            // server host from command line
+    char *serverIpAddr = (char *)malloc(sizeof(char) * INET_ADDRSTRLEN); // server IP address
+    char *serverPort;                                                    // server port
+    char *sendString;                                                    // string to send to server
+    unsigned int sendStringLen;                                          // length of sendString
+    char Buffer[RCVSIZE];                                                // Buffer for received string
+    unsigned int BufferLen;                                              // length of Buffer
+    int bytesRcvd, totalBytesRcvd;                                       // bytes read in single recv() and total bytes read
 
     if (argc != 3) // Test for correct number of arguments
     {
         fprintf(stderr, "Usage: %s <Server Host name> <Server Port>\n", argv[0]); // argv[0] is in executable file name
         exit(1);
     }
-    printf("Host Name   : %s\n", argv[1]);
-    printf("Port number : %s\n", argv[2]);
 
     serverHostFromArgs = argv[1]; // First arg: server host name
     serverPort = argv[2];         // Third arg: server port
+    printf("Host Name   : %s\n", serverHostFromArgs);
+    printf("Port number : %s\n", serverPort);
 
     // Convert host name to IP address
 
@@ -60,11 +60,13 @@ int main(int argc, char *argv[])
     // Construct the server address structure
     memset(&server_addr, 0, sizeof(server_addr)); // Zero out structure
     server_addr.sin_family = AF_INET;             // Internet address family
-    char *serverIpAddr = HostName2IpAddr(serverHostFromArgs, serverPort);
+
+    HostName2IpAddr(serverHostFromArgs, serverPort, serverIpAddr);
     printf("serverIpAddr: %s\n", serverIpAddr);
     server_addr.sin_addr.s_addr = inet_addr(serverIpAddr);
     server_addr.sin_port = htons(atoi(serverPort)); // Server port
-    sendString = "Hello, world!";                   // String to send
+
+    sendString = "Hello, world!"; // String to send
     sendStringLen = strlen(sendString);
 
     // Establish the connection to the server
@@ -81,18 +83,26 @@ int main(int argc, char *argv[])
         ErrorHandling("send() sent a different number of bytes than expected");
     }
 
+    // Receive the same string back from the server
+    // if ((bytesRcvd = (sock, Buffer, RCVSIZE - 1, 0)) < 0)
+    // {
+    //     close(sock);
+    //     ErrorHandling("recv() failed");
+    // }
+    // else if (bytesRcvd > 0)
+    // {
+    // }
+
     close(sock);
     return 0;
 }
 
-char *HostName2IpAddr(char *hostName, char *port)
+void HostName2IpAddr(char *hostName, char *port, char *ipAddr)
 {
     struct addrinfo moreInfo, *response;    // More info about host
     memset(&moreInfo, 0, sizeof(moreInfo)); // Zero out structure
     moreInfo.ai_family = AF_INET;           // IPv4 only
     moreInfo.ai_socktype = SOCK_STREAM;     // Only TCP
-
-    char *ra = (char *)malloc(INET_ADDRSTRLEN);
 
     if (getaddrinfo(hostName, port, &moreInfo, &response) != 0)
     {
@@ -101,11 +111,11 @@ char *HostName2IpAddr(char *hostName, char *port)
 
     // inet_ntoa() is a legacy function that converts the network byte ordered 32-bit IPv4 address to dotted-decimal format
     // inet_ntop() converts the network byte ordered 32-bit IPv4 address to dotted-decimal format
-    if (inet_ntop(AF_INET, &((struct sockaddr_in *)response->ai_addr)->sin_addr, ra, INET_ADDRSTRLEN) == NULL)
+    if (inet_ntop(AF_INET, &((struct sockaddr_in *)response->ai_addr)->sin_addr, ipAddr, INET_ADDRSTRLEN) == NULL)
     {
         ErrorHandling("inet_ntop() failed");
     }
-    printf("IP address of %s is %s\n", hostName, ra);
+    printf("IP address of %s is %s\n", hostName, ipAddr);
     freeaddrinfo(response); // Free address structure
-    return ra;
+    return ipAddr;
 }
