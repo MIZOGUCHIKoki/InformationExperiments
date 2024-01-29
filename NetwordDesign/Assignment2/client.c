@@ -8,8 +8,8 @@
 
 #define RCVSIZE 32 // Size of receive buffer
 
-void ErrorHandling(char *message);                       // Error handling function
-const char *HostName2IpAddr(char *hostName, char *port); // Convert host name to IP address
+void ErrorHandling(char *message);                 // Error handling function
+char *HostName2IpAddr(char *hostName, char *port); // Convert host name to IP address
 
 int main(int argc, char *argv[])
 {
@@ -60,11 +60,11 @@ int main(int argc, char *argv[])
     // Construct the server address structure
     memset(&server_addr, 0, sizeof(server_addr)); // Zero out structure
     server_addr.sin_family = AF_INET;             // Internet address family
-    server_addr.sin_addr.s_addr = inet_addr(HostName2IpAddr(serverHostFromArgs, serverPort));
-    server_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+    char *serverIpAddr = HostName2IpAddr(serverHostFromArgs, serverPort);
+    printf("serverIpAddr: %s\n", serverIpAddr);
+    server_addr.sin_addr.s_addr = inet_addr(serverIpAddr);
     server_addr.sin_port = htons(atoi(serverPort)); // Server port
-
-    sendString = "Hello, world!"; // String to send
+    sendString = "Hello, world!";                   // String to send
     sendStringLen = strlen(sendString);
 
     // Establish the connection to the server
@@ -85,15 +85,14 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-const char *HostName2IpAddr(char *hostName, char *port)
+char *HostName2IpAddr(char *hostName, char *port)
 {
     struct addrinfo moreInfo, *response;    // More info about host
     memset(&moreInfo, 0, sizeof(moreInfo)); // Zero out structure
     moreInfo.ai_family = AF_INET;           // IPv4 only
     moreInfo.ai_socktype = SOCK_STREAM;     // Only TCP
 
-    const char *respAddr;
-    char ra[INET_ADDRSTRLEN];
+    char *ra = (char *)malloc(INET_ADDRSTRLEN);
 
     if (getaddrinfo(hostName, port, &moreInfo, &response) != 0)
     {
@@ -102,7 +101,11 @@ const char *HostName2IpAddr(char *hostName, char *port)
 
     // inet_ntoa() is a legacy function that converts the network byte ordered 32-bit IPv4 address to dotted-decimal format
     // inet_ntop() converts the network byte ordered 32-bit IPv4 address to dotted-decimal format
-    respAddr = inet_ntop(AF_INET, &((struct sockaddr_in *)response->ai_addr)->sin_addr, ra, INET_ADDRSTRLEN);
-    printf("IP address of %s is %s\n", hostName, respAddr);
-    return respAddr;
+    if (inet_ntop(AF_INET, &((struct sockaddr_in *)response->ai_addr)->sin_addr, ra, INET_ADDRSTRLEN) == NULL)
+    {
+        ErrorHandling("inet_ntop() failed");
+    }
+    printf("IP address of %s is %s\n", hostName, ra);
+    freeaddrinfo(response); // Free address structure
+    return ra;
 }
