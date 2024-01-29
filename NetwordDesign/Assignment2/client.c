@@ -4,12 +4,15 @@
 #include <arpa/inet.h>  // sockaddr_in, inet_addr()
 #include <stdlib.h>     // atoi()
 #include <string.h>     // memset()
-#include <unistd.h>     // close()
+#include <unistd.h>     // close(), read(), write()
+#include <sys/select.h> // select()
 
-#define BUFSIZE 32 // Size of receive buffer
+#define BSIZE 32 // Size of receive buffer
 
 void ErrorHandling(char *message);                              // Error handling function
 void HostName2IpAddr(char *hostName, char *port, char *ipAddr); // Convert host name to IP address
+void recvFromServer(char *buffer, int sock);                    // Receive string from the server
+void sendToServer(char *buffer, int sock);                      // Send string to the server
 
 int main(int argc, char *argv[])
 {
@@ -19,7 +22,7 @@ int main(int argc, char *argv[])
     char *serverHostFromArgs;                                            // server host from command line
     char *serverIpAddr = (char *)malloc(sizeof(char) * INET_ADDRSTRLEN); // server IP address
     char *serverPort;                                                    // server port
-    char Buffer[BUFSIZE];                                                // Buffer for received string
+    char Buffer[BSIZE];                                                  // Buffer for received string
     unsigned int sendLen, recvedLen;                                     // length of Buffer
 
     if (argc != 3) // Test for correct number of arguments
@@ -30,8 +33,8 @@ int main(int argc, char *argv[])
 
     serverHostFromArgs = argv[1]; // First arg: server host name
     serverPort = argv[2];         // Third arg: server port
-    printf("Host Name   : %s\n", serverHostFromArgs);
-    printf("Port number : %s\n", serverPort);
+    printf("|     Host Name   : %s\n", serverHostFromArgs);
+    printf("|     Port number : %s\n", serverPort);
 
     // Convert host name to IP address
 
@@ -59,7 +62,7 @@ int main(int argc, char *argv[])
     server_addr.sin_family = AF_INET;             // Internet address family
 
     HostName2IpAddr(serverHostFromArgs, serverPort, serverIpAddr);
-    printf("serverIpAddr: %s\n", serverIpAddr);
+    printf("|     serverIpAddr: %s\n", serverIpAddr);
     server_addr.sin_addr.s_addr = inet_addr(serverIpAddr);
     server_addr.sin_port = htons(atoi(serverPort)); // Server port
 
@@ -69,49 +72,42 @@ int main(int argc, char *argv[])
         close(sock);
         ErrorHandling("connect() failed");
     }
-
+    printf("|_____Connected to client\n");
     for (;;)
     {
-        // sendLen = 0;
-        // recvedLen = 0;
-        printf("sendLen: %d\n", sendLen);
-        printf("recvedLen: %d\n", recvedLen);
-        printf("Buffer: %s\n", Buffer);
-        if ((sendLen = read(2, Buffer, BUFSIZE - 1)) < 0)
-        {
-            close(sock);
-            ErrorHandling("write() failed");
-        }
-        // if user input something
-        if (Buffer[0] == EOF)
-        {
-            printf("EOF\n");
-            break;
-        }
-        if (sendLen > 0)
-        {
-            // Send the string to the server
-            if (send(sock, Buffer, sendLen, 0) != sendLen)
-            {
-                close(sock);
-                ErrorHandling("send() sent a different number of bytes than expected");
-            }
-        }
-
-        // Receive the same string back from the server
-        if ((recvedLen = recv(sock, Buffer, BUFSIZE - 1, 0)) < 0)
-        {
-            close(sock);
-            ErrorHandling("recv() failed");
-        }
-        else if (recvedLen > 0)
-        {
-            write(2, Buffer, recvedLen); // Write the received string to stdout
-            Buffer[recvedLen] = '\0';    // Terminate the string
-        }
+        sendToServer(Buffer, sock);
+        recvFromServer(Buffer, sock);
     }
     close(sock);
     return 0;
+}
+
+void sendToServer(char *buffer, int sock)
+{
+    printf("-- sendToServer() --\n");
+    size_t sz = read(1, buffer, BSIZE); // exclude '\0'
+    if (send(sock, buffer, (int)sz, 0) < 0)
+    {
+        close(sock);
+        ErrorHandling("send() sent a different number of bytes than expected");
+    }
+    memset(buffer, 0, BSIZE);
+}
+
+void recvFromServer(char *buffer, int sock)
+{
+    printf("-- recvFromServer() --\n");
+    int recvLen = 0;
+    recvLen = read(sock, buffer, BSIZE - 1);
+    if (recvLen <= 0)
+    {
+        close(sock);
+        ErrorHandling("recv() failed");
+    }
+    buffer[recvLen] = '\0';
+    write(2, buffer, sizeof(buffer));
+    memset(buffer, 0, BSIZE);
+    printf("\n");
 }
 
 void HostName2IpAddr(char *hostName, char *port, char *ipAddr)
@@ -132,13 +128,6 @@ void HostName2IpAddr(char *hostName, char *port, char *ipAddr)
     {
         ErrorHandling("inet_ntop() failed");
     }
-    printf("IP address of %s is %s\n", hostName, ipAddr);
+    printf("|     IP address of %s is %s\n", hostName, ipAddr);
     freeaddrinfo(response); // Free address structure
-}
-
-void sendToServer(int sock)
-{
-}
-void recvFromServer(int sock)
-{
 }
