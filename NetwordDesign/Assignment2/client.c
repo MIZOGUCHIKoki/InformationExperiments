@@ -6,7 +6,7 @@
 #include <string.h>     // memset()
 #include <unistd.h>     // close()
 
-#define RCVSIZE 32 // Size of receive buffer
+#define BUFSIZE 32 // Size of receive buffer
 
 void ErrorHandling(char *message);                              // Error handling function
 void HostName2IpAddr(char *hostName, char *port, char *ipAddr); // Convert host name to IP address
@@ -19,11 +19,8 @@ int main(int argc, char *argv[])
     char *serverHostFromArgs;                                            // server host from command line
     char *serverIpAddr = (char *)malloc(sizeof(char) * INET_ADDRSTRLEN); // server IP address
     char *serverPort;                                                    // server port
-    char *sendString;                                                    // string to send to server
-    unsigned int sendStringLen;                                          // length of sendString
-    char Buffer[RCVSIZE];                                                // Buffer for received string
-    unsigned int BufferLen;                                              // length of Buffer
-    int bytesRcvd, totalBytesRcvd;                                       // bytes read in single recv() and total bytes read
+    char Buffer[BUFSIZE];                                                // Buffer for received string
+    unsigned int sendLen, recvedLen;                                     // length of Buffer
 
     if (argc != 3) // Test for correct number of arguments
     {
@@ -66,9 +63,6 @@ int main(int argc, char *argv[])
     server_addr.sin_addr.s_addr = inet_addr(serverIpAddr);
     server_addr.sin_port = htons(atoi(serverPort)); // Server port
 
-    sendString = "Hello, world!"; // String to send
-    sendStringLen = strlen(sendString);
-
     // Establish the connection to the server
     if (connect(sock, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0) // server_addr is a pointer to [struct sockaddr_in]
     {
@@ -76,23 +70,46 @@ int main(int argc, char *argv[])
         ErrorHandling("connect() failed");
     }
 
-    // Send the string to the server
-    if (send(sock, sendString, sendStringLen, 0) != sendStringLen)
+    for (;;)
     {
-        close(sock);
-        ErrorHandling("send() sent a different number of bytes than expected");
+        // sendLen = 0;
+        // recvedLen = 0;
+        printf("sendLen: %d\n", sendLen);
+        printf("recvedLen: %d\n", recvedLen);
+        printf("Buffer: %s\n", Buffer);
+        if ((sendLen = read(2, Buffer, BUFSIZE - 1)) < 0)
+        {
+            close(sock);
+            ErrorHandling("write() failed");
+        }
+        // if user input something
+        if (Buffer[0] == EOF)
+        {
+            printf("EOF\n");
+            break;
+        }
+        if (sendLen > 0)
+        {
+            // Send the string to the server
+            if (send(sock, Buffer, sendLen, 0) != sendLen)
+            {
+                close(sock);
+                ErrorHandling("send() sent a different number of bytes than expected");
+            }
+        }
+
+        // Receive the same string back from the server
+        if ((recvedLen = recv(sock, Buffer, BUFSIZE - 1, 0)) < 0)
+        {
+            close(sock);
+            ErrorHandling("recv() failed");
+        }
+        else if (recvedLen > 0)
+        {
+            write(2, Buffer, recvedLen); // Write the received string to stdout
+            Buffer[recvedLen] = '\0';    // Terminate the string
+        }
     }
-
-    // Receive the same string back from the server
-    // if ((bytesRcvd = (sock, Buffer, RCVSIZE - 1, 0)) < 0)
-    // {
-    //     close(sock);
-    //     ErrorHandling("recv() failed");
-    // }
-    // else if (bytesRcvd > 0)
-    // {
-    // }
-
     close(sock);
     return 0;
 }
@@ -117,5 +134,11 @@ void HostName2IpAddr(char *hostName, char *port, char *ipAddr)
     }
     printf("IP address of %s is %s\n", hostName, ipAddr);
     freeaddrinfo(response); // Free address structure
-    return ipAddr;
+}
+
+void sendToServer(int sock)
+{
+}
+void recvFromServer(int sock)
+{
 }
