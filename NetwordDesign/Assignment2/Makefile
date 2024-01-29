@@ -3,8 +3,7 @@ CFLAGS =
 OBJS = client.o ErrorHandling.o
 HOST = localhost
 PORT = 1234
-MSG = "test"
-PROGRAM = client
+PROGRAM = client.out
 
 all: $(PROGRAM)
 
@@ -23,4 +22,4 @@ $(PROGRAM): $(OBJS)
 clean:
 	rm -f *.o $(PROGRAM) a.out
 exec: $(PROGRAM)
-	./$(PROGRAM) $(HOST) $(MSG) $(PORT)
+	./$(PROGRAM) $(HOST) $(PORT)

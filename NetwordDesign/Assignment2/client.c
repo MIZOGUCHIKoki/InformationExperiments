@@ -8,8 +8,8 @@
 
 #define RCVSIZE 32 // Size of receive buffer
 
-void ErrorHandling(char *message);                       // Error handling function
-const char *HostName2IpAddr(char *hostName, char *port); // Convert host name to IP address
+void ErrorHandling(char *message);                 // Error handling function
+char *HostName2IpAddr(char *hostName, char *port); // Convert host name to IP address
 
 int main(int argc, char *argv[])
 {
@@ -25,14 +25,13 @@ int main(int argc, char *argv[])
     unsigned int BufferLen;         // length of Buffer
     int bytesRcvd, totalBytesRcvd;  // bytes read in single recv() and total bytes read
 
-    if (argc != 4) // Test for correct number of arguments
+    if (argc != 2) // Test for correct number of arguments
     {
-        fprintf(stderr, "Usage: %s <Server Host name> <Echo Word> <Server Port>\n", argv[0]); // argv[0] is in executable file name
+        fprintf(stderr, "Usage: %s <Server Host name> <Server Port>\n", argv[0]); // argv[0] is in executable file name
         exit(1);
     }
     printf("Host Name   : %s\n", argv[1]);
-    printf("Port number : %s\n", argv[3]);
-    printf("Send Message: %s\n", argv[2]);
+    printf("Port number : %s\n", argv[2]);
 
     serverHostFromArgs = argv[1]; // First arg: server host name
     sendString = argv[2];         // Second arg: string to echo
@@ -84,14 +83,14 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-const char *HostName2IpAddr(char *hostName, char *port)
+char *HostName2IpAddr(char *hostName, char *port)
 {
     struct addrinfo moreInfo, *response;    // More info about host
     memset(&moreInfo, 0, sizeof(moreInfo)); // Zero out structure
     moreInfo.ai_family = AF_INET;           // IPv4 only
     moreInfo.ai_socktype = SOCK_STREAM;     // Only TCP
 
-    const char *respAddr;
+    char respAddr;
 
     if (getaddrinfo(hostName, port, &moreInfo, &response) != 0)
     {
