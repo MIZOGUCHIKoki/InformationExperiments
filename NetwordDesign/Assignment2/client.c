@@ -17,13 +17,13 @@ int main(int argc, char *argv[])
     int sock;                       // socket descriptor
     struct sockaddr_in server_addr; // server address structure
     char *serverHostFromArgs;       // server host from command line
-    char *serverIpAddr;             // server IP address
-    char *serverPort;               // server port
-    char *sendString;               // string to send to server
-    unsigned int sendStringLen;     // length of sendString
-    char Buffer[RCVSIZE];           // Buffer for received string
-    unsigned int BufferLen;         // length of Buffer
-    int bytesRcvd, totalBytesRcvd;  // bytes read in single recv() and total bytes read
+    // char *serverIpAddr;             // server IP address
+    char *serverPort;              // server port
+    char *sendString;              // string to send to server
+    unsigned int sendStringLen;    // length of sendString
+    char Buffer[RCVSIZE];          // Buffer for received string
+    unsigned int BufferLen;        // length of Buffer
+    int bytesRcvd, totalBytesRcvd; // bytes read in single recv() and total bytes read
 
     if (argc != 3) // Test for correct number of arguments
     {
@@ -60,8 +60,12 @@ int main(int argc, char *argv[])
     // Construct the server address structure
     memset(&server_addr, 0, sizeof(server_addr)); // Zero out structure
     server_addr.sin_family = AF_INET;             // Internet address family
-    server_addr.sin_addr.s_addr = inet_addr(HostName2IpAddr(serverHostFromArgs, serverPort));
+    // server_addr.sin_addr.s_addr = inet_addr(HostName2IpAddr(serverHostFromArgs, serverPort));
+    server_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
     server_addr.sin_port = htons(atoi(serverPort)); // Server port
+
+    sendString = "Hello, world!"; // String to send
+    sendStringLen = strlen(sendString);
 
     // Establish the connection to the server
     if (connect(sock, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0) // server_addr is a pointer to [struct sockaddr_in]
@@ -73,6 +77,7 @@ int main(int argc, char *argv[])
     // Send the string to the server
     if (send(sock, sendString, sendStringLen, 0) != sendStringLen)
     {
+        close(sock);
         ErrorHandling("send() sent a different number of bytes than expected");
     }
 
@@ -94,6 +99,7 @@ char *HostName2IpAddr(char *hostName, char *port)
     {
         ErrorHandling("getaddrinfo() failed");
     }
+
     // inet_ntoa() is a legacy function that converts the network byte ordered 32-bit IPv4 address to dotted-decimal format
     // inet_ntop() converts the network byte ordered 32-bit IPv4 address to dotted-decimal format
     respAddr = inet_ntop(AF_INET, &((struct sockaddr_in *)response->ai_addr)->sin_addr, ra, INET_ADDRSTRLEN);
