@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
     unsigned int BufferLen;         // length of Buffer
     int bytesRcvd, totalBytesRcvd;  // bytes read in single recv() and total bytes read
 
-    if (argc != 2) // Test for correct number of arguments
+    if (argc != 3) // Test for correct number of arguments
     {
         fprintf(stderr, "Usage: %s <Server Host name> <Server Port>\n", argv[0]); // argv[0] is in executable file name
         exit(1);
@@ -34,10 +34,7 @@ int main(int argc, char *argv[])
     printf("Port number : %s\n", argv[2]);
 
     serverHostFromArgs = argv[1]; // First arg: server host name
-    sendString = argv[2];         // Second arg: string to echo
-    serverPort = argv[3];         // Third arg: server port
-
-    sendStringLen = strlen(sendString); // Determine input length
+    serverPort = argv[2];         // Third arg: server port
 
     // Convert host name to IP address
 
@@ -90,7 +87,8 @@ char *HostName2IpAddr(char *hostName, char *port)
     moreInfo.ai_family = AF_INET;           // IPv4 only
     moreInfo.ai_socktype = SOCK_STREAM;     // Only TCP
 
-    char respAddr;
+    char *respAddr;
+    char ra[INET_ADDRSTRLEN];
 
     if (getaddrinfo(hostName, port, &moreInfo, &response) != 0)
     {
@@ -98,7 +96,7 @@ char *HostName2IpAddr(char *hostName, char *port)
     }
     // inet_ntoa() is a legacy function that converts the network byte ordered 32-bit IPv4 address to dotted-decimal format
     // inet_ntop() converts the network byte ordered 32-bit IPv4 address to dotted-decimal format
-    respAddr = inet_ntop(AF_INET, &((struct sockaddr_in *)response->ai_addr)->sin_addr, respAddr, INET_ADDRSTRLEN);
+    respAddr = inet_ntop(AF_INET, &((struct sockaddr_in *)response->ai_addr)->sin_addr, ra, INET_ADDRSTRLEN);
     printf("IP address of %s is %s\n", hostName, respAddr);
     return respAddr;
 }
