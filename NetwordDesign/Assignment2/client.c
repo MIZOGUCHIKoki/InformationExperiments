@@ -8,8 +8,8 @@
 
 #define RCVSIZE 32 // Size of receive buffer
 
-void ErrorHandling(char *message);                 // Error handling function
-char *HostName2IpAddr(char *hostName, char *port); // Convert host name to IP address
+void ErrorHandling(char *message);                       // Error handling function
+const char *HostName2IpAddr(char *hostName, char *port); // Convert host name to IP address
 
 int main(int argc, char *argv[])
 {
@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
     // Construct the server address structure
     memset(&server_addr, 0, sizeof(server_addr)); // Zero out structure
     server_addr.sin_family = AF_INET;             // Internet address family
-    // server_addr.sin_addr.s_addr = inet_addr(HostName2IpAddr(serverHostFromArgs, serverPort));
+    server_addr.sin_addr.s_addr = inet_addr(HostName2IpAddr(serverHostFromArgs, serverPort));
     server_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
     server_addr.sin_port = htons(atoi(serverPort)); // Server port
 
@@ -85,14 +85,14 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-char *HostName2IpAddr(char *hostName, char *port)
+const char *HostName2IpAddr(char *hostName, char *port)
 {
     struct addrinfo moreInfo, *response;    // More info about host
     memset(&moreInfo, 0, sizeof(moreInfo)); // Zero out structure
     moreInfo.ai_family = AF_INET;           // IPv4 only
     moreInfo.ai_socktype = SOCK_STREAM;     // Only TCP
 
-    char *respAddr;
+    const char *respAddr;
     char ra[INET_ADDRSTRLEN];
 
     if (getaddrinfo(hostName, port, &moreInfo, &response) != 0)
