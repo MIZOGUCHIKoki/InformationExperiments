@@ -1,0 +1,98 @@
+\documentclass[12pt]{jlreq}
+\input{header.tex}
+\begin{document}
+\section*{課題要旨}
+本課題では，データを送受信するプログラムを作成する．
+プログラムは，接続要求\texttt{connect}をする所謂「クライアント」を作成する．
+多重化処理にするため，\texttt{select}を用いて，同期多重入力を実現する．
+
+\section*{ソケットの説明}
+本節では，ネットワークプログラミングにおける諸知識について述べる．
+\paragraph{アドレス構造体(IPv4)}
+アドレス構造体は，アドレスの情報を格納するための構造体である．
+将来的な拡張を考慮して，構造体のメンバが構造体を指す状態になっており，実際のアドレス情報は，\texttt{(sockaddr->in\_addr)->s\_addr}構造体に格納される．
+\lstinputlisting[caption={アドレス構造体(IPv4)\ \cite{long,short}}]{../addressStructure.c}
+定義したアドレス構造体の各メンバに対して，プロトコルやアドレスを設定する．このとき，ホストとネットワークでのバイトオーダーの変換を行う必要がある．
+また，アドレス構造体は代入する前に\texttt{memset}関数で初期化する必要がある\footnote{システムによっては不要\cite{short}．}．
+\paragraph{ソケットの生成と破棄}
+ソケットの生成は，\texttt{socket}関数を用いる．\texttt{protocol-family}には，TCP/IPの場合は\texttt{PF\_INET}\footnote{\texttt{AF\_INET}を示す例もあるが，厳密にはアドレスファミリとプロトコルファミリは異なる．}を指定する．
+\texttt{type}には，TCPの場合は\texttt{SOCK\_STREAM}を指定する．
+\texttt{protocol}には，TCPの場合は\texttt{IPPROTO\_TCP}を，UDPの場合は\texttt{IPPROTO\_UDP}を指定する．
+\texttt{PF\_INET}では，\texttt{type}と\texttt{protocol}の組み合わせは，1対1のため，\texttt{protocol}には\texttt{0}を指定しても同じである\cite{short}．
+ソケットの破棄は，\texttt{close}関数を用いる．
+\begin{lstlisting}[]
+socket(int protocol-family, int type, int protocol);
+close(int socket);
+\end{lstlisting}
+\paragraph{TCP接続}
+TCP接続は，\texttt{connect}関数を用いる．
+\texttt{address}には，接続先のアドレス構造体を指定するが，設定したアドレス構造体が\texttt{sockaddr\_in}であることから，\texttt{sockaddr}へのキャストが必要．
+\begin{lstlisting}
+connect(int socket, struct sockaddr *address, unsigned int address_len);
+\end{lstlisting}
+
+\section*{同時多重入力}
+本課題では，同時多重入力を実現するために，\texttt{select}関数を用いた．
+\texttt{select}関数は，複数のファイルディスクリプタに対して，読み込み可能かどうかを調べる関数である．
+\texttt{select}関数は，\texttt{fd\_set}型の変数を用いて，読み込み可能なファイルディスクリプタを管理する．
+\texttt{fd\_set}型の変数は，\texttt{FD\_ZERO}マクロで初期化し，\texttt{FD\_SET}マクロでファイルディスクリプタを追加する．
+\texttt{select}関数は，
+\begin{description}
+    \newcommand{\nulll}{（今回\texttt{NULL}）}
+    \item [第1引数]ファイルディスクリプタの最大値に1を足した値を指定する．
+    \item [第2引数]読み込み可能かどうかを調べるファイルディスクリプタの集合を指定する．
+    \item [第3引数]書き込み可能かどうかを調べるファイルディスクリプタの集合を指定する．\\\nulll
+    \item [第4引数]例外が発生したかどうかを調べるファイルディスクリプタの集合を指定する．\\\nulll
+    \item [第5引数]タイムアウト時間を指定する．\\\nulll
+\end{description}
+から成る．
+\texttt{FD\_ISSET}より，第一引数にファイルディスクリプタ，第二引数に監視対象の集合を指定する．
+条件に合致したら指定の処理を実行し，最後に\texttt{FD\_ZERO}でファイルディスクリプタの集合を初期化する．
+
+\section*{送信手続き}
+送信手続きは，\texttt{write(2)}関数を用いる．
+ここでは，\texttt{write(2)}が1度で終わらないことを想定して，
+本来書き出すべきバイト数まで\texttt{write(2)}を実行する\texttt{writing}関数を作成した．
+引数にディスクリプタ，バッファ，バッファ長を受け取ることで，ソケットだけに限らず，標準出力についても応用できた．
+
+\section*{ソースコードの説明}
+ソースコードは別途提出しているほか，付録としてp.\pageref{apendix}-p.\pageref{LastPage}に貼付している．
+ソースコードは，\texttt{client.c}と\texttt{ErrorHandling.c}の2つである．
+\texttt{client.c}は，メインのソースコードであり，\texttt{ErrorHandling.c}は，エラー処理を行うソースコードである．本課題以外でも用いているため別ファイルにしてある．
+実行は\texttt{Makefile}(lst:\ref{lst:Makefile})を用いて，\texttt{make exec}を実行すると，Cファイルがコンパイルされ，実行する．
+\texttt{Makefile}により，実行ファイルの引数には，\texttt{localhost}と\texttt{12345}が与えられる．
+実行と実行結果を以下に示す．
+\begin{lstlisting}[]
+$ make exec
+gcc  -c client.c
+gcc  -c ErrorHandling.c
+gcc  -o client.out client.o ErrorHandling.o
+./client.out localhost 1234
+Host Name   : localhost
+Port number : 1234
+>> IP address of localhost is 127.0.0.1
+>> Connected to client: 127.0.0.1:1234
+... 続く ...
+\end{lstlisting}
+
+
+\section*{感想}
+今回の課題では，再利用できるように，またソースコードの可読性を上げるために複数個関数を作成した．
+これがどこまで処理速度に影響を及ぼすか，実験したい．
+同時多重入力は，\texttt{select}関数を用いることで，簡単に実装できた．
+ネットワークプログラミングがカバーする部分はあくまで，ソケットの作成，破棄，接続のみであることに注意したい．
+
+\renewcommand{\refname}{参考}
+\begin{thebibliography}{2}
+    \bibitem{long}スティーヴンス, W. (1999).
+    UNIXネットワークプログラミング: ネットワークAPI・ソケットとXTI. 日本: トッパン.
+    \bibitem{short}Donahoo, M. J., Calvert, K. L. (2003).
+    TCP/IPソケットプログラミング C言語編. 日本: オーム社.
+\end{thebibliography}
+\newpage
+\section*{付録：ソースコード}
+\label{apendix}
+\lstinputlisting[caption={\texttt{client.c}}]{../client.c}
+\lstinputlisting[caption={\texttt{ErrorHandling.c}}]{../ErrorHandling.c}
+\lstinputlisting[caption={\texttt{Makefile}},label={lst:Makefile},language={Bash}]{../Makefile}
+\end{document}

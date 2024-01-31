@@ -9,21 +9,21 @@
 
 #define BSIZE 32 // Size of receive buffer
 
-void ErrorHandling(char *message);                              // Error handling function
-void HostName2IpAddr(char *hostName, char *port, char *ipAddr); // Convert host name to IP address
-void recvFromServer(char *buffer, int sock);                    // Receive string from the server
-void sendToServer(char *buffer, int sock);                      // Send string to the server
+void ErrorHandling(char *message);                      // Error handling function
+char *HostName2IpAddr(char *hostName, char *port);      // Convert host name to IP address
+void recvFromServer(char *buffer, int sock);            // Receive string from the server
+void sendToServer(char *buffer, int sock);              // Recviced string from prompt
+void writing(int sock, char *buffer, size_t bufferLen); // sending data to server
+void finalProcess(int descriptor, char *message);       // final process
 
 int main(int argc, char *argv[])
 {
-    printf(">> executed client ------ \n");
-    int sock;                                                            // socket descriptor
-    struct sockaddr_in server_addr;                                      // server address structure
-    char *serverHostFromArgs;                                            // server host from command line
-    char *serverIpAddr = (char *)malloc(sizeof(char) * INET_ADDRSTRLEN); // server IP address
-    char *serverPort;                                                    // server port
-    char Buffer[BSIZE];                                                  // Buffer for received string
-    unsigned int sendLen, recvedLen;                                     // length of Buffer
+    int sock;                       // socket descriptor
+    struct sockaddr_in server_addr; // server address structure
+    char *serverHostFromArgs;       // server host from command line
+    char *serverPort;               // server port
+    char Buffer[BSIZE];             // Buffer for received string
+    size_t sendLen, recvedLen;      // length of Buffer
 
     if (argc != 3) // Test for correct number of arguments
     {
@@ -33,84 +33,109 @@ int main(int argc, char *argv[])
 
     serverHostFromArgs = argv[1]; // First arg: server host name
     serverPort = argv[2];         // Third arg: server port
-    printf("|     Host Name   : %s\n", serverHostFromArgs);
-    printf("|     Port number : %s\n", serverPort);
+    printf("Host Name   : %s\n", serverHostFromArgs);
+    printf("Port number : %s\n", serverPort);
 
-    // Convert host name to IP address
-
+    // Create a reliable, stream socket using TCP
     if ((sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) // Create a reliable, stream socket using TCP
     {
         ErrorHandling("socket() failed");
     }
 
-    /* some functions description:
-    inet_addr() converts [the Internet host address from IPv4 numbers-and-dots notation] into [binary data in network byte order].
-    htons() converts [number from host byte order] to [number in network byte order].
-    atoi() converts [string] to [integer].
-    inet_ntop() converts [the network byte ordered 32-bit IPv4 address] to [dotted-decimal format].
-
-    - connetct(socket descriptor, server address structure, size of server address structure);
-        if success, return 0, else return -1.
-    - send(socket descriptor, string to send, length of string to send, flag);
-        if success, return number of bytes sent, else return -1.
-    - inet_ntop(address family, pointer to binary data, pointer to string to store result, length of string to store result)
-        if success, return pointer to string, else return NULL.
-    */
-
     // Construct the server address structure
-    memset(&server_addr, 0, sizeof(server_addr)); // Zero out structure
-    server_addr.sin_family = AF_INET;             // Internet address family
-
-    HostName2IpAddr(serverHostFromArgs, serverPort, serverIpAddr);
-    printf("|     serverIpAddr: %s\n", serverIpAddr);
-    server_addr.sin_addr.s_addr = inet_addr(serverIpAddr);
-    server_addr.sin_port = htons(atoi(serverPort)); // Server port
+    memset(&server_addr, 0, sizeof(server_addr));                         // Zero out structure
+    server_addr.sin_family = AF_INET;                                     // Internet address family
+    char *serverIpAddr = HostName2IpAddr(serverHostFromArgs, serverPort); // Convert host name to IP address
+    server_addr.sin_addr.s_addr = inet_addr(serverIpAddr);                // Server IP address; network byte-ordered (127.0.0.1->16777343)
+    server_addr.sin_port = htons(atoi(serverPort));                       // Server port; host to network short
 
     // Establish the connection to the server
-    if (connect(sock, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0) // server_addr is a pointer to [struct sockaddr_in]
+    // server_addr is a pointer to struct-sockaddr_in
+    if (connect(sock, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0)
     {
         close(sock);
         ErrorHandling("connect() failed");
     }
-    printf("|_____Connected to client\n");
+    printf(">> Connected to client: %s:%s\n", serverIpAddr, serverPort);
+
+    // setup select function
+    fd_set fds; // Set of file descriptors
+    int max_fd;
     for (;;)
-    {
-        sendToServer(Buffer, sock);
-        recvFromServer(Buffer, sock);
+    {                                                         // Maximum file descriptor
+        FD_ZERO(&fds);                                        // Clear all bits
+        FD_SET(STDIN_FILENO, &fds);                           // Set bit for stdin
+        FD_SET(sock, &fds);                                   // Set bit for sock
+        max_fd = (sock > STDIN_FILENO) ? sock : STDIN_FILENO; // max_fd = max(sock, STDIN_FILENO)
+        select(max_fd + 1, &fds, NULL, NULL, NULL);           // Wait for activity
+        if (FD_ISSET(STDIN_FILENO, &fds))
+        {
+            sendToServer(Buffer, sock);
+        }
+        if (FD_ISSET(sock, &fds))
+        {
+            recvFromServer(Buffer, sock);
+        }
+        printf(" --- \n");
+        FD_ZERO(&fds);
     }
-    close(sock);
     return 0;
 }
 
 void sendToServer(char *buffer, int sock)
 {
-    printf("-- sendToServer() --\n");
-    size_t sz = read(1, buffer, BSIZE); // exclude '\0'
-    if (send(sock, buffer, (int)sz, 0) < 0)
+    ssize_t sz = read(STDIN_FILENO, buffer, BSIZE); // exclude '\0'
+    if (sz == 0)
+    {
+        finalProcess(sock, "EOF");
+    }
+    else if (sz < 0)
     {
         close(sock);
-        ErrorHandling("send() sent a different number of bytes than expected");
+        ErrorHandling("read() failed");
     }
-    memset(buffer, 0, BSIZE);
+    printf(">> sending... \n");
+    writing(sock, buffer, sz);
+    memset(buffer, 0, BSIZE); // initialize buffer
+}
+
+void writing(int descriptor, char *buffer, size_t bufferLen)
+{
+    size_t sentLength = 0;
+    ssize_t sentSize = 0;
+    while ((int)sentLength < (int)bufferLen)
+    {
+        sentSize = write(descriptor, buffer, bufferLen);
+        if (sentSize < 0)
+        {
+            if (descriptor != STDOUT_FILENO)
+                close(descriptor);
+            ErrorHandling("send() sent a different number of bytes than expected");
+        }
+        sentLength += sentSize; // Keep tally of total bytes
+    }
 }
 
 void recvFromServer(char *buffer, int sock)
 {
-    printf("-- recvFromServer() --\n");
-    int recvLen = 0;
+    size_t recvLen = 0;
     recvLen = read(sock, buffer, BSIZE - 1);
-    if (recvLen <= 0)
+    printf(">> received... \n");
+    if (recvLen == 0)
+    {
+        finalProcess(sock, "EOF");
+    }
+    else if (recvLen < 0)
     {
         close(sock);
         ErrorHandling("recv() failed");
     }
     buffer[recvLen] = '\0';
-    write(2, buffer, sizeof(buffer));
+    writing(STDOUT_FILENO, buffer, sizeof(buffer));
     memset(buffer, 0, BSIZE);
-    printf("\n");
 }
 
-void HostName2IpAddr(char *hostName, char *port, char *ipAddr)
+char *HostName2IpAddr(char *hostName, char *port)
 {
     struct addrinfo moreInfo, *response;    // More info about host
     memset(&moreInfo, 0, sizeof(moreInfo)); // Zero out structure
@@ -122,12 +147,18 @@ void HostName2IpAddr(char *hostName, char *port, char *ipAddr)
         ErrorHandling("getaddrinfo() failed");
     }
 
-    // inet_ntoa() is a legacy function that converts the network byte ordered 32-bit IPv4 address to dotted-decimal format
-    // inet_ntop() converts the network byte ordered 32-bit IPv4 address to dotted-decimal format
-    if (inet_ntop(AF_INET, &((struct sockaddr_in *)response->ai_addr)->sin_addr, ipAddr, INET_ADDRSTRLEN) == NULL)
-    {
-        ErrorHandling("inet_ntop() failed");
-    }
-    printf("|     IP address of %s is %s\n", hostName, ipAddr);
+    char *ipAddr = inet_ntoa(((struct sockaddr_in *)response->ai_addr)->sin_addr);
+    printf(">> IP address of %s is %s\n", hostName, ipAddr);
     freeaddrinfo(response); // Free address structure
+    return ipAddr;
+}
+
+void finalProcess(int descriptor, char *message)
+{
+    printf(">> %s\n", message);
+    if (descriptor != 0)
+    {
+        close(descriptor);
+    }
+    exit(EXIT_SUCCESS);
 }
