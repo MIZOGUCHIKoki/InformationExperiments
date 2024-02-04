@@ -21,6 +21,8 @@ void *thread_function(void *arg)
 
 int main()
 {
+    printf("Thread ID from main: %lu\n", (unsigned long)pthread_self());
+    pthread_exit(NULL);
     pthread_t thread;
     pthread_create(&thread, NULL, thread_function, NULL);
     pthread_join(thread, NULL);

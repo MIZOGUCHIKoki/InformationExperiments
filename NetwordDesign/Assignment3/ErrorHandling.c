@@ -35,11 +35,6 @@ void ErrorHandling(char *message)
 void exiting(int status)
 {
     pthread_t tid = pthread_self();
-    if (tid != NULL)
-    {
-        printf("EXIT: thread %ld\n", (long int)tid);
-        pthread_exit(&status);
-    }
-    else
-        exit(status);
+    printf("EXIT: thread %ld\n", (long int)tid);
+    pthread_exit(&status);
 }

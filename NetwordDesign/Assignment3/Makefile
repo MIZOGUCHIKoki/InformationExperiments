@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = 
-SOBJS = server.o ErrorHandling.o
+SOBJS = server.o ErrorHandling.o myio.o
 COBJS = client.o ErrorHandling.o
 HOST = localhost
 PORT = 10000
