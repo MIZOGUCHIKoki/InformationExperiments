@@ -1,13 +1,15 @@
 CC = gcc
 CFLAGS = 
-OBJS = client.o ErrorHandling.o
+SOBJS = server.o ErrorHandling.o
+COBJS = client.o ErrorHandling.o
 HOST = localhost
-PORT = 1234
-PROGRAM = client.out
+PORT = 10000
+CLIENT = Client.out
+SERVER = Server.out
 
-all: $(PROGRAM)
-
-$(PROGRAM): $(OBJS)
+$(CLIENT): $(COBJS)
+	$(CC) $(CFLAGS) -o $@ $^
+$(SERVER): $(SOBJS)
 	$(CC) $(CFLAGS) -o $@ $^
 # $^ means all the files on the right side of the colon (list of dependencies).
 # $@ means the file on the left side of the colon (the target name).
@@ -18,8 +20,10 @@ $(PROGRAM): $(OBJS)
 	$(CC) $(CFLAGS) -c $<
 # -c means compile only, do not link.(generate .o file)
 
-.PHONY: clean
+.PHONY: clean client server
 clean:
-	rm -f *.o $(PROGRAM) a.out
-exec: $(PROGRAM)
-	./$(PROGRAM) $(HOST) $(PORT)
+	rm -f *.o *.out
+server: $(SERVER)
+	./$(SERVER)
+client: $(CLIENT)
+	./$(CLIENT) $(HOST) $(PORT)

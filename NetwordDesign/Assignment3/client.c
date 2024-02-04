@@ -76,7 +76,6 @@ int main(int argc, char *argv[])
         {
             recvFromServer(Buffer, sock);
         }
-        printf(" --- \n");
         FD_ZERO(&fds);
     }
     return 0;
@@ -94,8 +93,8 @@ void sendToServer(char *buffer, int sock)
         close(sock);
         ErrorHandling("read() failed");
     }
-    printf(">> sending... \n");
     writing(sock, buffer, sz);
+    printf(">> sent: %s\n", buffer);
     memset(buffer, 0, BSIZE); // initialize buffer
 }
 
@@ -120,7 +119,6 @@ void recvFromServer(char *buffer, int sock)
 {
     size_t recvLen = 0;
     recvLen = read(sock, buffer, BSIZE - 1);
-    printf(">> received... \n");
     if (recvLen == 0)
     {
         finalProcess(sock, "EOF");
@@ -131,7 +129,7 @@ void recvFromServer(char *buffer, int sock)
         ErrorHandling("recv() failed");
     }
     buffer[recvLen] = '\0';
-    writing(STDOUT_FILENO, buffer, sizeof(buffer));
+    printf(">> received: %s\n", buffer);
     memset(buffer, 0, BSIZE);
 }
 
