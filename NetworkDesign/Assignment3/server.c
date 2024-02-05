@@ -53,6 +53,7 @@ int main(void)
     {
         FD_ZERO(&fds);
         FD_SET(svSock, &fds);
+        FD_SET(STDIN_FILENO, &fds);
         int maxfd = svSock;
         for (int i = 0; i < MAX_CLIENTS; i++)
         {
@@ -69,20 +70,38 @@ int main(void)
         {
             serverProcessing(svSock, connected, clientsSet);
         }
+        if (FD_ISSET(STDIN_FILENO, &fds))
+        {
+            char buf[BSIZE];
+            int r = read(STDIN_FILENO, buf, BSIZE);
+            if (r == 0)
+            {
+                closingClSock(clientsSet);
+                EOP(svSock, "EOF");
+            }
+            if (r < 0)
+                closingClSock(clientsSet);
+            EOP(svSock, "read() failed");
+            if (r > 0)
+                continue;
+        }
     }
+    close(svSock);
+    return 0;
 }
 
 void serverProcessing(int svSock, int *connected, int *clientsSet)
 {
-    printf("call AcceptClient\n");
+    // printf("call AcceptClient\n");
     int c = AcceptClient(svSock);
-    printf("debug point\n");
-    if (*connected == MAX_CLIENTS)
-        EOP(c, "Server is full");
-    writing(c, "HELLO", BSIZE);
     printf("connected: %d\n", *connected);
+    printf("debug point\n");
+    // if (*connected == MAX_CLIENTS)
+    // EOP(c, "ERROR");
+    // writing(c, "HELLO", BSIZE);
     clientsSet[*connected] = c;
     (*connected)++;
+    printf("connected: %d\n", *connected);
 }
 
 int AcceptClient(int svSock)
@@ -94,4 +113,27 @@ int AcceptClient(int svSock)
         ErrorHandling("accept() failed");
     printf("Handling client %s\n", inet_ntoa(clAddr.sin_addr));
     return clSock;
+}
+
+void closingClSock(int *clientsSet)
+{
+    for (int i = 0; i < MAX_CLIENTS; i++)
+    {
+        if (clientsSet[i] != 0)
+        {
+            close(clientsSet[i]);
+            clientsSet[i] = 0;
+        }
+    }
+}
+
+void sendProductList()
+{
+    for (int i = 0; i < num_products; ++i)
+    {
+        char buffer[BSIZE];
+        snprintf(buffer, BSIZE, "%s(%d(%d)) ", products[i].name, products[i].price, products[i].left);
+        write(STDOUT_FILENO, buffer, strlen(buffer));
+    }
+    write(STDOUT_FILENO, "\n", 1);
 }
