@@ -62,3 +62,5 @@ MIZOGUCHI Koki（溝口　洸熙）
 
 ## Programming Exercises
 - [Image processing](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/master/ImageProcessing) (2022)
+- [Operating System](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/master/OperatingSystem) (2023)
+- [Network Design](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/master/NetworkDesign) (2023)
