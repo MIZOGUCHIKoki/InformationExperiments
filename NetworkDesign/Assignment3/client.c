@@ -6,14 +6,16 @@
 #include <string.h>     // memset()
 #include <unistd.h>     // close(), read(), write()
 #include <sys/select.h> // select()
+#include "myio.h"       // ErrorHandling(), writing(), reading()
 
-#define BSIZE 32 // Size of receive buffer
+#define BSIZE 256 // Size of receive buffer
 
-void ErrorHandling(char *message);                      // Error handling function
-char *HostName2IpAddr(char *hostName, char *port);      // Convert host name to IP address
-void recvFromServer(char *buffer, int sock);            // Receive string from the server
-void sendToServer(char *buffer, int sock);              // Recviced string from prompt
-void writing(int sock, char *buffer, size_t bufferLen); // sending data to server
+void ErrorHandling(char *message);                 // Error handling function
+char *HostName2IpAddr(char *hostName, char *port); // Convert host name to IP address
+void recvFromServer(char *buffer, int sock);       // Receive string from the server
+void sendToServer(char *buffer, int sock);         // Recviced string from prompt
+
+void reading(int sock, char *buffer, size_t bufferLen); // reading data from server
 void finalProcess(int descriptor, char *message);       // final process
 
 int main(int argc, char *argv[])
@@ -86,6 +88,7 @@ void sendToServer(char *buffer, int sock)
     ssize_t sz = read(STDIN_FILENO, buffer, BSIZE); // exclude '\0'
     if (sz == 0)
     {
+        writing(sock, buffer, sz);
         finalProcess(sock, "EOF");
     }
     else if (sz < 0)
@@ -98,39 +101,10 @@ void sendToServer(char *buffer, int sock)
     memset(buffer, 0, BSIZE); // initialize buffer
 }
 
-void writing(int descriptor, char *buffer, size_t bufferLen)
-{
-    size_t sentLength = 0;
-    ssize_t sentSize = 0;
-    while ((int)sentLength < (int)bufferLen)
-    {
-        sentSize = write(descriptor, buffer, bufferLen);
-        if (sentSize < 0)
-        {
-            if (descriptor != STDOUT_FILENO)
-                close(descriptor);
-            ErrorHandling("send() sent a different number of bytes than expected");
-        }
-        sentLength += sentSize; // Keep tally of total bytes
-    }
-}
-
 void recvFromServer(char *buffer, int sock)
 {
-    size_t recvLen = 0;
-    recvLen = read(sock, buffer, BSIZE - 1);
-    if (recvLen == 0)
-    {
-        finalProcess(sock, "EOF");
-    }
-    else if (recvLen < 0)
-    {
-        close(sock);
-        ErrorHandling("recv() failed");
-    }
-    buffer[recvLen] = '\0';
-    printf(">> received: %s\n", buffer);
-    memset(buffer, 0, BSIZE);
+    reading(sock, buffer, BSIZE);
+    memset(buffer, 0, BSIZE); // initialize buffer
 }
 
 char *HostName2IpAddr(char *hostName, char *port)

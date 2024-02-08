@@ -19,6 +19,13 @@ void *thread_function(void *arg)
     return NULL;
 }
 
+typedef struct
+{
+    int a;
+    int b;
+} test_s;
+test_s test;
+
 int main()
 {
     printf("Thread ID from main: %lu\n", (unsigned long)pthread_self());
@@ -26,5 +33,6 @@ int main()
     pthread_t thread;
     pthread_create(&thread, NULL, thread_function, NULL);
     pthread_join(thread, NULL);
+    test.a = 1;
     return 0;
 }

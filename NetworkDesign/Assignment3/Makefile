@@ -1,7 +1,8 @@
 CC = gcc
 CFLAGS = 
-SOBJS = server.o ErrorHandling.o myio.o
-COBJS = client.o ErrorHandling.o
+CMOBJS = myio.o
+SOBJS = server.o $(CMOBJS)
+COBJS = client.o $(CMOBJS)
 HOST = localhost
 PORT = 10000
 CLIENT = Client.out

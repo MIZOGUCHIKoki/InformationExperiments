@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <pthread.h>
+#include <string.h>
 
-void EOP(int descriptor, char *message);
+#include "myio.h"
 
 void writing(int descriptor, char *buf, size_t bufferLen)
 {
@@ -15,15 +17,41 @@ void writing(int descriptor, char *buf, size_t bufferLen)
             EOP(descriptor, "send() failed");
         sentSize += sendSize;
     }
-    printf(">> sent: %s\n", buf);
 }
 void reading(int descriptor, char *buf, size_t bufferLen)
 {
     size_t recvSize = 0;
     recvSize = read(descriptor, buf, bufferLen);
-    printf(">> received: %s\n", buf);
+    printf("%s", buf);
     if (recvSize == 0)
         EOP(descriptor, "EOF");
     else if (recvSize < 0)
         EOP(descriptor, "read() failed");
+}
+
+void EOP(int descriptor, char *message)
+{
+    if (descriptor != STDOUT_FILENO || descriptor != STDIN_FILENO)
+        close(descriptor);
+    if (strcmp(message, "EOF") != 0)
+    {
+        perror(message);
+        exiting(EXIT_FAILURE);
+    }
+    else
+    {
+        printf("EOF\n");
+        exiting(EXIT_SUCCESS);
+    }
+}
+void ErrorHandling(char *message)
+{
+    perror(message);
+    exit(EXIT_FAILURE);
+}
+void exiting(int status)
+{
+    pthread_t tid = pthread_self();
+    printf("EXIT: thread %ld\n", (long int)tid);
+    pthread_exit(&status);
 }
