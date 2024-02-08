@@ -24,7 +24,7 @@ typedef struct
     int a;
     int b;
 } test_s;
-test_s test;
+test_s test[2];
 
 int main()
 {
@@ -33,6 +33,6 @@ int main()
     pthread_t thread;
     pthread_create(&thread, NULL, thread_function, NULL);
     pthread_join(thread, NULL);
-    test.a = 1;
+    test[1].a = 1;
     return 0;
 }

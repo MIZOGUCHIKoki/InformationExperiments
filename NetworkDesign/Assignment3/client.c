@@ -7,16 +7,9 @@
 #include <unistd.h>     // close(), read(), write()
 #include <sys/select.h> // select()
 #include "myio.h"       // ErrorHandling(), writing(), reading()
+#include "client.h"     //
 
 #define BSIZE 256 // Size of receive buffer
-
-void ErrorHandling(char *message);                 // Error handling function
-char *HostName2IpAddr(char *hostName, char *port); // Convert host name to IP address
-void recvFromServer(char *buffer, int sock);       // Receive string from the server
-void sendToServer(char *buffer, int sock);         // Recviced string from prompt
-
-void reading(int sock, char *buffer, size_t bufferLen); // reading data from server
-void finalProcess(int descriptor, char *message);       // final process
 
 int main(int argc, char *argv[])
 {
@@ -72,39 +65,27 @@ int main(int argc, char *argv[])
         select(max_fd + 1, &fds, NULL, NULL, NULL);           // Wait for activity
         if (FD_ISSET(STDIN_FILENO, &fds))
         {
-            sendToServer(Buffer, sock);
+            memset(Buffer, 0, BSIZE);
+            int n = read(STDIN_FILENO, Buffer, BSIZE);
+            if (n == 0)
+                EOP(sock, "EOF");
+            else if (n < 0)
+                EOP(sock, "read() failed");
+            Buffer[n - 1] = '\0'; // remove newline
+            writing(sock, Buffer, n);
         }
         if (FD_ISSET(sock, &fds))
         {
             recvFromServer(Buffer, sock);
         }
-        FD_ZERO(&fds);
     }
     return 0;
 }
 
-void sendToServer(char *buffer, int sock)
-{
-    ssize_t sz = read(STDIN_FILENO, buffer, BSIZE); // exclude '\0'
-    if (sz == 0)
-    {
-        writing(sock, buffer, sz);
-        finalProcess(sock, "EOF");
-    }
-    else if (sz < 0)
-    {
-        close(sock);
-        ErrorHandling("read() failed");
-    }
-    writing(sock, buffer, sz);
-    printf(">> sent: %s\n", buffer);
-    memset(buffer, 0, BSIZE); // initialize buffer
-}
-
 void recvFromServer(char *buffer, int sock)
 {
-    reading(sock, buffer, BSIZE);
     memset(buffer, 0, BSIZE); // initialize buffer
+    reading(sock, buffer, BSIZE);
 }
 
 char *HostName2IpAddr(char *hostName, char *port)
@@ -123,14 +104,4 @@ char *HostName2IpAddr(char *hostName, char *port)
     printf(">> IP address of %s is %s\n", hostName, ipAddr);
     freeaddrinfo(response); // Free address structure
     return ipAddr;
-}
-
-void finalProcess(int descriptor, char *message)
-{
-    printf(">> %s\n", message);
-    if (descriptor != 0)
-    {
-        close(descriptor);
-    }
-    exit(EXIT_SUCCESS);
 }

@@ -18,7 +18,7 @@ void writing(int descriptor, char *buf, size_t bufferLen)
         sentSize += sendSize;
     }
 }
-void reading(int descriptor, char *buf, size_t bufferLen)
+int reading(int descriptor, char *buf, size_t bufferLen)
 {
     size_t recvSize = 0;
     recvSize = read(descriptor, buf, bufferLen);
@@ -27,6 +27,7 @@ void reading(int descriptor, char *buf, size_t bufferLen)
         EOP(descriptor, "EOF");
     else if (recvSize < 0)
         EOP(descriptor, "read() failed");
+    return (int)recvSize;
 }
 
 void EOP(int descriptor, char *message)
