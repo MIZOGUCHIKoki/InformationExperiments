@@ -13,11 +13,10 @@
 #define MAX_CLIENTS 5
 #define MAX_PENDING 5
 #define PRODUCTS_ROW_SIZE 256
-#define PRODUCT_DRINK_NAME_SIZE 20
 
 typedef struct
 {
-    char name[PRODUCT_DRINK_NAME_SIZE];
+    char *name;
     int price;
     int left;
 } Product;
@@ -26,7 +25,7 @@ typedef struct
 {
     int clSock;
     int coin;
-    int drink;
+    Product *drinkProduct;
 } Client;
 Client clients[MAX_CLIENTS];
 
@@ -61,6 +60,10 @@ int main(void)
     if (listen(svSock, MAX_PENDING) < 0)
         ErrorHandling("listen() failed");
     printf("listening...\n");
+    char buf[BSIZE];
+    char Buf[PRODUCTS_ROW_SIZE];
+    memset(buf, 0, BSIZE);
+    int n, c;
     for (;;)
     {
         FD_ZERO(&clfds);
@@ -80,7 +83,7 @@ int main(void)
         {
             char buf[BSIZE];
             memset(buf, 0, BSIZE);
-            int n = read(STDIN_FILENO, buf, BSIZE);
+            n = read(STDIN_FILENO, buf, BSIZE);
             if (n == 0)
             {
                 closingAllClient();
@@ -90,7 +93,6 @@ int main(void)
                 printClientsList();
             else if (strcmp(buf, "ls\n") == 0)
                 printProductsList(STDOUT_FILENO);
-
             else
                 printf("Unknown command: %s\n", buf);
             continue;
@@ -99,23 +101,79 @@ int main(void)
         {
             if (FD_ISSET(clients[i].clSock, &clfds))
             {
-                char buf[BSIZE];
                 memset(buf, 0, BSIZE);
-                int n = read(clients[i].clSock, buf, BSIZE);
+                n = read(clients[i].clSock, buf, BSIZE);
                 if (n < 0)
                     EOP(clients[i].clSock, "read() failed");
-                printf("client[%d](%d) >> %s\n", i, clients[i].clSock, buf);
+                buf[n - 1] = '\0';
+                printf("client[%d] >> %s\n", i, buf);
                 if (n == 0)
                 {
                     close(clients[i].clSock);
-                    clients[i].clSock = 0;
+                    clearClientInfo(i);
                     printf("Client[%d] is closed\n", i);
                     break;
                 }
-                if (strcmp(buf, "ls") == 0)
+                else if (strcmp(buf, "ls") == 0)
                 {
                     printProductsList(clients[i].clSock);
                     break;
+                }
+                else
+                {
+                    if (clients[i].drinkProduct == NULL)
+                    {
+                        n = searchDrinks(buf, i);
+                        printf("result: %d\n", n);
+                        if (n == -1)
+                        {
+                            strcpy(buf, "Sorry, the drink is sold out.\n");
+                            writing(clients[i].clSock, buf, BSIZE);
+                            break;
+                        }
+                        if (n == -2)
+                        {
+                            strcpy(buf, "Unknown product\n");
+                            writing(clients[i].clSock, buf, BSIZE);
+                            break;
+                        }
+                        snprintf(buf, BSIZE, "The price is %d yen\n", n);
+                        writing(clients[i].clSock, buf, BSIZE);
+                    }
+                    else
+                    {
+                        if ((c = atoi(buf)) == 0 || c % 10 != 0)
+                        {
+                            strcpy(buf, "Please input valid coin\n");
+                            writing(clients[i].clSock, buf, BSIZE);
+                            break;
+                        }
+                        clients[i].coin += c;
+                        memset(Buf, 0, PRODUCTS_ROW_SIZE);
+                        snprintf(Buf, PRODUCTS_ROW_SIZE, "%s: %d yen, you payed %d yen.\n", clients[i].drinkProduct->name, clients[i].drinkProduct->price, clients[i].coin);
+                        writing(clients[i].clSock, Buf, PRODUCTS_ROW_SIZE);
+                        memset(buf, 0, BSIZE);
+                        if (clients[i].coin < clients[i].drinkProduct->price)
+                        {
+                            snprintf(buf, BSIZE, "%d ￥ more, please\n", clients[i].drinkProduct->price - clients[i].coin);
+                            writing(clients[i].clSock, buf, BSIZE);
+                            printf("client[%d] >> payed %d\n", i, clients[i].coin);
+                            break;
+                        }
+                        else if (clients[i].coin > clients[i].drinkProduct->price)
+                        {
+                            snprintf(buf, BSIZE, "Here is your change: %d yen\n", clients[i].coin - clients[i].drinkProduct->price);
+                            writing(clients[i].clSock, buf, BSIZE);
+                        }
+                        memset(buf, 0, BSIZE);
+                        strcpy(buf, "Enjoy your drink!\n");
+                        writing(clients[i].clSock, buf, BSIZE);
+                        clients[i].drinkProduct->left--;
+                        printf("client[%d] buyes %s\n", i, clients[i].drinkProduct->name);
+                        clients[i].coin = 0;
+                        clients[i].drinkProduct = NULL;
+                        break;
+                    }
                 }
             }
         }
@@ -131,7 +189,12 @@ void printClientsList()
     for (int i = 0; i < MAX_CLIENTS; i++)
     {
         if (clients[i].clSock != 0)
-            printf(" |- Client[%d]: %d\n", i, j);
+        {
+            printf(" |- Client[%d]\n", i);
+            printf(" |\t|- socket: %d\n", clients[i].clSock);
+            printf(" |\t|- ordered: %s\n", clients[i].drinkProduct == NULL ? "none" : clients[i].drinkProduct->name);
+            printf(" |\t`- payed: %d\n", clients[i].coin);
+        }
     }
     printf("\n");
 }
@@ -149,7 +212,6 @@ void closingAllClient()
 void printProductsList(int descriptor)
 {
     printf(">> Products list to {fds: %d}\n", descriptor);
-    // writing(descriptor, ">> Products list:\n", BSIZE);
     char buffer[PRODUCTS_ROW_SIZE];
     for (int i = 0; i < num_products; i++)
     {
@@ -199,6 +261,29 @@ void setupSelectForClients(fd_set *clfds, int *maxclfd)
     }
 }
 
-void drinkAndPayment()
+int searchDrinks(char *buf, int clIndex)
 {
+    for (int i = 0; i < num_products; i++)
+    {
+        if (strcmp(buf, products[i].name) == 0)
+        {
+            if (products[i].left > 0)
+            {
+                clients[clIndex].drinkProduct = &products[i];
+                return products[i].price;
+            }
+            else
+            {
+                return -1;
+            }
+        }
+    }
+    return -2;
+}
+
+void clearClientInfo(int clIndex)
+{
+    clients[clIndex].clSock = 0;
+    clients[clIndex].coin = 0;
+    clients[clIndex].drinkProduct = NULL;
 }

@@ -1,0 +1,55 @@
+% Compile : uplatex*2 -> dvipdfmx
+\documentclass[12pt,dvipdfmx]{jlreq}
+\input{header.tex}
+\begin{document}
+\section*{課題要旨}
+本課題では，自販機のサーバプログラムを作成する．
+複数クライアントからの接続に対して，\texttt{select()}を用いて，入出力を多重化する．
+\section*{処理概要}
+データ構造は，以下のとおりである．
+クライアントデータ構造には，ソケットディスクリプタ，投入金額，現在購入しようとしている商品構造体のポインタを持つ．
+クライアントの最大接続台数は5台とし，それぞれのクライアントデータ構造を配列で持つ．
+商品データ構造体のポインタを持つことで，購入情報の冗長化を防ぐ．
+\begin{center}
+    \begin{minipage}[t]{.48\textwidth}
+        \begin{lstlisting}[caption=商品構造]
+typedef struct {
+    char *name;
+    int price;
+    int stock;
+} Product;
+        \end{lstlisting}
+    \end{minipage}
+    \begin{minipage}[t]{.48\textwidth}
+        \begin{lstlisting}[caption=クライアント構造]
+typedef struct {
+    int clSock;
+    int coin;
+    Product *drinkProduct;
+} Client;
+        \end{lstlisting}
+    \end{minipage}
+\end{center}
+サーバは，自身のソケットを作成し，クライアントからの接続を待ち受ける．
+ここで，\texttt{select()}を用いて，複数のクライアントからの接続を待ち受ける．
+その際，デバッグ用として，標準入力を受け付けるため，\texttt{stdin}も監視対象に加える．
+\paragraph{\texttt{stdin}からの入力があった場合}入力が\texttt{ls}ならば，在庫一覧を表示する．
+また，入力が\texttt{cls}なら，接続中のクライアントリストを表示する．
+EOFが入力された場合には，サーバを終了する．この時，接続中のクライアントにも終了を通知し，ソケットを全て閉じる．
+\paragraph{クライアントからの接続があった場合}接続を受け付け，クライアントデータ構造を作成し，クライアントの構造体配列に追加する．\\
+\textbf{\underline{クライアントが購入商品が未選択の場合}}
+\begin{itemize}
+    \item クライアントからの入力が\texttt{ls}の場合は，在庫一覧を送信する．
+    \item クライアントからの入力がEOFの場合は，クライアントを切断し，クライアントデータ構造を削除する．
+    \item クライアントからの入力が商品名の場合は，商品の在庫があるか確認し，在庫があれば，商品の構造体ポインタをクライアント構造体に設定する．
+\end{itemize}
+\textbf{\underline{クライアントが購入商品を選択している場合}}
+\begin{itemize}
+    \item クライアントからの入力がEOFの場合は，クライアントを切断し，クライアントデータ構造を削除する．
+    \item クライアントからの入力が数値の場合は，投入金額を更新する．投入金額次第で，購入，返金，投入金額の表示を行う．
+    \item 購入後は，商品の在庫を減らし，クライアントが保持している商品構造体ポインタをNULLにする．
+\end{itemize}
+\section*{工夫点}
+\section*{考察}
+\section*{感想}
+\end{document}

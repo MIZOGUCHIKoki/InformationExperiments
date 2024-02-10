@@ -37,22 +37,17 @@ void EOP(int descriptor, char *message)
     if (strcmp(message, "EOF") != 0)
     {
         perror(message);
-        exiting(EXIT_FAILURE);
+        exit(EXIT_FAILURE);
     }
     else
     {
         printf("EOF\n");
-        exiting(EXIT_SUCCESS);
+        exit(EXIT_SUCCESS);
     }
 }
+
 void ErrorHandling(char *message)
 {
     perror(message);
     exit(EXIT_FAILURE);
-}
-void exiting(int status)
-{
-    pthread_t tid = pthread_self();
-    printf("EXIT: thread %ld\n", (long int)tid);
-    pthread_exit(&status);
 }

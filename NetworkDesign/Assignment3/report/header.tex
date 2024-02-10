@@ -1,0 +1,41 @@
+\usepackage{listings,xcolor,lastpage,framed}
+\usepackage[left=10truemm,right=10truemm,top=20truemm,bottom=20truemm,headheight=22pt]{geometry}
+\usepackage{fancyhdr}
+\renewcommand{\texttt}[1]{{\ttfamily\bfseries\ #1\ }}
+\fancyhf{}
+\fancyhead[R]{\thepage\ / \pageref{LastPage}}
+\fancyhead[C]{Assignment No.3}
+\fancyhead[L]{1250373 溝口 洸熙}
+
+\fancyfoot[R]{Compiled by Cloud LaTeX}
+\fancyfoot[C]{Network-Design 2023}
+\fancyfoot[L]{\fbox{Deadline: Feb. 13rd, 2024 23:59}}
+\pagestyle{fancy}
+\lstset{ %ここで設定する内容は，全てのlstlisting環境で適用されます．
+    %【凡例】コマンド名 = {設定値} % コマンドの意味 (デフォルト値 | 選択肢)
+    language = {C}, %利用言語
+    % --- コード書式設定 ---
+    basicstyle = {\ttfamily\small}, % 基本書式
+    commentstyle = {\color{green!50!black}}, % コメント書式
+    keywordstyle = [1]{\color{red!50!black}\bfseries}, % キーワード書式：区分[1]
+    keywordstyle = [2]{\color{red}\bfseries}, % キーワード書式：区分[2]
+    keywordstyle = [3]{\color{orange}\bfseries}, % キーワード書式：区分[3]
+    stringstyle = {\color{blue}}, % 文字列書式
+    showspaces = {false}, % 空白表示 (false | true, false)
+    showtabs = {false}, % Tabを表示 (false | true, false)
+    tab = {}, % Tab記号( | $\mapsto$, $\to$など)
+    % --- その他の設定 ---
+    frame = {tl}, % フレーム設定 (none | leftline, topline, bottomline, lines, single, shadowbox, {T,t, B,b, L,l, R,r})
+    framesep = {.1cm}, % フレームまでの間隔 ( 0cm | Npt, Ncmなど)
+    breaklines = {true}, % 1行が長いとき，改行するか否かの設定 (false | true, false)
+    breakindent = {20pt}, % 改行時インデント量 (20pt | Npt)
+    % --- 行番号の設定 ---  
+    numbers = {none}, % 行番号を左に表示 (none | left, right)
+    numberstyle = {\scriptsize}, % 行番号の書式
+    numbersep = {10pt}, % 行番号と本文の間隔 (10pt | Npt)
+    stepnumber = {1}, % 行番号の増分（何行おきに行番号を表示するか）(1 | N)
+    % --- Caption設定 ---
+    captionpos = {t}, % Captionの位置 (t | t, b)
+    % framexleftmargin = {10pt}, % 左マージン (0pt | Npt)
+    % xleftmargin = {20pt}, % 左マージン (0pt | Npt)
+}

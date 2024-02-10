@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
                 EOP(sock, "EOF");
             else if (n < 0)
                 EOP(sock, "read() failed");
-            Buffer[n - 1] = '\0'; // remove newline
+            Buffer[n] = '\0'; // remove newline
             writing(sock, Buffer, n);
         }
         if (FD_ISSET(sock, &fds))
