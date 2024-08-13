@@ -2,7 +2,7 @@
 MIZOGUCHI Koki（溝口　洸熙）
 - School of Informatics, Kochi University of Technology. Graduated in Mar., 2025.
 - E-mail: [mizoguchi.koki.public@gmail.com](mailto:mizoguchi.koki.public@gmail.com)
-- ⚠️：コードの剽窃はバレるので，行わないこと！！！（自分の力にもなりません．）
+- ⚠️：コードの剽窃は禁止です．
 ## 情報学群実験
 <details>
 <summary>情報学群実験第1 (2022)</summary>
