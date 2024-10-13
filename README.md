@@ -1,22 +1,22 @@
 ## Author Information 
-MIZOGUCHI Koki（溝口　洸熙）
+MIZOGUCHI Koki（溝口 洸熙）
 - School of Informatics, Kochi University of Technology. Graduated in Mar., 2025.
-- E-mail: [mizoguchi.koki.public@gmail.com](mailto:mizoguchi.koki.public@gmail.com)
-- ⚠️：コードの剽窃は禁止です．
+- E-mail: user: `250373b`, domain: `ugs.kochi-tech.ac.jp`
+- ⚠️：DON'T PERMIT COPYING AND DUPLICATION OF THESE CODE AND REPORT.
 ## 情報学群実験
 <details>
 <summary>情報学群実験第1 (2022)</summary>
     
-- [Study Works](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/master/ProgrammingLab_1)
-- [Final assignment](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/master/ProgrammingLab_1/Minesweeper)
+- [Study Works](https://github.com/MIZOGUCHIKoki/InformationExperiments/tree/master/ProgrammingLab_1)
+- [Final assignment](https://github.com/MIZOGUCHIKoki/InformationExperiments/tree/master/ProgrammingLab_1/Minesweeper)
 </details>
 
 <details>
 <summary>情報学群実験第2 (2022 - 2023)</summary>
     
 - Report
-    - [Sort algorithm](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/master/ProgrammingLab_2/i386_sort)
-    - [Immediate assignment](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/master/ProgrammingLab_2/arm_register)
+    - [Sort algorithm](https://github.com/MIZOGUCHIKoki/InformationExperiments/tree/master/ProgrammingLab_2/i386_sort)
+    - [Immediate assignment](https://github.com/MIZOGUCHIKoki/InformationExperiments/tree/master/ProgrammingLab_2/arm_register)
 - Source Code
     - [q0-warmup-MIZOGUCHIKoki](https://github.com/MIZOGUCHIKoki/q0-warmup-MIZOGUCHIKoki.git)
         - Contributor : [MIZOGUCHI Koki](https://github.com/MIZOGUCHIKoki)
@@ -61,6 +61,7 @@ MIZOGUCHI Koki（溝口　洸熙）
 </details>
 
 ## Programming Exercises
-- [Image processing](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/master/ImageProcessing) (2022)
-- [Operating System](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/master/OperatingSystem) (2023)
-- [Network Design](https://github.com/MIZOGUCHIKoki/Programming-Lab/tree/master/NetworkDesign) (2023)
+- [Image processing](https://github.com/MIZOGUCHIKoki/InformationExperiments/tree/master/ImageProcessing) (2022)
+- [Operating System](https://github.com/MIZOGUCHIKoki/InformationExperiments/tree/master/OperatingSystem) (2023)
+- [Network Design](https://github.com/MIZOGUCHIKoki/InformationExperiments/tree/master/NetworkDesign) (2023)
+- [Computer System(Graduate School)](https://github.com/MIZOGUCHIKoki/InformationExperiments/tree/master/ComputerSystem) (2024)
