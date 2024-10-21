@@ -1,0 +1,13 @@
+% gcc mizoguchi-1250373-C1.txt ; sudo ./a.out
+setpriority       RESULT =   0, ERRNO =  0, MSG = Undefined error: 0
+getpriority       RESULT = -19, ERRNO =  0, MSG = Undefined error: 0
+PARENTS  PID = 20577, PRIORITY = -19
+PARENTS  PID = 20577, PRIORITY = -19 [IN struct prop_process]
+(Forked from PID:20577 Process)
+setpriority       RESULT =   0, ERRNO =  0, MSG = Undefined error: 0
+getpriority       RESULT =  19, ERRNO =  0, MSG = Undefined error: 0
+CHILD    PID = 20578, PRIORITY =  19
+CHILD    PID = 20578, PRIORITY =  19 [IN struct prop_process]
+===  PARENTS ===
+	9.057697 s
+===    CHILD ===                                                                                      9.065351 s
