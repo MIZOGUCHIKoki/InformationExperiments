@@ -21,7 +21,7 @@ int main(void) {
 
 	pthread_join(tid1, NULL);
 	pthread_join(tid2, NULL);
-
+	return 0;
 }
 
 void *func1(void *param) {
